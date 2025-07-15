@@ -327,9 +327,9 @@ onMounted(async () => {
 })
 
 async function fetchColumns() {
-  const colRes = await axios.get(`http://localhost:3000/api/columns/${admin.id}`)
+  const colRes = await axios.get(`/columns/${admin.id}`)
   console.log(colRes);
-  const appRes = await axios.get(`http://localhost:3000/api/applications/${admin.id}`)
+  const appRes = await axios.get(`/applications/${admin.id}`)
   columns.value = colRes.data.map((col) => ({
     ...col,
     tasks: appRes.data.filter((app) => app.columnId === col._id),
@@ -366,7 +366,7 @@ async function onDrop(targetColumnId) {
     toColumn.tasks.push(draggedTask.value)
 
     try {
-      await axios.put(`http://localhost:3000/api/applications/${draggedTask.value._id}/move`, {
+      await axios.put(`/applications/${draggedTask.value._id}/move`, {
         columnId: targetColumnId,
       })
     } catch (err) {
@@ -383,7 +383,7 @@ async function addColumn() {
   if (newColumnName.value.trim() === '') return
 
   try {
-    const res = await axios.post('http://localhost:3000/api/columns', {
+    const res = await axios.post('/columns', {
       name: newColumnName.value.trim(),
       userId: admin.id,
     })
@@ -396,7 +396,7 @@ async function addColumn() {
 
 async function deleteColumn(columnId) {
   try {
-    await axios.delete(`http://localhost:3000/api/columns/${columnId}`)
+    await axios.delete(`/columns/${columnId}`)
     columns.value = columns.value.filter((col) => col._id !== columnId)
   } catch (err) {
     console.error('Error deleting column:', err)
@@ -417,7 +417,7 @@ async function addTask() {
   if (column) {
     isLoading.value = true
     try {
-      const response = await axios.post('http://localhost:3000/api/applications', {
+      const response = await axios.post('/applications', {
         ...applicant,
         columnId: column._id,
       })
