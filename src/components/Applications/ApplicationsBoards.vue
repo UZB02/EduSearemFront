@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-gradient-to-br p-4 sm:p-6">
-    <div class="max-w-7xl mx-auto">
+  <div class="bg-gradient-to-br p-4 sm:p-1">
+    <div class="">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
@@ -32,7 +32,7 @@
         <div
           v-for="(column, columnIndex) in columns"
           :key="column._id"
-          class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 w-80 flex-shrink-0 transition-all duration-200 hover:shadow-md"
+          class="bg-red h-auto rounded-xl shadow-sm border border-gray-100 p-4 w-80 flex-shrink-0 transition-all duration-200 hover:shadow-md"
           @dragover.prevent
           @drop="onDrop(column._id)"
           @dragenter.prevent="onDragEnter(column._id)"
@@ -467,3 +467,14 @@ function formatDate(date) {
   }).format(new Date(date))
 }
 </script>
+<style scoped>
+::-webkit-scrollbar{
+  height: 6px;
+  
+}
+::-webkit-scrollbar-thumb{
+  background-color: grey;
+  border-radius: 24px;
+  cursor: grab;
+}
+</style>

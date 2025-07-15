@@ -1,42 +1,44 @@
 <template>
-<!-- Asosiy Layout -->
-<div class="min-h-screen flex flex-col">
-  <!-- Navbar -->
-  <NavBar class="z-20" />
+  <div class="min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <NavBar @toggleSidebar="sidebarVisible = !sidebarVisible" />
 
-  <!-- Kontent -->
-  <div class="flex flex-1">
-    <!-- Sidebar (faqat md va undan katta ekranlar uchun ko‘rsatiladi) -->
-    <div class="hidden md:block w-64 bg-white h-[calc(100vh-4rem)] fixed  left-0 z-10 shadow">
-      <!-- 4rem = 64px (NavBar balandligi) -->
-      <SideBar />
+    <!-- Kontent qismi -->
+    <div class="flex-1 grid grid-cols-12">
+      <!-- Sidebar -->
+      <transition name="slide">
+        <div
+          v-if="sidebarVisible || screenIsLarge"
+          class="col-span-12 md:col-span-2 p-2 z-10 bg-white h-screen md:h-auto"
+        >
+          <SideBar @close="sidebarVisible = false" />
+        </div>
+      </transition>
+
+      <!-- Asosiy kontent -->
+      <main class="col-span-12 md:col-span-10 p-4 bg-gray-50 border-l border-slate-300">
+        <RouterView />
+      </main>
     </div>
-
-    <!-- Asosiy kontent -->
-    <main class="flex-1 ml-0 md:ml-64 p-4 bg-gray-50">
-      <RouterView />
-    </main>
   </div>
-</div>
-
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
-import { RouterView } from "vue-router";
-import NavBar from "@/components/NavBar/Nav.vue";
-import SideBar from "@/components/Sidebar/Sidebar.vue";
+import { ref, onMounted, onUnmounted } from 'vue'
+import { RouterView } from 'vue-router'
+import NavBar from '@/components/NavBar/Nav.vue'
+import SideBar from '@/components/Sidebar/Sidebar.vue'
 
-const sidebarVisible = ref(false);
-const screenIsLarge = ref(window.innerWidth >= 768);
+const sidebarVisible = ref(false)
+const screenIsLarge = ref(window.innerWidth >= 768)
 
 const handleResize = () => {
-  screenIsLarge.value = window.innerWidth >= 768;
-  if (screenIsLarge.value) sidebarVisible.value = false;
-};
+  screenIsLarge.value = window.innerWidth >= 768
+  if (screenIsLarge.value) sidebarVisible.value = false
+}
 
-onMounted(() => window.addEventListener('resize', handleResize));
-onUnmounted(() => window.removeEventListener('resize', handleResize));
+onMounted(() => window.addEventListener('resize', handleResize))
+onUnmounted(() => window.removeEventListener('resize', handleResize))
 </script>
 
 <style scoped>

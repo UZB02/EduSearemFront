@@ -1,5 +1,5 @@
 <template>
-  <aside class="h-full py-2 bg-white  w-64">
+  <aside class="w-full h-full py-2 bg-white md:sticky md:h-auto md:top-12  ">
     <nav class="space-y-2 ">
       <!-- Mobilda yopish tugmasi -->
       <button class="md:hidden mb-4 bg-red-400 w-full rounded text-white font-bold" @click="$emit('close')">
