@@ -30,7 +30,7 @@ const views=ref([
     },
     {
         name:'Guruhlar',
-        to:'/about',
+        to:'/groups',
         icon:'pi pi-graduation-cap'
     },
     {

@@ -9,7 +9,7 @@
         </div>
 
         <!-- Yangi ustun qo'shish -->
-        <div class="flex items-center gap-2 bg-white rounded-lg shadow-sm p-3 ">
+        <div class="flex items-center gap-2 bg-white rounded-lg shadow-sm p-3">
           <input
             v-model="newColumnName"
             placeholder="Ustun nomi kiriting..."
@@ -48,7 +48,7 @@
                 {{ column.tasks.length }}
               </span>
             </div>
-            <i class="pi pi-cog cursor-pointer" @click="deleteColumn(column._id)"></i>
+            <i class="pi pi-cog cursor-pointer" @click="toggle($event, column._id)"></i>
           </div>
 
           <!-- Tasks -->
@@ -63,9 +63,7 @@
             >
               <div class="flex items-start justify-between">
                 <div class="flex flex-col gap-2">
-                  <p class="text-sm font-medium flex-1">
-                    {{ task.name }} {{ task.lastname }}
-                  </p>
+                  <p class="text-sm font-medium flex-1">{{ task.name }} {{ task.lastname }}</p>
                   <div class="text-gray-700 flex gap-2">
                     <span class="flex items-center text-sm">
                       <i class="pi pi-phone text-sm"></i> {{ task.phone }}
@@ -75,8 +73,14 @@
                     </span>
                   </div>
                 </div>
-                <i class="pi pi-trash opacity-0 cursor-pointer group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all duration-200 ml-2" @click="deleteTask(column._id, task.id)"></i>
-                <i class="pi pi-info opacity-0 cursor-pointer group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all duration-200 ml-2" @click="deleteTask(column._id, task.id)"></i>
+                <i
+                  class="pi pi-trash opacity-0 cursor-pointer group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all duration-200 ml-2"
+                  @click="deleteTask(column._id, task.id)"
+                ></i>
+                <i
+                  class="pi pi-info opacity-0 cursor-pointer group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all duration-200 ml-2"
+                  @click="openeditApplicationModal(task)"
+                ></i>
               </div>
               <div class="flex items-center gap-2 mt-2">
                 <div class="w-2 h-2 rounded-full" :class="getColumnColor(columnIndex)"></div>
@@ -89,7 +93,7 @@
             class="w-full bg-gradient-to-r cursor-pointer from-blue-500 to-blue-600 text-white rounded-lg px-3 py-2 hover:from-blue-600 hover:to-blue-700 transition-all duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             <i class="pi pi-plus"></i>
-            Vazifa qo'shish
+            Ariza qo'shish
           </button>
         </div>
 
@@ -105,8 +109,10 @@
       </div>
     </div>
   </div>
-
-  <!-- Begin Add Modal -->
+  <!-- Begin Menu -->
+  <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
+  <!-- End Menu -->
+  <!-- Begin AddApplication Modal -->
   <Dialog
     v-model:visible="addmodalvisible"
     :modal="true"
@@ -122,7 +128,7 @@
         <div
           class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center"
         >
-        <i class="pi pi-user-plus w-5 h-5 text-white"></i>
+          <i class="pi pi-user-plus w-5 h-5 text-white"></i>
         </div>
         <div>
           <h2 class="text-xl font-semibold text-gray-800 m-0">Yangi ariza qo'shish</h2>
@@ -176,7 +182,7 @@
       <!-- Aloqa ma'lumotlari bo'limi -->
       <div class="bg-gray-50 rounded-lg p-4">
         <h3 class="text-lg font-medium text-gray-800 mb-4 flex items-center gap-2">
-            <i class="pi pi-phone w-5 h-5 text-green-500"></i>
+          <i class="pi pi-phone w-5 h-5 text-green-500"></i>
           Aloqa ma'lumotlari
         </h3>
 
@@ -204,7 +210,7 @@
       <!-- Ta'lim ma'lumotlari bo'limi -->
       <div class="bg-gray-50 rounded-lg p-4">
         <h3 class="text-lg font-medium text-gray-800 mb-4 flex items-center gap-2">
-            <i class="pi pi-briefcase w-5 h-5 text-purple-500"></i>
+          <i class="pi pi-briefcase w-5 h-5 text-purple-500"></i>
           Ta'lim ma'lumotlari
         </h3>
 
@@ -279,7 +285,116 @@
       </div>
     </template>
   </Dialog>
-  <!-- End Add Modal -->
+  <!-- End AddApplication Modal -->
+  <!-- Begin EditApplication Modal -->
+ <Dialog
+  v-model:visible="editAppModalVisible"
+  :modal="true"
+  :closable="true"
+  :draggable="false"
+  class="custom-dialog"
+  :style="{ width: '600px' }"
+  :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
+>
+  <template #header>
+    <div class="flex items-center gap-3 w-full">
+      <div class="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center">
+        <i class="pi pi-pencil w-5 h-5 text-white"></i>
+      </div>
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800 m-0">Arizani tahrirlash</h2>
+        <p class="text-sm text-gray-500 m-0">Ma'lumotlarni yangilang</p>
+      </div>
+    </div>
+  </template>
+
+  <div class="space-y-6 p-1">
+    <!-- Ism, Familiya -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-medium text-gray-700">Ism</label>
+        <InputText v-model="editedApplication.name" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-medium text-gray-700">Familiya</label>
+        <InputText v-model="editedApplication.lastname" class="w-full" />
+      </div>
+    </div>
+
+    <!-- Telefon, Manzil -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-medium text-gray-700">Telefon raqami</label>
+        <InputText v-model="editedApplication.phone" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-medium text-gray-700">Manzil</label>
+        <InputText v-model="editedApplication.location" class="w-full" />
+      </div>
+    </div>
+
+    <!-- Guruh -->
+    <div class="flex flex-col gap-2">
+      <label class="text-sm font-medium text-gray-700">Guruh</label>
+      <select v-model="editedApplication.gurup" class="w-full border border-gray-300 rounded-md p-2 text-sm">
+        <option disabled value="">Guruhni tanlang</option>
+        <option v-for="option in gurupOptions" :key="option.id" :value="option.name">
+          {{ option.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Izoh -->
+    <div class="flex flex-col gap-2">
+      <label class="text-sm font-medium text-gray-700">Izoh</label>
+      <Textarea v-model="editedApplication.description" rows="3" class="w-full" autoResize />
+    </div>
+  </div>
+
+  <template #footer>
+    <div class="flex justify-end gap-3">
+      <Button label="Bekor qilish" icon="pi pi-times" severity="secondary" @click="editAppModalVisible = false" />
+      <Button label="Yangilash" icon="pi pi-check" @click="updateTask()" />
+    </div>
+  </template>
+</Dialog>
+  <!-- End EditApplication Modal -->
+  <!-- Begin delete Column Modal -->
+  <Dialog
+    v-model:visible="columnDelModal"
+    :modal="true"
+    :closable="false"
+    :draggable="false"
+    class="custom-dialog"
+    :style="{ width: '500px' }"
+    :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
+  >
+    <template #header>
+      <div class="text-lg font-semibold text-red-600">Diqqat!</div>
+    </template>
+
+    <div class="text-gray-700 text-base py-4">
+      Ushbu ustunni o‘chirmoqchimisiz? Bu amal qaytarib bo‘lmaydi.
+    </div>
+
+    <template #footer>
+      <div class="flex justify-end gap-3">
+        <Button
+          label="Bekor qilish"
+          icon="pi pi-times"
+          class="p-button-outlined p-button-secondary"
+          @click="columnDelModal = false"
+        />
+        <Button
+          :label="isLoading ? 'Loading...' : 'Ha o\'chirish'"
+          icon="pi pi-trash"
+          class="p-button-danger"
+          @click="deleteColumn(columnID)"
+        />
+      </div>
+    </template>
+  </Dialog>
+  <!-- End delete Column Modal -->
 </template>
 
 <script setup>
@@ -289,9 +404,11 @@ import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
+import ToggleButton from 'primevue/togglebutton';
+import Menu from 'primevue/menu'
 
 let nextColumnId = 4
-const admin = JSON.parse(sessionStorage.getItem('admin'))// o'zgaruvchini haqiqiy admin id bilan almashtiring
+const admin = JSON.parse(sessionStorage.getItem('admin')) // o'zgaruvchini haqiqiy admin id bilan almashtiring
 
 const newColumnName = ref('')
 const draggedTask = ref(null)
@@ -301,6 +418,36 @@ const columnID = ref(null)
 const addmodalvisible = ref(false)
 const showValidation = ref(false)
 const isLoading = ref(false)
+const columnDelModal = ref(false)
+const editAppModalVisible=ref(false)
+
+const menu = ref()
+const items = ref([
+  {
+    label: 'Refresh',
+    icon: 'pi pi-refresh',
+  },
+  {
+    label: "O'chirish",
+    icon: 'pi pi-trash',
+    command: () => {
+      columnDelModal.value = true
+    },
+  },
+])
+
+const editedApplication=ref(
+  {
+  name: '',
+  lastname: '',
+  phone: '',
+  location: '',
+  gurup: '',
+  status: '',
+  description: '',
+  admin: admin.id,
+  }
+)
 
 const columns = ref([])
 
@@ -328,7 +475,7 @@ onMounted(async () => {
 
 async function fetchColumns() {
   const colRes = await axios.get(`/columns/${admin.id}`)
-  console.log(colRes);
+  console.log(colRes)
   const appRes = await axios.get(`/applications/${admin.id}`)
   columns.value = colRes.data.map((col) => ({
     ...col,
@@ -339,7 +486,7 @@ async function fetchColumns() {
 const addModalToogle = (columnId) => {
   addmodalvisible.value = true
   columnID.value = columnId
-  console.log(columnID.value);
+  console.log(columnID.value)
 }
 
 function onDragStart(task, columnId) {
@@ -395,9 +542,12 @@ async function addColumn() {
 }
 
 async function deleteColumn(columnId) {
+  isLoading.value = true
   try {
     await axios.delete(`/columns/${columnId}`)
     columns.value = columns.value.filter((col) => col._id !== columnId)
+    isLoading.value = false
+    columnDelModal.value = false
   } catch (err) {
     console.error('Error deleting column:', err)
   }
@@ -406,14 +556,14 @@ async function deleteColumn(columnId) {
 async function addTask() {
   const applicant = newApplicant.value
 
-  console.log(applicant);
+  console.log(applicant)
   if (!applicant.name || !applicant.lastname || !applicant.phone) {
     showValidation.value = true
     return
   }
 
   const column = columns.value.find((c) => c._id === columnID.value)
-  console.log(columnID.value);
+  console.log(columnID.value)
   if (column) {
     isLoading.value = true
     try {
@@ -450,8 +600,8 @@ function deleteTask(columnId, taskId) {
 
 function getColumnColor(index) {
   const colors = [
-    'bg-blue-500',
     'bg-green-500',
+    'bg-blue-500',
     'bg-purple-500',
     'bg-orange-500',
     'bg-pink-500',
@@ -466,13 +616,26 @@ function formatDate(date) {
     day: 'numeric',
   }).format(new Date(date))
 }
+
+const toggle = (event, colId) => {
+  menu.value.toggle(event)
+  columnID.value = colId
+  console.log(columnID.value)
+}
+
+const openeditApplicationModal = (aplication) =>{
+  console.log(aplication);
+  editAppModalVisible.value=true
+  editedApplication.value={...aplication}
+  // editedApplication.value.name=aplication.name
+  // editedApplication.value.lastname=aplication.lastname
+}
 </script>
 <style scoped>
-::-webkit-scrollbar{
+::-webkit-scrollbar {
   height: 6px;
-  
 }
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
   background-color: grey;
   border-radius: 24px;
   cursor: grab;

@@ -58,10 +58,7 @@
     <p> Lorem ipsum dolor sit, amet consectetur adipisicing elit. Similique fugiat molestias mollitia cupiditate aliquid est laborum quidem ratione sed odio delectus nisi magni ab tempora, modi adipisci debitis sit rerum.  </p>
   </div>
 </template>
-<script>
-export default {
-  
-}
+<script setup>
 </script>
 <style lang="">
   
