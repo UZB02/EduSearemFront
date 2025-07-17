@@ -4,49 +4,49 @@
         <form @submit.prevent="submitForm" class="space-y-6">
           <!-- Guruh nomi -->
           <div class="space-y-2">
-            <label for="guruhNomi" class="block text-sm font-medium text-gray-700">
+            <label for="groupName" class="block text-sm font-medium text-gray-700">
               Guruh nomi *
             </label>
             <InputText
-              id="guruhNomi"
-              v-model="form.guruhNomi"
+              id="groupName"
+              v-model="form.groupName"
               placeholder="Guruh nomini kiriting"
               class="w-full"
-              :class="{ 'p-invalid': errors.guruhNomi }"
+              :class="{ 'p-invalid': errors.groupName }"
             />
-            <small v-if="errors.guruhNomi" class="text-red-500">
-              {{ errors.guruhNomi }}
+            <small v-if="errors.groupName" class="text-red-500">
+              {{ errors.groupName }}
             </small>
           </div>
 
           <!-- O'qituvchi tanlash -->
           <div class="space-y-2">
-            <label for="oqituvchi" class="block text-sm font-medium text-gray-700">
+            <label for="teacher" class="block text-sm font-medium text-gray-700">
               O'qituvchi *
             </label>
             <Dropdown
-              id="oqituvchi"
-              v-model="form.oqituvchi"
-              :options="oqituvchilar"
-              optionLabel="ism"
-              optionValue="id"
+              id="teacher"
+              v-model="form.teacher"
+              :options="teachers"
+              optionLabel="name"
+              optionValue="_id"
               placeholder="O'qituvchini tanlang"
               class="w-full"
-              :class="{ 'p-invalid': errors.oqituvchi }"
+              :class="{ 'p-invalid': errors.teacher }"
             />
-            <small v-if="errors.oqituvchi" class="text-red-500">
-              {{ errors.oqituvchi }}
+            <small v-if="errors.teacher" class="text-red-500">
+              {{ errors.teacher }}
             </small>
           </div>
 
           <!-- Guruh haqida qo'shimcha ma'lumot -->
           <div class="space-y-2">
-            <label for="tavsif" class="block text-sm font-medium text-gray-700">
+            <label for="description" class="block text-sm font-medium text-gray-700">
               Guruh haqida ma'lumot
             </label>
             <Textarea
-              id="tavsif"
-              v-model="form.tavsif"
+              id="description"
+              v-model="form.description"
               placeholder="Guruh haqida qo'shimcha ma'lumot kiriting"
               rows="3"
               class="w-full"
@@ -91,18 +91,21 @@ import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
+import axios from "axios"
 
+const admin = JSON.parse(sessionStorage.getItem('admin'))
 // Form ma'lumotlari
 const form = reactive({
-  guruhNomi: '',
-  oqituvchi: null,
-  tavsif: ''
+  groupName: '',
+  teacher: null,
+  description: '',
+  admin:admin.id
 })
 
 // Xatoliklar
 const errors = reactive({
-  guruhNomi: '',
-  oqituvchi: ''
+  groupName: '',
+  teacher: ''
 })
 
 // Holat o'zgaruvchilari
@@ -110,12 +113,7 @@ const loading = ref(false)
 const showSuccess = ref(false)
 
 // O'qituvchilar ro'yxati
-const oqituvchilar = ref([
-  { id: 1, ism: 'Ahmadov Akmal Akramovich' },
-  { id: 2, ism: 'Karimova Dilnoza Rustamovna' },
-  { id: 3, ism: 'Toshmatov Bobur Olimovich' },
-  { id: 4, ism: 'Nazarova Gulnoza Shavkatovna' },
-  { id: 5, ism: 'Rahimov Jasur Abdullayevich' }
+const teachers = ref([
 ])
 
 // Validatsiya funksiyasi
@@ -123,21 +121,21 @@ const validateForm = () => {
   let isValid = true
   
   // Xatoliklarni tozalash
-  errors.guruhNomi = ''
-  errors.oqituvchi = ''
+  errors.groupName = ''
+  errors.teacher = ''
   
   // Guruh nomi tekshiruvi
-  if (!form.guruhNomi.trim()) {
-    errors.guruhNomi = 'Guruh nomi kiritilishi shart'
+  if (!form.groupName.trim()) {
+    errors.groupName = 'Guruh nomi kiritilishi shart'
     isValid = false
-  } else if (form.guruhNomi.trim().length < 2) {
-    errors.guruhNomi = 'Guruh nomi kamida 2 ta belgidan iborat bo\'lishi kerak'
+  } else if (form.groupName.trim().length < 2) {
+    errors.groupName = 'Guruh nomi kamida 2 ta belgidan iborat bo\'lishi kerak'
     isValid = false
   }
   
   // O'qituvchi tekshiruvi
-  if (!form.oqituvchi) {
-    errors.oqituvchi = 'O\'qituvchi tanlanishi shart'
+  if (!form.teacher) {
+    errors.teacher = 'O\'qituvchi tanlanishi shart'
     isValid = false
   }
   
@@ -151,41 +149,37 @@ const submitForm = async () => {
   }
   
   loading.value = true
-  
-  try {
-    // Bu yerda API ga so'rov yuboriladi
-    await new Promise(resolve => setTimeout(resolve, 1500)) // Simulyatsiya
-    
-    console.log('Yangi guruh:', {
-      guruhNomi: form.guruhNomi,
-      oqituvchi: form.oqituvchi,
-      tavsif: form.tavsif
+  try{
+    const res =await axios.post('/groups',{
+      name:form.groupName,
+      description:form.description,
+      adminId:form.admin,
+      teacher:form.teacher
     })
-    
-    // Muvaffaqiyat xabarini ko'rsatish
-    showSuccess.value = true
-    setTimeout(() => {
-      showSuccess.value = false
-    }, 3000)
-    
-    // Formani tozalash
-    resetForm()
-    
-  } catch (error) {
-    console.error('Xatolik:', error)
-  } finally {
-    loading.value = false
+    console.log(res);
+  }catch(err){
+    console.log(err);
   }
 }
 
 // Formani tozalash
 const resetForm = () => {
-  form.guruhNomi = ''
-  form.oqituvchi = null
-  form.tavsif = ''
-  errors.guruhNomi = ''
-  errors.oqituvchi = ''
+  form.groupName = ''
+  form.teacher = null
+  form.description = ''
+  errors.groupName = ''
+  errors.teacher = ''
 }
+
+const getAllTeachers = async ()=>{
+  try{
+    const res = await axios.get('/teachers')
+    teachers.value=res.data
+  }catch(err){
+    console.log(err);
+  }
+}
+getAllTeachers()
 </script>
 
 <style scoped>

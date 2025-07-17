@@ -216,16 +216,15 @@
 
         <div class="flex flex-col w-full gap-2">
           <label class="text-sm font-medium text-gray-700">Guruh</label>
-          <select
-            id="gurup"
-            v-model="newApplicant.gurup"
-            class="w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-          >
-            <option disabled value="">Guruhni tanlang</option>
-            <option v-for="option in gurupOptions" :key="option.id" :value="option.name">
-              {{ option.name }}
-            </option>
-          </select>
+            <Dropdown
+              id="teacher"
+              v-model="newApplicant.groupId"
+              :options="gurupOptions"
+              optionLabel="name"
+              optionValue="_id"
+              placeholder="O'qituvchini tanlang"
+              class="w-full"
+            />
         </div>
       </div>
 
@@ -336,7 +335,7 @@
     <!-- Guruh -->
     <div class="flex flex-col gap-2">
       <label class="text-sm font-medium text-gray-700">Guruh</label>
-      <select v-model="editedApplication.gurup" class="w-full border border-gray-300 rounded-md p-2 text-sm">
+      <select v-model="editedApplication.groupId" class="w-full border border-gray-300 rounded-md p-2 text-sm">
         <option disabled value="">Guruhni tanlang</option>
         <option v-for="option in gurupOptions" :key="option.id" :value="option.name">
           {{ option.name }}
@@ -405,6 +404,7 @@ import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import ToggleButton from 'primevue/togglebutton';
+import Dropdown from 'primevue/dropdown'
 import Menu from 'primevue/menu'
 
 let nextColumnId = 4
@@ -442,7 +442,7 @@ const editedApplication=ref(
   lastname: '',
   phone: '',
   location: '',
-  gurup: '',
+  groupId: '',
   status: '',
   description: '',
   admin: admin.id,
@@ -456,18 +456,27 @@ const newApplicant = ref({
   lastname: 'Sobirov',
   phone: '+998974589652',
   location: 'Namangan',
-  gurup: 'A1+',
+  groupId: '6878daec33e4a489ae530976',
   status: '',
   description: 'Sertefikat olmoqchi',
   admin: admin.id,
 })
 
-const gurupOptions = [
-  { id: 1, name: 'A1+' },
-  { id: 2, name: 'A2+' },
-  { id: 3, name: 'A3+' },
-  { id: 4, name: 'A4+' },
-]
+const gurupOptions = ref()
+
+const getAllGroups =async ()=>{
+    try{
+        const res=await axios.get(`/groups`,{
+            params: { adminId: admin.id } 
+        })
+        gurupOptions.value=res.data
+        console.log(res,55);
+
+    }catch(err){
+        console.log(err);
+    }
+}
+getAllGroups()
 
 onMounted(async () => {
   await fetchColumns()
@@ -555,6 +564,7 @@ async function deleteColumn(columnId) {
 
 async function addTask() {
   const applicant = newApplicant.value
+  console.log(applicant);
 
   console.log(applicant)
   if (!applicant.name || !applicant.lastname || !applicant.phone) {
@@ -583,7 +593,7 @@ async function addTask() {
       lastname: '',
       phone: '',
       location: '',
-      gurup: '',
+      groupId: '',
       status: column.name,
       description: '',
       admin: '',
@@ -630,6 +640,7 @@ const openeditApplicationModal = (aplication) =>{
   // editedApplication.value.name=aplication.name
   // editedApplication.value.lastname=aplication.lastname
 }
+
 </script>
 <style scoped>
 ::-webkit-scrollbar {

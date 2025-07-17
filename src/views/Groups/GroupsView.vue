@@ -17,8 +17,10 @@
         </button>
       </div>
     </div>
-    <div>
-        <GroupsCard></GroupsCard>
+    <div class="grid md:grid-cols-4 grid-cols-1 gap-2">
+        <GroupsCard  v-for="group in groups"
+    :key="group._id"
+    :group="group"></GroupsCard>
     </div>
   </div>
 
@@ -28,11 +30,30 @@
 </template>
 <script setup>
 import { ref } from 'vue'
+import axios from 'axios'
 import { useRoute, useRouter } from 'vue-router'
 import Drawer from 'primevue/drawer'
 import AddGroupForm from '../../components/Groups/AddGroupsForm.vue'
 import GroupsCard from  "../../components/Groups/GroupsCard.vue"
+
+const admin = JSON.parse(sessionStorage.getItem('admin'))
 const visibleAddGroup = ref(false)
 const router = useRouter()
+const groups=ref()
+
+const getAllGroups =async ()=>{
+    try{
+        const res=await axios.get(`/groups`,{
+            params: { adminId: admin.id } 
+        })
+        groups.value=res.data
+        console.log(res);
+
+    }catch(err){
+        console.log(err);
+    }
+}
+getAllGroups()
+
 </script>
 <style scoped></style>
