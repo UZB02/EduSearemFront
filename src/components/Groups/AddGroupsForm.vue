@@ -86,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, defineEmits } from 'vue'
 import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
 import Textarea from 'primevue/textarea'
@@ -101,7 +101,9 @@ const form = reactive({
   description: '',
   admin:admin.id
 })
+const emit = defineEmits(['getAllGroups', 'closeDrawer'])
 
+console.log(emit);
 // Xatoliklar
 const errors = reactive({
   groupName: '',
@@ -156,6 +158,9 @@ const submitForm = async () => {
       adminId:form.admin,
       teacher:form.teacher
     })
+    loading.value=false
+    emit('getAllGroups')
+    emit('closeDrawer')
     console.log(res);
   }catch(err){
     console.log(err);

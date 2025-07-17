@@ -56,7 +56,7 @@
             <div
               v-for="task in column.tasks"
               :key="task.id"
-              class="bg-gradient-to-r from-white to-gray-300 rounded-lg p-3 cursor-move border border-gray-100 hover:shadow-md transition-all duration-200 group"
+              class="bg-gradient-to-r from-white to-gray-300 rounded-lg p-3 cursor-move border border-gray-100 hover:shadow-md transition-all duration-200 group flex flex-col gap-2"
               draggable="true"
               @dragstart="onDragStart(task, column._id)"
               :class="{ 'opacity-50 scale-95': draggedTask?.id === task.id }"
@@ -82,10 +82,14 @@
                   @click="openeditApplicationModal(task)"
                 ></i>
               </div>
-              <div class="flex items-center gap-2 mt-2">
+           <div class="flex items-center justify-between">
+               <div class="flex items-center gap-2 ">
                 <div class="w-2 h-2 rounded-full" :class="getColumnColor(columnIndex)"></div>
                 <span class="text-xs text-gray-500">{{ formatDate(task.createdAt) }}</span>
               </div>
+              <button :class="getColumnColor(columnIndex)" @click="openAppActiveFunctionModal(task)" class="py-1/2 px-2 rounded cursor-pointer text-white">Qabul</button>
+              <!-- <Button class="" onLabel="On" offLabel="Off" label="Qabul" size="small" /> -->
+           </div>
             </div>
           </div>
           <button
@@ -394,6 +398,41 @@
     </template>
   </Dialog>
   <!-- End delete Column Modal -->
+  <!-- Begin ActiveTask Modal -->
+  <Dialog
+    v-model:visible="openappDoneModall"
+    :modal="true"
+    :closable="false"
+    :draggable="false"
+    class="custom-dialog"
+    :style="{ width: '500px' }"
+    :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
+  >
+    <template #header>
+      <div class="text-lg font-semibold text-red-600">Diqqat!</div>
+    </template>
+
+    <div class="text-gray-700 text-base py-4">
+      {{ chosenApplication.name }} {{ chosenApplication.lastname }} ni qo'shmoqchimisiz?
+    </div>
+
+    <template #footer>
+      <div class="flex justify-end gap-3">
+        <Button
+          label="Bekor qilish"
+          icon="pi pi-times"
+          class="p-button-outlined p-button-secondary"
+          @click="openappDoneModall = false"
+        />
+        <Button
+          :label="isLoading ? 'Loading...' : 'Ha qo\'shish'"
+          icon="pi pi-plus"
+          @click="addPlicationToGroup(chosenApplication._id)"
+        />
+      </div>
+    </template>
+  </Dialog>
+  <!-- End ActiveTask Modal -->
 </template>
 
 <script setup>
@@ -403,7 +442,6 @@ import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
-import ToggleButton from 'primevue/togglebutton';
 import Dropdown from 'primevue/dropdown'
 import Menu from 'primevue/menu'
 
@@ -420,6 +458,9 @@ const showValidation = ref(false)
 const isLoading = ref(false)
 const columnDelModal = ref(false)
 const editAppModalVisible=ref(false)
+const openappDoneModall=ref(false)
+const chosenApplication=ref()
+
 
 const menu = ref()
 const items = ref([
@@ -457,7 +498,7 @@ const newApplicant = ref({
   phone: '+998974589652',
   location: 'Namangan',
   groupId: '6878daec33e4a489ae530976',
-  status: '',
+  status: 'new',
   description: 'Sertefikat olmoqchi',
   admin: admin.id,
 })
@@ -641,6 +682,27 @@ const openeditApplicationModal = (aplication) =>{
   // editedApplication.value.lastname=aplication.lastname
 }
 
+
+const openAppActiveFunctionModal = (item) => {
+  openappDoneModall.value=true
+  chosenApplication.value=item
+  console.log(chosenApplication.value);
+}
+
+const addPlicationToGroup=async (id)=>{
+  try{
+    const res=await axios.put(`/applications/${id}/status`,{
+      status:'active'
+    })
+    fetchColumns()
+    openappDoneModall.value=false
+    console.log(res);
+
+  }catch(err){
+    console.log(err);
+  }
+
+}
 </script>
 <style scoped>
 ::-webkit-scrollbar {

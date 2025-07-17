@@ -25,7 +25,7 @@
   </div>
 
   <Drawer v-model:visible="visibleAddGroup" header="Guruh Qo'shish" position="right">
-    <AddGroupForm></AddGroupForm>
+    <AddGroupForm @getAllGroups="getAllGroups" @closeDrawer="visibleAddGroup = false"></AddGroupForm>
 </Drawer>
 </template>
 <script setup>
