@@ -6,7 +6,7 @@
 
       <div class="flex justify-between items-center text-sm text-gray-500">
         <span>📅 {{ formatDate(group.createdAt) }}</span>
-        <span>👥 {{ group.applications.length }} a'zo</span>
+        <span>👥 {{ group.students.length }} a'zo</span>
       </div>
     </div>
   </div>
