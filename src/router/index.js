@@ -33,6 +33,11 @@ const router = createRouter({
       component: () => import('../views/Groups/GroupsView.vue'),
     },
     {
+      path: '/group/:slug',
+      name: 'Group Id View',
+      component: () => import('../views/Groups/GroupIdView.vue'),
+    },
+    {
       path: '/login',
       name: 'Login',
       // route level code-splitting

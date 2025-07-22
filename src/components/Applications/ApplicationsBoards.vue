@@ -48,7 +48,10 @@
                 {{ column.tasks.length }}
               </span>
             </div>
-            <i class="pi pi-cog cursor-pointer" @click="toggle($event, column._id)"></i>
+            <i
+              class="pi pi-cog cursor-pointer text-gray-500"
+              @click="toggle($event, column._id)"
+            ></i>
           </div>
 
           <!-- Tasks -->
@@ -82,14 +85,20 @@
                   @click="openeditApplicationModal(task)"
                 ></i>
               </div>
-           <div class="flex items-center justify-between">
-               <div class="flex items-center gap-2 ">
-                <div class="w-2 h-2 rounded-full" :class="getColumnColor(columnIndex)"></div>
-                <span class="text-xs text-gray-500">{{ formatDate(task.createdAt) }}</span>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-2 h-2 rounded-full" :class="getColumnColor(columnIndex)"></div>
+                  <span class="text-xs text-gray-500">{{ formatDate(task.createdAt) }}</span>
+                </div>
+                <button
+                  :class="getColumnColor(columnIndex)"
+                  @click="openAppActiveFunctionModal(task)"
+                  class="py-1/2 px-2 rounded cursor-pointer text-white"
+                >
+                  Qabul
+                </button>
+                <!-- <Button class="" onLabel="On" offLabel="Off" label="Qabul" size="small" /> -->
               </div>
-              <button :class="getColumnColor(columnIndex)" @click="openAppActiveFunctionModal(task)" class="py-1/2 px-2 rounded cursor-pointer text-white">Qabul</button>
-              <!-- <Button class="" onLabel="On" offLabel="Off" label="Qabul" size="small" /> -->
-           </div>
             </div>
           </div>
           <button
@@ -220,15 +229,15 @@
 
         <div class="flex flex-col w-full gap-2">
           <label class="text-sm font-medium text-gray-700">Guruh</label>
-            <Dropdown
-              id="teacher"
-              v-model="newApplicant.groupId"
-              :options="gurupOptions"
-              optionLabel="name"
-              optionValue="_id"
-              placeholder="O'qituvchini tanlang"
-              class="w-full"
-            />
+          <Dropdown
+            id="teacher"
+            v-model="newApplicant.groupId"
+            :options="gurupOptions"
+            optionLabel="name"
+            optionValue="_id"
+            placeholder="O'qituvchini tanlang"
+            class="w-full"
+          />
         </div>
       </div>
 
@@ -251,14 +260,14 @@
             />
           </div>
 
-          <div class="flex flex-col gap-2">
+          <!-- <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-gray-700">Mas'ul admin</label>
             <InputText
               v-model="newApplicant.admin"
               placeholder="Admin ismini kiriting"
               class="w-full"
             />
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -290,77 +299,98 @@
   </Dialog>
   <!-- End AddApplication Modal -->
   <!-- Begin EditApplication Modal -->
- <Dialog
-  v-model:visible="editAppModalVisible"
-  :modal="true"
-  :closable="true"
-  :draggable="false"
-  class="custom-dialog"
-  :style="{ width: '600px' }"
-  :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
->
-  <template #header>
-    <div class="flex items-center gap-3 w-full">
-      <div class="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center">
-        <i class="pi pi-pencil w-5 h-5 text-white"></i>
+  <Dialog
+    v-model:visible="editAppModalVisible"
+    :modal="true"
+    :closable="true"
+    :draggable="false"
+    class="custom-dialog"
+    :style="{ width: '600px' }"
+    :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
+  >
+    <template #header>
+      <div class="flex items-center gap-3 w-full">
+        <div
+          class="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center"
+        >
+          <i class="pi pi-pencil w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-semibold text-gray-800 m-0">Arizani tahrirlash</h2>
+          <p class="text-sm text-gray-500 m-0">Ma'lumotlarni yangilang</p>
+        </div>
       </div>
-      <div>
-        <h2 class="text-xl font-semibold text-gray-800 m-0">Arizani tahrirlash</h2>
-        <p class="text-sm text-gray-500 m-0">Ma'lumotlarni yangilang</p>
-      </div>
-    </div>
-  </template>
+    </template>
 
-  <div class="space-y-6 p-1">
-    <!-- Ism, Familiya -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="space-y-6 p-1">
+      <!-- Ism, Familiya -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-medium text-gray-700">Ism</label>
+          <InputText v-model="editedApplication.name" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-medium text-gray-700">Familiya</label>
+          <InputText v-model="editedApplication.lastname" class="w-full" />
+        </div>
+      </div>
+
+      <!-- Telefon, Manzil -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-medium text-gray-700">Telefon raqami</label>
+          <InputText v-model="editedApplication.phone" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-medium text-gray-700">Manzil</label>
+          <InputText v-model="editedApplication.location" class="w-full" />
+        </div>
+      </div>
+
+      <!-- Guruh -->
       <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-gray-700">Ism</label>
-        <InputText v-model="editedApplication.name" class="w-full" />
+        <label class="text-sm font-medium text-gray-700">Guruh</label>
+        <Dropdown
+          id="teacher"
+          v-model="editedApplication.groupId"
+          :options="gurupOptions"
+          optionLabel="name"
+          optionValue="_id"
+          placeholder="O'qituvchini tanlang"
+          class="w-full"
+        />
       </div>
+
+      <!-- Izoh -->
       <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-gray-700">Familiya</label>
-        <InputText v-model="editedApplication.lastname" class="w-full" />
+        <label class="text-sm font-medium text-gray-700">Izoh</label>
+        <Textarea v-model="editedApplication.description" rows="3" class="w-full" autoResize />
       </div>
     </div>
 
-    <!-- Telefon, Manzil -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-gray-700">Telefon raqami</label>
-        <InputText v-model="editedApplication.phone" class="w-full" />
+    <template #footer>
+      <div class="flex justify-end gap-3">
+        <button
+          @click="openAppActiveFunctionModal(editedApplication)"
+          class="py-1/2 flex items-center justify-center gap-2 font-bold px-2 rounded cursor-pointer bg-green-500 text-white"
+        >
+          <i class="pi pi-plus"></i> Qabul
+        </button>
+        <Button
+          label="Bekor qilish"
+          icon="pi pi-times"
+          severity="secondary"
+          @click="editAppModalVisible = false"
+        />
+        <Button
+          label="Yangilash"
+          icon="pi pi-check"
+          :loading="isLoading"
+          @click="uppdqateApplication(editedApplication._id)"
+        />
       </div>
-      <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-gray-700">Manzil</label>
-        <InputText v-model="editedApplication.location" class="w-full" />
-      </div>
-    </div>
-
-    <!-- Guruh -->
-    <div class="flex flex-col gap-2">
-      <label class="text-sm font-medium text-gray-700">Guruh</label>
-      <select v-model="editedApplication.groupId" class="w-full border border-gray-300 rounded-md p-2 text-sm">
-        <option disabled value="">Guruhni tanlang</option>
-        <option v-for="option in gurupOptions" :key="option.id" :value="option.name">
-          {{ option.name }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Izoh -->
-    <div class="flex flex-col gap-2">
-      <label class="text-sm font-medium text-gray-700">Izoh</label>
-      <Textarea v-model="editedApplication.description" rows="3" class="w-full" autoResize />
-    </div>
-  </div>
-
-  <template #footer>
-    <div class="flex justify-end gap-3">
-      <Button label="Bekor qilish" icon="pi pi-times" severity="secondary" @click="editAppModalVisible = false" />
-      <Button label="Yangilash" icon="pi pi-check" @click="updateTask()" />
-    </div>
-  </template>
-</Dialog>
+    </template>
+  </Dialog>
   <!-- End EditApplication Modal -->
   <!-- Begin delete Column Modal -->
   <Dialog
@@ -427,16 +457,68 @@
         <Button
           :label="isLoading ? 'Loading...' : 'Ha qo\'shish'"
           icon="pi pi-plus"
-          @click="addPlicationToGroup(chosenApplication._id)"
+          @click="addAPlicationToGroup(chosenApplication._id)"
         />
       </div>
     </template>
   </Dialog>
   <!-- End ActiveTask Modal -->
+  <!-- Begin editColumn Modal -->
+  <Dialog
+    v-model:visible="editColumnModalVisible"
+    :modal="true"
+    :closable="false"
+    :draggable="false"
+    class="custom-dialog"
+    :style="{ width: '500px' }"
+    :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
+  >
+    <template #header>
+      <div class="flex items-center gap-3 w-full">
+        <div
+          class="w-10 h-10 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center"
+        >
+          <i class="pi pi-pencil w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-semibold text-gray-800 m-0">Ustunni tahrirlash</h2>
+          <p class="text-sm text-gray-500 m-0">Nomini yangilang</p>
+        </div>
+      </div>
+    </template>
+
+    <div class="py-4">
+      <label for="columnName" class="block text-gray-700 mb-2">Ustun nomi</label>
+      <InputText
+        id="columnName"
+        v-model="editColumnName"
+        class="w-full"
+        placeholder="Yangi ustun nomini kiriting"
+      />
+    </div>
+
+    <template #footer>
+      <div class="flex justify-end gap-3">
+        <Button
+          label="Bekor qilish"
+          icon="pi pi-times"
+          class="p-button-outlined p-button-secondary"
+          @click="editColumnModalVisible = false"
+        />
+        <Button
+          :label="isLoading ? 'Yuklanmoqda...' : 'Saqlash'"
+          icon="pi pi-check"
+          @click="updateColumn()"
+        />
+      </div>
+    </template>
+  </Dialog>
+  <!-- End editColumn Modal -->
+  <Toast />
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, toRaw, onMounted } from 'vue'
 import axios from 'axios'
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
@@ -444,6 +526,10 @@ import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
 import Menu from 'primevue/menu'
+import { useToast } from 'primevue/usetoast'
+import Toast from 'primevue/toast'
+
+const toast = useToast()
 
 let nextColumnId = 4
 const admin = JSON.parse(sessionStorage.getItem('admin')) // o'zgaruvchini haqiqiy admin id bilan almashtiring
@@ -457,16 +543,20 @@ const addmodalvisible = ref(false)
 const showValidation = ref(false)
 const isLoading = ref(false)
 const columnDelModal = ref(false)
-const editAppModalVisible=ref(false)
-const openappDoneModall=ref(false)
-const chosenApplication=ref()
-
+const editAppModalVisible = ref(false)
+const openappDoneModall = ref(false)
+const chosenApplication = ref()
+const editColumnModalVisible = ref(false)
+const editColumnName = ref('')
 
 const menu = ref()
 const items = ref([
   {
-    label: 'Refresh',
-    icon: 'pi pi-refresh',
+    label: 'Tahrirlash',
+    icon: 'pi pi-pencil',
+    command: () => {
+      editColumnModalVisible.value = true
+    },
   },
   {
     label: "O'chirish",
@@ -477,8 +567,7 @@ const items = ref([
   },
 ])
 
-const editedApplication=ref(
-  {
+const editedApplication = ref({
   name: '',
   lastname: '',
   phone: '',
@@ -487,8 +576,7 @@ const editedApplication=ref(
   status: '',
   description: '',
   admin: admin.id,
-  }
-)
+})
 
 const columns = ref([])
 
@@ -497,7 +585,7 @@ const newApplicant = ref({
   lastname: 'Sobirov',
   phone: '+998974589652',
   location: 'Namangan',
-  groupId: '6878daec33e4a489ae530976',
+  groupId: null,
   status: 'new',
   description: 'Sertefikat olmoqchi',
   admin: admin.id,
@@ -505,17 +593,16 @@ const newApplicant = ref({
 
 const gurupOptions = ref()
 
-const getAllGroups =async ()=>{
-    try{
-        const res=await axios.get(`/groups`,{
-            params: { adminId: admin.id } 
-        })
-        gurupOptions.value=res.data
-        console.log(res,55);
-
-    }catch(err){
-        console.log(err);
-    }
+const getAllGroups = async () => {
+  try {
+    const res = await axios.get(`/groups`, {
+      params: { adminId: admin.id },
+    })
+    gurupOptions.value = res.data
+    console.log(res, 55)
+  } catch (err) {
+    console.log(err)
+  }
 }
 getAllGroups()
 
@@ -605,7 +692,7 @@ async function deleteColumn(columnId) {
 
 async function addTask() {
   const applicant = newApplicant.value
-  console.log(applicant);
+  console.log(applicant)
 
   console.log(applicant)
   if (!applicant.name || !applicant.lastname || !applicant.phone) {
@@ -623,6 +710,7 @@ async function addTask() {
         columnId: column._id,
       })
       column.tasks.push(response.data)
+      fetchColumns()
     } catch (err) {
       console.error('Error adding task:', err)
     } finally {
@@ -674,34 +762,85 @@ const toggle = (event, colId) => {
   console.log(columnID.value)
 }
 
-const openeditApplicationModal = (aplication) =>{
-  console.log(aplication);
-  editAppModalVisible.value=true
-  editedApplication.value={...aplication}
-  // editedApplication.value.name=aplication.name
-  // editedApplication.value.lastname=aplication.lastname
+const openeditApplicationModal = (aplication) => {
+  console.log(aplication)
+  editAppModalVisible.value = true
+  editedApplication.value = { ...aplication }
 }
-
 
 const openAppActiveFunctionModal = (item) => {
-  openappDoneModall.value=true
-  chosenApplication.value=item
-  console.log(chosenApplication.value);
+  if (item.groupId == null) {
+    toast.add({
+      severity: 'error',
+      summary: 'Xatolik',
+      detail: 'Guruh tanlang',
+      life: 3000,
+    })
+  } else {
+    openappDoneModall.value = true
+    chosenApplication.value = item
+    console.log(chosenApplication.value)
+  }
 }
 
-const addPlicationToGroup=async (id)=>{
-  try{
-    const res=await axios.put(`/applications/${id}/status`,{
-      status:'active'
+const addAPlicationToGroup = async (id) => {
+  try {
+    const res = await axios.put(`/applications/${id}/status`, {
+      status: 'active',
     })
     fetchColumns()
-    openappDoneModall.value=false
-    console.log(res);
-
-  }catch(err){
-    console.log(err);
+    openappDoneModall.value = false
+    editAppModalVisible.value = false
+    console.log(res)
+  } catch (err) {
+    console.log(err)
   }
+}
 
+const uppdqateApplication = async (id) => {
+  isLoading.value = true
+  try {
+    const payload = {
+      name: editedApplication.value.name,
+      lastname: editedApplication.value.lastname,
+      phone: editedApplication.value.phone,
+      location: editedApplication.value.location,
+      groupId: editedApplication.value.groupId,
+      description: editedApplication.value.description,
+      status: editedApplication.value.status,
+      admin: editedApplication.value.admin,
+    }
+
+    const res = await axios.put(`/applications/${id}`, payload)
+    if (res.status === 200) {
+      toast.add({ severity: 'success', summary: 'Bajarildi', detail: 'Tahrirlandi', life: 3000 })
+      fetchColumns()
+      editAppModalVisible.value = false
+      console.log('Yangilandi:', res.data)
+    }
+  } catch (err) {
+    console.error('Xato:', err)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const updateColumn = async () => {
+  isLoading.value = true
+  try {
+    const res=await axios.put(`/columns/${columnID.value}`, {
+      name: editColumnName.value,
+    })
+    if(res.status===200){
+         toast.add({ severity: 'success', summary: 'Bajarildi', detail: 'Ustun nomi yangilandi', life: 3000 })
+         editColumnModalVisible.value = false
+    fetchColumns()
+    }
+  } catch (err) {
+    console.error('Xatolik:', err)
+  } finally {
+    isLoading.value = false
+  }
 }
 </script>
 <style scoped>
