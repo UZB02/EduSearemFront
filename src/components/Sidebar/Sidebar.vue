@@ -46,7 +46,7 @@ const views=ref([
     {
         name:'Xarajatlar',
         to:'/expense',
-        icon:'pi pi-wallet'
+        icon:'pi pi-credit-card'
     },
 ])
 </script>
