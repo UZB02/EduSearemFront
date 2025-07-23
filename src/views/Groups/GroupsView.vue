@@ -20,7 +20,7 @@
     <div class="grid md:grid-cols-4 grid-cols-1 gap-2">
         <GroupsCard  v-for="group in groups"
     :key="group._id"
-    :group="group"></GroupsCard>
+    :group="group" @getAllGroups="getAllGroups"></GroupsCard>
     </div>
   </div>
 

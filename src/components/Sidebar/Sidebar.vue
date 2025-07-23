@@ -38,6 +38,16 @@ const views=ref([
         to:'/about',
         icon:'pi pi-address-book'
     },
+    {
+        name:'Balans',
+        to:'/balance',
+        icon:'pi pi-wallet'
+    },
+    {
+        name:'Xarajatlar',
+        to:'/expense',
+        icon:'pi pi-wallet'
+    },
 ])
 </script>
 

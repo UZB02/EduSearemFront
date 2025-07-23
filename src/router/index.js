@@ -33,9 +33,24 @@ const router = createRouter({
       component: () => import('../views/Groups/GroupsView.vue'),
     },
     {
+      path: '/balance',
+      name: 'Balance',
+      component: () => import('../views/Balance/BalanceView.vue'),
+    },
+    {
+      path: '/expense',
+      name: 'Expense',
+      component: () => import('../views/Expense/ExpenseView.vue'),
+    },
+    {
       path: '/group/:slug',
       name: 'Group Id View',
       component: () => import('../views/Groups/GroupIdView.vue'),
+    },
+    {
+      path: '/group/:slug/student/:id',
+      name: 'Student Id View',
+      component: () => import('../views/Students/StudentIdView.vue'),
     },
     {
       path: '/login',
