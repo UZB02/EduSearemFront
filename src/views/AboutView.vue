@@ -101,8 +101,8 @@
             <Column header="Amallar" style="min-width: 200px">
               <template #body="{ data }">
                 <div class="flex flex-wrap gap-2">
-                  <Button icon="pi pi-plus" size="small" severity="success" outlined @click="showPointsDialog(data, 'add')" />
-                  <Button icon="pi pi-minus" size="small" severity="danger" outlined @click="showPointsDialog(data, 'subtract')" />
+                  <Button icon="pi pi-plus" size="small" severity="success" outlined @click="openAddPointsDialog(data)" />
+                  <Button icon="pi pi-minus" size="small" severity="danger" outlined @click="openSubtractPointsDialog(data)" />
                   <Button icon="pi pi-pencil" size="small" severity="warning" outlined @click="editTeacher(data)" />
                   <Button icon="pi pi-trash" size="small" severity="danger" outlined @click="confirmDelete(data)" />
                 </div>
@@ -140,16 +140,29 @@
     </Dialog>
 
     <!-- Points Dialog -->
-    <Dialog v-model:visible="showPointsDialogVisible" :header="pointActionType === 'add' ? 'Ball qo\'shish' : 'Ball ayirish'" modal class="w-[90vw] sm:w-[400px]">
-      <form @submit.prevent="addPoints" class="space-y-4">
-        <label>{{ selectedTeacher?.name }} uchun ball</label>
-        <InputNumber v-model="pointsToAdd" class="w-full" :min="1" :max="100" />
-        <div class="flex justify-end gap-3">
-          <Button label="Bekor qilish" severity="secondary" outlined @click="showPointsDialogVisible = false" />
-          <Button type="submit" :label="pointActionType === 'add' ? 'Qo\'shish' : 'Ayirish'" :loading="addingPoints" />
-        </div>
-      </form>
-    </Dialog>
+ <!-- Ball Qo'shish Dialog -->
+<Dialog v-model:visible="showAddPointsDialogVisible" header="Ball qo'shish" modal class="w-[90vw] sm:w-[400px]">
+  <form @submit.prevent="handleAddPoints" class="space-y-4">
+    <label>{{ selectedTeacher?.name }} uchun qo'shiladigan ball</label>
+    <InputNumber v-model="pointsToAdd" class="w-full" :min="1" :max="100" />
+    <div class="flex justify-end gap-3">
+      <Button label="Bekor qilish" severity="secondary" outlined @click="showAddPointsDialogVisible = false" />
+      <Button type="submit" label="Qo'shish" :loading="addingPoints" />
+    </div>
+  </form>
+</Dialog>
+
+<!-- Ball Ayirish Dialog -->
+<Dialog v-model:visible="showSubtractPointsDialogVisible" header="Ball ayirish" modal class="w-[90vw] sm:w-[400px]">
+  <form @submit.prevent="handleSubtractPoints" class="space-y-4">
+    <label>{{ selectedTeacher?.name }} uchun ayiriladigan ball</label>
+    <InputNumber v-model="pointsToAdd" class="w-full" :min="1" :max="100" />
+    <div class="flex justify-end gap-3">
+      <Button label="Bekor qilish" severity="secondary" outlined @click="showSubtractPointsDialogVisible = false" />
+      <Button type="submit" label="Ayirish" :loading="addingPoints" />
+    </div>
+  </form>
+</Dialog>
   </div>
 </template>
 
@@ -179,7 +192,8 @@ const teachers = ref([])
 const teacherForm = ref({ name: '', lastname: '', science: '' })
 const searchQuery = ref('')
 const showAddDialog = ref(false)
-const showPointsDialogVisible = ref(false)
+const showAddPointsDialogVisible = ref(false)
+const showSubtractPointsDialogVisible = ref(false)
 const selectedTeacher = ref(null)
 const editingTeacher = ref(null)
 const pointActionType = ref('add')
@@ -262,41 +276,60 @@ const confirmDelete = (teacher) => {
   })
 }
 
-const showPointsDialog = (teacher, action = 'add') => {
+const openAddPointsDialog = (teacher) => {
   selectedTeacher.value = teacher
   pointsToAdd.value = null
-  pointActionType.value = action
-  showPointsDialogVisible.value = true
+  showAddPointsDialogVisible.value = true
 }
 
-const addPoints = async () => {
+const openSubtractPointsDialog = (teacher) => {
+  selectedTeacher.value = teacher
+  pointsToAdd.value = null
+  showSubtractPointsDialogVisible.value = true
+}
+
+const handleAddPoints = async () => {
   if (!pointsToAdd.value || pointsToAdd.value <= 0) {
     toast.add({ severity: 'warn', summary: 'Ogohlantirish', detail: 'Ball miqdorini kiriting', life: 3000 })
     return
   }
   addingPoints.value = true
   try {
-    const url = pointActionType.value === 'add'
-      ? `/teachers/${selectedTeacher.value._id}/add-points`
-      : `/teachers/${selectedTeacher.value._id}/subtract-points`
-
-    await axios.post(url, { points: pointsToAdd.value, userId: admin.id })
-
-    toast.add({
-      severity: 'success',
-      summary: pointActionType.value === 'add' ? 'Qo\'shildi' : 'Ayirildi',
-      detail: `Ball ${pointActionType.value === 'add' ? 'qo\'shildi' : 'ayirildi'}`,
-      life: 3000
+    await axios.post(`/teachers/${selectedTeacher.value._id}/add-points`, {
+      points: pointsToAdd.value,
+      userId: admin.id
     })
-
+    toast.add({ severity: 'success', summary: 'Qo\'shildi', detail: 'Ball qo\'shildi', life: 3000 })
     await fetchTeachers()
-    showPointsDialogVisible.value = false
+    showAddPointsDialogVisible.value = false
   } catch (err) {
-    toast.add({ severity: 'error', summary: 'Xatolik', detail: 'Ball o\'zgartirishda xatolik', life: 3000 })
+    toast.add({ severity: 'error', summary: 'Xatolik', detail: 'Ball qo\'shishda xatolik', life: 3000 })
   } finally {
     addingPoints.value = false
   }
 }
+
+const handleSubtractPoints = async () => {
+  if (!pointsToAdd.value || pointsToAdd.value <= 0) {
+    toast.add({ severity: 'warn', summary: 'Ogohlantirish', detail: 'Ball miqdorini kiriting', life: 3000 })
+    return
+  }
+  addingPoints.value = true
+  try {
+    await axios.post(`/teachers/${selectedTeacher.value._id}/subtract-points`, {
+      points: pointsToAdd.value,
+      userId: admin.id
+    })
+    toast.add({ severity: 'success', summary: 'Ayirildi', detail: 'Ball ayirildi', life: 3000 })
+    await fetchTeachers()
+    showSubtractPointsDialogVisible.value = false
+  } catch (err) {
+    toast.add({ severity: 'error', summary: 'Xatolik', detail: 'Ball ayirishda xatolik', life: 3000 })
+  } finally {
+    addingPoints.value = false
+  }
+}
+
 
 const getInitials = (name, lastname) => {
   return `${name?.[0] || ''}${lastname?.[0] || ''}`.toUpperCase()
