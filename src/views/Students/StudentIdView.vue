@@ -519,33 +519,57 @@ const deleteStudent = async () => {
 
 
 const addPayment = async () => {
-  showValidation.value = true
+  showValidation.value = true;
 
+  // Minimal tekshiruv
   if (!newPayment.value.amount || !newPayment.value.method) {
-    return
+    return;
   }
 
-  isLoading.value = true
+  isLoading.value = true;
 
   try {
-    await axios.post(`/payments`, {
+    await axios.post("/payments", {
       ...newPayment.value,
-      studentId: student.value._id, // yoki route.params.id
-      admin: admin.id        // kerak bo‘lsa
-    })
-      if (childRef.value?.getPaymentsByStudentId) {
-      childRef.value.getPaymentsByStudentId()
-    }
-    toast.add({ severity: 'success', summary: 'Bajarildi', detail: "To'lov qabul qilindi", life: 3000 })
+      studentId: student.value._id,
+      userId: admin.id, // ⚠️ "admin" obyektingiz login bo'lgan foydalanuvchimi? Unda `id` to‘g‘ri.
+    });
 
-    addPaymentModalVisible.value = false
-    // Qayta yuklash yoki refresh emit
+    // Bolalar komponentidagi usulni chaqirish
+    if (childRef.value?.getPaymentsByStudentId) {
+      childRef.value.getPaymentsByStudentId();
+    }
+
+    // Muvaffaqiyatli xabar
+    toast.add({
+      severity: "success",
+      summary: "Bajarildi",
+      detail: "To‘lov qabul qilindi",
+      life: 3000,
+    });
+
+    // Modalni yopish
+    addPaymentModalVisible.value = false;
+
+    // Formani tozalash (xohlasangiz)
+    newPayment.value = {
+      amount: null,
+      method: "",
+      description: "",
+    };
   } catch (error) {
-    console.error('To‘lovni saqlashda xatolik:', error)
+    console.error("To‘lovni saqlashda xatolik:", error);
+    toast.add({
+      severity: "error",
+      summary: "Xatolik",
+      detail: "To‘lovni saqlab bo‘lmadi",
+      life: 3000,
+    });
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
+
 // Format date function
 const formatDate = (dateString) => {
   if (!dateString) return 'Noma\'lum'

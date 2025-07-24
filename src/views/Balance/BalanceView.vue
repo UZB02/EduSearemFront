@@ -264,6 +264,8 @@ const balanceData = ref({
   balance: 0,
 });
 
+
+const admin = JSON.parse(sessionStorage.getItem('admin'))
 const isLoading = ref(false);
 const monthlyIncome = ref(0);
 const monthlyOutcome = ref(0);
@@ -326,7 +328,10 @@ const fetchBalance = async () => {
   isLoading.value = true;
   try {
     // Simulate API delay
-    const res = await axios.get("balance/real");
+    const res = await axios.get("balance/real",{  
+      params: {
+        userId:admin.id
+      }});
     balanceData.value = res.data;
     
     // Mock data for demonstratio
@@ -376,14 +381,17 @@ const getBalanceStatusText = () => {
   return 'Diqqat talab';
 };
 
-const syncBalance=async ()=>{
-    try{
-        const res=await axios.post(`/balance/sync`)
-        console.log(res);
-    }catch(err){
-        console.log(err);
-    }
-}
+const syncBalance = async () => {
+  try {
+    await axios.post("/balance/sync", {
+      userId: admin.id, // yoki admin._id
+    });
+    // toast.add({ severity: "success", summary: "Balans yangilandi", life: 3000 });
+    await fetchBalance(); // qayta yuklash
+  } catch (err) {
+    console.error("Balansni sinxronlashtirishda xatolik:", err);
+  }
+};
 
 onMounted(fetchBalance);
 </script>

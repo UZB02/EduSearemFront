@@ -1,8 +1,6 @@
 <template>
   <div class=" bg-gray-50">
     <div class="mx-auto">
-   
-
       <!-- Summary Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-500">

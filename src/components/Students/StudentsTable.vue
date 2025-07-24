@@ -143,10 +143,10 @@
                 @click="openEditModal(slotProps.data)"
               />
               <Button
-                icon="pi pi-ellipsis-v"
+                icon="pi pi-money-bill"
                 class="p-button-rounded p-button-text p-button-sm"
-                v-tooltip.top="'Ko\'proq'"
-                @click="toggle($event, slotProps.data._id, slotProps.data)"
+                v-tooltip.top="'To\'lov'"
+                @click="opentPaymentModal(slotProps.data)"
               />
             </div>
           </template>
@@ -155,7 +155,6 @@
     </div>
 
     <!-- Context Menu -->
-    <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
 
     <!-- Delete Confirmation Modal -->
     <Dialog
@@ -318,6 +317,105 @@
       </template>
     </Dialog>
 
+    <!-- Begin Payment Modal -->
+  <Dialog
+  v-model:visible="addPaymentModalVisible"
+  :modal="true"
+  :closable="true"
+  :draggable="false"
+  class="custom-dialog"
+  :style="{ width: '500px' }"
+  :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
+>
+  <!-- Custom Header -->
+  <template #header>
+    <div class="flex items-center gap-3 w-full">
+      <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+        <i class="pi pi-wallet w-5 h-5 text-white"></i>
+      </div>
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800 m-0">To‘lov qilish</h2>
+        <p class="text-sm text-gray-500 m-0">To‘lov ma'lumotlarini kiriting</p>
+      </div>
+    </div>
+  </template>
+
+  <!-- Form Content -->
+  <div class="space-y-6 p-1">
+    <div class="bg-gray-50 rounded-lg p-4 space-y-4">
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-medium text-gray-700 flex items-center gap-1">
+          To‘lov summasi <span class="text-red-500">*</span>
+        </label>
+        <InputNumber
+          v-model="newPayment.amount"
+          placeholder="Masalan: 200000"
+          inputClass="w-full"
+          class="w-full"
+          :class="{ 'p-invalid': !newPayment.amount && showValidation }"
+        />
+        <small v-if="!newPayment.amount && showValidation" class="text-red-500">
+          To‘lov summasi majburiy
+        </small>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-medium text-gray-700 flex items-center gap-1">
+          To‘lov turi <span class="text-red-500">*</span>
+        </label>
+        <Dropdown
+          v-model="newPayment.method"
+          :options="paymentMethods"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Tanlang"
+          class="w-full"
+          :class="{ 'p-invalid': !newPayment.method && showValidation }"
+        />
+        <small v-if="!newPayment.method && showValidation" class="text-red-500">
+          To‘lov turini tanlash majburiy
+        </small>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-medium text-gray-700">Izoh</label>
+        <Textarea
+          v-model="newPayment.description"
+          placeholder="Ixtiyoriy izoh..."
+          class="w-full"
+          rows="3"
+          autoResize
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <template #footer>
+    <div class="flex justify-between items-center w-full pt-4 border-t border-gray-200">
+      <div class="text-sm text-gray-500">
+        <span class="text-red-500">*</span> Majburiy maydonlar
+      </div>
+      <div class="flex gap-3">
+        <Button
+          label="Bekor qilish"
+          icon="pi pi-times"
+          severity="secondary"
+          @click="addPaymentModalVisible = false"
+          class="px-4 py-2"
+        />
+        <Button
+          label="To‘lovni saqlash"
+          icon="pi pi-check"
+          @click="addPayment"
+          :loading="isLoading"
+          class="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 border-green-500 hover:from-green-600 hover:to-green-700"
+        />
+      </div>
+    </div>
+  </template>
+</Dialog>
+<!-- End Payment Modal -->
     <Toast />
   </div>
 </template>
@@ -329,9 +427,10 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
+import InputNumber from 'primevue/inputnumber'
+import Dropdown from 'primevue/dropdown'
 import Dialog from 'primevue/dialog'
 import Textarea from 'primevue/textarea'
-import Menu from 'primevue/menu'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
 import axios from 'axios'
@@ -348,12 +447,13 @@ const emit = defineEmits(['getGroupById'])
 
 // Refs
 const dt = ref()
-const menu = ref()
 const filters = ref({ global: { value: null, matchMode: 'contains' } })
 const deleteModalVisible = ref(false)
 const editStudentModalVisible = ref(false)
+const addPaymentModalVisible = ref(false)
 const selectedStudentId = ref(null)
-const selectedStudent = ref({})
+const showValidation = ref(false)
+const changeStudent=ref({})
 const isLoading = ref(false)
 const editedStudent = ref({
   name: '',
@@ -366,41 +466,29 @@ const editedStudent = ref({
   admin: admin.id,
 })
 
+const newPayment = ref({
+  amount: null,
+  method: null,
+  description: ''
+})
+
+const paymentMethods = [
+  { label: 'Naqd', value: 'cash' },
+  { label: 'Karta orqali', value: 'card' },
+  { label: 'Bank o‘tkazmasi', value: 'bank' }
+]
+
+const opentPaymentModal=(item)=>{
+  addPaymentModalVisible.value=true
+  changeStudent.value=item
+  console.log(changeStudent.value);
+}
+
 // Computed: students sorted by createdAt (desc)
 const sortedStudents = computed(() =>
   [...(props.group.students || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 )
 
-// Menu actions
-const items = ref([
-  {
-    label: 'Batafsil ko\'rish',
-    icon: 'pi pi-eye',
-    command: () => {
-      router.push(`/group/${props.group._id}/student/${selectedStudentId.value}`)
-    }
-  },
-  {
-    label: 'Tahrirlash',
-    icon: 'pi pi-pencil',
-    command: () => {
-      openEditModal(selectedStudent.value)
-    }
-  },
-  {
-    label: "O'chirish",
-    icon: 'pi pi-trash',
-    command: () => {
-      openDeleteModal()
-    }
-  }
-])
-
-const toggle = (event, id, student) => {
-  selectedStudentId.value = id
-  selectedStudent.value = student
-  menu.value.toggle(event)
-}
 
 // Export Excel
 const exportToExcelHandler = () => {
@@ -471,6 +559,52 @@ const editStudent = async () => {
     isLoading.value = false
   }
 }
+
+const addPayment = async () => {
+  showValidation.value = true;
+
+  // Minimal tekshiruv
+  if (!newPayment.value.amount || !newPayment.value.method) {
+    return;
+  }
+
+  isLoading.value = true;
+
+  try {
+    await axios.post("/payments", {
+      ...newPayment.value,
+      studentId: changeStudent.value._id,
+      userId: admin.id, // ⚠️ "admin" obyektingiz login bo'lgan foydalanuvchimi? Unda `id` to‘g‘ri.
+    });
+    // Muvaffaqiyatli xabar
+    toast.add({
+      severity: "success",
+      summary: "Bajarildi",
+      detail: "To‘lov qabul qilindi",
+      life: 3000,
+    });
+
+    // Modalni yopish
+    addPaymentModalVisible.value = false;
+
+    // Formani tozalash (xohlasangiz)
+    newPayment.value = {
+      amount: null,
+      method: "",
+      description: "",
+    };
+  } catch (error) {
+    console.error("To‘lovni saqlashda xatolik:", error);
+    toast.add({
+      severity: "error",
+      summary: "Xatolik",
+      detail: "To‘lovni saqlab bo‘lmadi",
+      life: 3000,
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
 
 <style scoped>
