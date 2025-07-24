@@ -10,7 +10,7 @@
           <div class="flex items-center text-indigo-100">
             <i class="pi pi-user text-sm mr-2"></i>
             <span class="text-sm font-medium">
-              {{ group.teacher.name }} {{ group.teacher.lastname }}
+              {{ group.teacher?.name }} {{ group.teacher?.lastname }}
             </span>
           </div>
         </div>

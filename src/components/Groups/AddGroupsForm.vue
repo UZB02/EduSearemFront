@@ -176,12 +176,12 @@ const resetForm = () => {
   errors.teacher = ''
 }
 
-const getAllTeachers = async ()=>{
-  try{
-    const res = await axios.get('/teachers')
-    teachers.value=res.data
-  }catch(err){
-    console.log(err);
+const getAllTeachers = async () => {
+  try {
+    const res = await axios.get(`/teachers?userId=${admin.id}`)
+    teachers.value = res.data
+  } catch (err) {
+    console.error(err)
   }
 }
 getAllTeachers()

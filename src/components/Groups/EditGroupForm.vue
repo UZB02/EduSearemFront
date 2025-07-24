@@ -112,7 +112,7 @@ const isEditMode = ref(false)
 // O'qituvchilarni olish
 const getAllTeachers = async () => {
   try {
-    const res = await axios.get('/teachers')
+    const res = await axios.get(`/teachers?userId=${admin.id}`)
     teachers.value = res.data
   } catch (err) {
     console.error(err)

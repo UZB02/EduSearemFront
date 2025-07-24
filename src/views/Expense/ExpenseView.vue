@@ -189,7 +189,7 @@ getBalance()
 const getExpenses = async () => {
   loading.value = true
   try {
-    const res = await axios.get('/expense')
+    const res = await axios.get('/expense',{ params: { userId: admin.id } })
     expenses.value = res.data
   } catch (err) {
     console.error('Xarajatlarni olishda xatolik:', err)
