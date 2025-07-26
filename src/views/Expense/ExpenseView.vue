@@ -191,6 +191,7 @@ const getExpenses = async () => {
   try {
     const res = await axios.get('/expense',{ params: { userId: admin.id } })
     expenses.value = res.data
+    console.log(expenses.value);
   } catch (err) {
     console.error('Xarajatlarni olishda xatolik:', err)
   } finally {

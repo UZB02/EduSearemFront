@@ -35,7 +35,7 @@ const views=ref([
     },
     {
         name:'O\'qtuvchilar',
-        to:'/about',
+        to:'/teachers',
         icon:'pi pi-address-book'
     },
     {
