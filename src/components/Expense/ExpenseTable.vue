@@ -3,19 +3,27 @@
   <Card class="mb-6 shadow-lg border-0">
     <template #content>
       <div class="flex flex-col md:flex-row gap-4 items-center">
-        <div class="flex-1 w-full md:w-auto">
-          <span class="p-input-icon-left w-full">
-            <InputText 
-              v-model="searchQuery" 
-              placeholder="Xarajatlarni qidirish..." 
+        <div class="flex-1 w-full md:w-auto flex gap-2">
+          <span class="p-input-icon-left">
+            <InputText
+              v-model="searchQuery"
+              placeholder="Xarajatlarni qidirish..."
               class="w-full"
             />
           </span>
+          <Button
+            icon="pi pi-download"
+            size="small"
+            label="Excel"
+            @click="exportToExcelHandler"
+            class="bg-white/20 hover:bg-white/30 border-white/30 text-white"
+          />
         </div>
+
         <div class="flex gap-3 w-full md:w-auto">
-          <Calendar 
-            v-model="dateRange" 
-            selectionMode="range" 
+          <Calendar
+            v-model="dateRange"
+            selectionMode="range"
             :manualInput="false"
             placeholder="Sana oralig'i"
             class="w-full md:w-64"
@@ -29,7 +37,7 @@
   <!-- Expenses Table -->
   <Card class="shadow-lg border-0">
     <template #content>
-      <DataTable 
+      <DataTable
         :value="filteredExpenses"
         v-if="!isLoading"
         :paginator="true"
@@ -44,14 +52,16 @@
       >
         <template #empty>
           <div class="text-center py-12">
-            <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div
+              class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
               <i class="pi pi-inbox text-4xl text-gray-400"></i>
             </div>
             <h3 class="text-lg font-semibold text-gray-700 mb-2">Xarajatlar topilmadi</h3>
             <p class="text-gray-500 mb-4">Hozircha hech qanday xarajat mavjud emas</p>
-            <Button 
+            <Button
               @click="showAddDialog = true"
-              icon="pi pi-plus" 
+              icon="pi pi-plus"
               label="Birinchi xarajatni qo'shish"
               severity="success"
             />
@@ -97,9 +107,9 @@
                 outlined
                 v-tooltip="'Tahrirlash'"
               /> -->
-              <Button 
+              <Button
                 @click="openDelExpenseModal(data)"
-                icon="pi pi-trash" 
+                icon="pi pi-trash"
                 size="small"
                 severity="danger"
                 outlined
@@ -128,63 +138,65 @@
     </template>
   </Card>
 
-      <!-- Delete Confirmation Modal -->
-    <Dialog
-      v-model:visible="deleteExpenseModal"
-      :modal="true"
-      :closable="false"
-      :draggable="false"
-      :style="{ width: '450px' }"
-      :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
-    >
-      <template #header>
-        <div class="flex items-center">
-          <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
-            <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-800 m-0">Xarajatni o'chirish</h3>
-            <p class="text-sm text-gray-500 m-0 mt-1">Bu amalni qaytarib bo'lmaydi va o'chirilgan summa balansga qo'shiladi</p>
-          </div>
+  <!-- Delete Confirmation Modal -->
+  <Dialog
+    v-model:visible="deleteExpenseModal"
+    :modal="true"
+    :closable="false"
+    :draggable="false"
+    :style="{ width: '450px' }"
+    :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
+  >
+    <template #header>
+      <div class="flex items-center">
+        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+          <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
         </div>
-      </template>
-      
-      <div class="py-4">
-        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div class="flex items-start">
-            <i class="pi pi-info-circle text-red-500 mt-1 mr-3"></i>
-            <div>
-              <p class="text-red-800 font-medium mb-1">
-                Haqiqatan ham {{ expense.description }} ni o'chirmoqchimisiz?
-              </p>
-            </div>
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800 m-0">Xarajatni o'chirish</h3>
+          <p class="text-sm text-gray-500 m-0 mt-1">
+            Bu amalni qaytarib bo'lmaydi va o'chirilgan summa balansga qo'shiladi
+          </p>
+        </div>
+      </div>
+    </template>
+
+    <div class="py-4">
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+        <div class="flex items-start">
+          <i class="pi pi-info-circle text-red-500 mt-1 mr-3"></i>
+          <div>
+            <p class="text-red-800 font-medium mb-1">
+              Haqiqatan ham {{ expense.description }} ni o'chirmoqchimisiz?
+            </p>
           </div>
         </div>
       </div>
-      
-      <template #footer>
-        <div class="flex justify-end gap-3">
-          <Button
-            label="Bekor qilish"
-            icon="pi pi-times"
-            severity="secondary"
-            @click="deleteExpenseModal = false"
-          />
-          <Button
-            :label="isLoading ? 'O\'chirilmoqda...' : 'Ha, o\'chirish'"
-            icon="pi pi-trash"
-            severity="danger"
-            :loading="isLoading"
-            @click="deleteExpense()"
-          />
-        </div>
-      </template>
-    </Dialog>
-       <Toast />
+    </div>
+
+    <template #footer>
+      <div class="flex justify-end gap-3">
+        <Button
+          label="Bekor qilish"
+          icon="pi pi-times"
+          severity="secondary"
+          @click="deleteExpenseModal = false"
+        />
+        <Button
+          :label="isLoading ? 'O\'chirilmoqda...' : 'Ha, o\'chirish'"
+          icon="pi pi-trash"
+          severity="danger"
+          :loading="isLoading"
+          @click="deleteExpense()"
+        />
+      </div>
+    </template>
+  </Dialog>
+  <Toast />
 </template>
 
 <script setup>
-import { ref, computed } from "vue"
+import { ref, computed } from 'vue'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import DataTable from 'primevue/datatable'
@@ -195,42 +207,47 @@ import Calendar from 'primevue/calendar'
 import Dialog from 'primevue/dialog'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
-import axios from "axios"
+import axios from 'axios'
+import { exportToExcel } from '@/utils/formatToExcel.js'
+import { formatDate } from '@/utils/FormatDate.js'
 
 // Props
 const props = defineProps({
   expenses: {
     type: Array,
-    required: true
-  }
+    required: true,
+  },
 })
+
+// Emits
+const emit = defineEmits(['refreshData'])
 
 // UI state
 const toast = useToast()
-const expense=ref({})
-const deleteExpenseModal=ref(false)
+const expense = ref({})
+const deleteExpenseModal = ref(false)
 const isLoading = ref(false)
 const searchQuery = ref('')
 const dateRange = ref(null)
-const showAddDialog = ref(false) // optional: for button
+const showAddDialog = ref(false)
 
-const emit = defineEmits(['refreshData']) 
-// Computed filter
+// Filtered list
 const filteredExpenses = computed(() => {
   let filtered = [...props.expenses]
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(expense => 
-      expense.category?.toLowerCase().includes(query) ||
-      expense.description?.toLowerCase().includes(query)
+    filtered = filtered.filter(
+      (expense) =>
+        expense.category?.toLowerCase().includes(query) ||
+        expense.description?.toLowerCase().includes(query),
     )
   }
 
   if (dateRange.value && dateRange.value[0] && dateRange.value[1]) {
     const startDate = new Date(dateRange.value[0])
     const endDate = new Date(dateRange.value[1])
-    filtered = filtered.filter(expense => {
+    filtered = filtered.filter((expense) => {
       const expenseDate = new Date(expense.spentAt)
       return expenseDate >= startDate && expenseDate <= endDate
     })
@@ -239,44 +256,63 @@ const filteredExpenses = computed(() => {
   return filtered
 })
 
-// Stub functions (real ones should come from parent via props or emit)
-const editExpense = (expense) => {
-  console.log('Tahrirlash:', expense)
-}
-
-const openDelExpenseModal=(item)=>{
-  deleteExpenseModal.value=true
-  expense.value=item
-}
-
-const deleteExpense =async () => {
-  try{
-    const res=await axios.delete(`/expense/${expense.value._id}`)
-    if(res.status===200){
-      deleteExpenseModal.value=false
-          toast.add({ severity: 'success', summary: 'Bajarildi', detail: "Xarajat o'chirildi", life: 3000 })
-      emit('refreshData')
-    }
-  }catch(err){
-    console.log(err);
-  }
-}
-
-// Format helpers
+// Helpers
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('uz-UZ', {
     style: 'currency',
     currency: 'UZS',
-    minimumFractionDigits: 0
+    minimumFractionDigits: 0,
   }).format(amount)
-}
-
-const formatDate = (date) => {
-  return new Date(date).toLocaleDateString('uz-UZ')
 }
 
 const formatTime = (date) => {
   return new Date(date).toLocaleTimeString('uz-UZ')
+}
+
+const openDelExpenseModal = (item) => {
+  deleteExpenseModal.value = true
+  expense.value = item
+}
+
+const deleteExpense = async () => {
+  try {
+    isLoading.value = true
+    const res = await axios.delete(`/expense/${expense.value._id}`)
+    if (res.status === 200) {
+      toast.add({
+        severity: 'success',
+        summary: 'Bajarildi',
+        detail: "Xarajat o'chirildi",
+        life: 3000,
+      })
+      deleteExpenseModal.value = false
+      emit('refreshData')
+    }
+  } catch (err) {
+    console.log(err)
+    toast.add({
+      severity: 'error',
+      summary: 'Xatolik',
+      detail: 'O‘chirishda xatolik yuz berdi',
+      life: 3000,
+    })
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const exportToExcelHandler = () => {
+  const exportData = filteredExpenses.value.map((expense, index) => ({
+    ID: index + 1,
+    Izoh: expense.description || '—',
+    Summasi: expense.amount,
+    Sana: formatDate(expense.spentAt),
+  }))
+
+  const today = new Date()
+  const fileName = `Xarajatlar_${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}.xlsx`
+
+  exportToExcel(exportData, fileName)
 }
 </script>
 

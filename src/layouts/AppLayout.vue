@@ -9,7 +9,7 @@
       <transition name="slide">
         <div
           v-if="sidebarVisible || screenIsLarge"
-          class="col-span-12 md:col-span-2 p-2 z-10 bg-white h-screen md:h-auto absolute  w-full md:relative"
+          class="col-span-12 md:col-span-2 p-2 z-20 bg-white h-screen md:h-auto absolute  w-full md:relative"
         >
           <SideBar @close="sidebarVisible = false" />
         </div>

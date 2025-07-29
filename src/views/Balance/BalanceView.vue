@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-6">
+  <div class="min-h-screen ">
     <!-- Header Section -->
     <Card class="mb-6 shadow-lg border-0">
       <template #content>

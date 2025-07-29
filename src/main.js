@@ -11,6 +11,7 @@ import Chart from 'primevue/chart'
 import Card from 'primevue/card'
 import ConfirmationService from 'primevue/confirmationservice'
 import ConfirmDialog from 'primevue/confirmdialog'
+import 'primeicons/primeicons.css'
 
 
 const app = createApp(App)

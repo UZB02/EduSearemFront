@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 py-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="">
+    <div class=" mx-auto ">
       <!-- Header Section -->
-      <Card class="mb-8 shadow-lg border-0 bg-gradient-to-r from-white to-blue-50">
+      <Card class="mb-8 border-0" style="background-color: transparent;">
         <template #content>
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div class="flex items-center gap-4">
