@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8" v-if="teacher.name && teacher.lastname">
-    <div class="mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="min-h-screen bg-gray-50 py-4" v-if="teacher.name && teacher.lastname">
+    <div class="">
       <!-- Header -->
-      <TeacherHeader :teacher="teacher" />
+      <TeacherHeader :teacher="teacher" @updated="fetchTeacher" />
 
       <!-- Grid Layout -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div class="lg:col-span-2 space-y-6">
           <TeacherMainInfo :teacher="teacher" />
           <TeacherSalaryHistory

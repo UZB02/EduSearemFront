@@ -33,7 +33,7 @@
       <!-- Footer qismi (ixtiyoriy) -->
       <div class="mt-8 pt-4 border-t border-slate-200">
         <div class="text-xs text-slate-500 text-center">
-          © 2024 Dashboard
+          © 2025 MD Dashboard
         </div>
       </div>
     </div>
