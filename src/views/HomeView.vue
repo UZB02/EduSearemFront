@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 md:p-6">
+  <div class="min-h-screen">
     <div class="max-w-7xl mx-auto space-y-6">
       <!-- Header with Year Selector -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
@@ -27,8 +27,7 @@
           v-for="(item, index) in summary" 
           :key="item.label"
           class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1"
-          :class="getCardGradient(index)"
-        >
+          >
           <div class="flex items-center justify-between mb-4">
             <div class="p-3 rounded-lg" :class="getIconBackground(index)">
               <i :class="getIcon(index)" class="text-xl text-white"></i>
@@ -37,13 +36,6 @@
               <p class="text-sm font-medium text-gray-600 mb-1">{{ item.label }}</p>
               <p class="text-2xl font-bold text-gray-900">{{ formatNumber(item.value) }}</p>
             </div>
-          </div>
-          <div class="w-full bg-gray-200 rounded-full h-1">
-            <div 
-              class="h-1 rounded-full transition-all duration-500"
-              :class="getProgressColor(index)"
-              :style="{ width: getProgressWidth(index) + '%' }"
-            ></div>
           </div>
         </div>
       </div>
@@ -126,10 +118,6 @@
             <i class="pi pi-clock text-purple-500"></i>
             So'nggi faoliyat
           </h3>
-          <button class="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center gap-1">
-            Barchasini ko'rish
-            <i class="pi pi-arrow-right text-xs"></i>
-          </button>
         </div>
         <div class="space-y-4">
           <div 
@@ -220,10 +208,10 @@ const getIconBackground = (index) => {
 
 const getIcon = (index) => {
   const icons = [
-    'pi pi-file',
     'pi pi-credit-card',
+    'pi pi-money-bill',
     'pi pi-minus-circle',
-    'pi pi-wallet',
+    'pi pi-book',
     'pi pi-users'
   ]
   return icons[index % icons.length]
@@ -240,9 +228,6 @@ const getProgressColor = (index) => {
   return colors[index % colors.length]
 }
 
-const getProgressWidth = (index) => {
-  return Math.random() * 100 // Replace with actual progress calculation
-}
 
 const getActivityIcon = (type) => {
   const iconMap = {
