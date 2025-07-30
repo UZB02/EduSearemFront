@@ -47,7 +47,7 @@
       />
 
       <!-- Expense Table -->
-      <ExpenseTable :expenses="expenses" @refreshData="refreshData"/>
+      <ExpenseTable :expenses="expenses" @openAddExpenseDialog="openAddExpenseDialog" @refreshData="refreshData"/>
     </div>
 
     <!-- Add/Edit Dialog -->
@@ -232,6 +232,10 @@ const saveExpense = async () => {
     saving.value = false;
   }
 };
+
+const openAddExpenseDialog = () => {
+  showAddDialog.value = true
+}
 
 onMounted(getExpenses)
 </script>
