@@ -1,23 +1,26 @@
 <template>
-  <Card>
+  <Card class="shadow-sm border border-gray-100">
     <template #title>
-      <div class="flex items-center space-x-2">
-        <i class="pi pi-user text-blue-500"></i>
-        <span>Asosiy ma'lumotlar</span>
+      <div class="flex items-center space-x-3">
+        <i class="pi pi-id-card text-blue-500 text-lg"></i>
+        <span class="text-lg font-semibold text-gray-700">Asosiy ma'lumotlar</span>
       </div>
     </template>
     <template #content>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="space-y-3">
-          <div v-for="(label, key) in leftFields" :key="key">
-            <label class="text-sm font-medium text-gray-500">{{ label }}</label>
-            <p class="text-gray-900 font-medium">{{ teacher[key] }}</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Chap qism -->
+        <div class="space-y-4">
+          <div v-for="(label, key) in leftFields" :key="key" class="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+            <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider">{{ label }}</label>
+            <p class="text-gray-800 font-medium mt-1">{{ teacher[key] || '-' }}</p>
           </div>
         </div>
-        <div class="space-y-3">
-          <div v-for="(label, key) in rightFields" :key="key">
-            <label class="text-sm font-medium text-gray-500">{{ label }}</label>
-            <p class="text-gray-900 font-mono text-sm">{{ teacher[key] }}</p>
+        
+        <!-- O'ng qism -->
+        <div class="space-y-4">
+          <div v-for="(label, key) in rightFields" :key="key" class="border-b border-gray-100 pb-3 last:border-0 last:pb-0">
+            <label class="block text-xs font-medium text-gray-400 uppercase tracking-wider">{{ label }}</label>
+            <p class="text-gray-800 font-mono mt-1">{{ teacher[key] || '-' }}</p>
           </div>
         </div>
       </div>
@@ -27,7 +30,14 @@
 
 <script setup>
 import Card from 'primevue/card'
-defineProps(['teacher'])
+
+defineProps({
+  teacher: {
+    type: Object,
+    required: true,
+    default: () => ({})
+  }
+})
 
 const leftFields = {
   name: "Ism",
@@ -36,8 +46,23 @@ const leftFields = {
 }
 
 const rightFields = {
-  _id: "ID",
-  userId: "Foydalanuvchi ID",
-  __v: "Versiya"
+  phone: "Telefon raqami",
+  email: "Elektron pochta",
+  birthDate: "Tug'ilgan sana"
 }
 </script>
+
+<style scoped>
+.p-card {
+  border-radius: 0.75rem;
+}
+
+.p-card-title {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.p-card-content {
+  padding-top: 1.25rem;
+}
+</style>
