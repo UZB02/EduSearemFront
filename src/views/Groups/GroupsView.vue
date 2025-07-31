@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
       <div>
         <h1 class="text-3xl font-bold text-gray-800 mb-2">Guruhlar bo'limi</h1>
@@ -17,43 +18,56 @@
         </button>
       </div>
     </div>
+
+    <!-- Guruh kartalari yoki Skeleton -->
     <div class="grid md:grid-cols-4 grid-cols-1 gap-2">
-        <GroupsCard  v-for="group in groups"
-    :key="group._id"
-    :group="group" @getAllGroups="getAllGroups"></GroupsCard>
+      <template v-if="isLoading">
+        <div v-for="i in 4" :key="i" class="h-40 bg-gray-100 animate-pulse rounded-xl"></div>
+      </template>
+      <template v-else>
+        <GroupsCard
+          v-for="group in groups"
+          :key="group._id"
+          :group="group"
+          @getAllGroups="getAllGroups"
+        />
+      </template>
     </div>
   </div>
 
+  <!-- Drawer: Guruh Qo'shish -->
   <Drawer v-model:visible="visibleAddGroup" header="Guruh Qo'shish" position="right">
-    <AddGroupForm @getAllGroups="getAllGroups" @closeDrawer="visibleAddGroup = false"></AddGroupForm>
-</Drawer>
+    <AddGroupForm @getAllGroups="getAllGroups" @closeDrawer="visibleAddGroup = false" />
+  </Drawer>
 </template>
+
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { useRoute, useRouter } from 'vue-router'
 import Drawer from 'primevue/drawer'
 import AddGroupForm from '../../components/Groups/AddGroupsForm.vue'
-import GroupsCard from  "../../components/Groups/GroupsCard.vue"
+import GroupsCard from '../../components/Groups/GroupsCard.vue'
 
 const admin = JSON.parse(sessionStorage.getItem('admin'))
 const visibleAddGroup = ref(false)
-const router = useRouter()
-const groups=ref()
+const groups = ref([])
+const isLoading = ref(true)
 
-const getAllGroups =async ()=>{
-    try{
-        const res=await axios.get(`/groups`,{
-            params: { adminId: admin.id } 
-        })
-        groups.value=res.data
-        console.log(res);
-
-    }catch(err){
-        console.log(err);
-    }
+const getAllGroups = async () => {
+  isLoading.value = true
+  try {
+    const res = await axios.get('/groups', {
+      params: { adminId: admin.id }
+    })
+    groups.value = res.data
+  } catch (err) {
+    console.error('Guruhlarni olishda xatolik:', err)
+  } finally {
+    isLoading.value = false
+  }
 }
-getAllGroups()
 
+onMounted(getAllGroups)
 </script>
+
 <style scoped></style>
