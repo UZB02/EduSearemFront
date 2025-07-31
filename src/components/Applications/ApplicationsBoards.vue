@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gradient-to-br p-4 sm:p-1">
+  <div class="bg-gradient-to-br p-2 sm:p-1">
     <div class="">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
@@ -28,11 +28,11 @@
       </div>
 
       <!-- Kanban Board -->
-      <div class="flex gap-6 overflow-x-auto md:flex-row flex-col pb-4">
+      <div class="flex gap-6 overflow-x-auto md:flex-row  flex-col pb-4">
         <div
           v-for="(column, columnIndex) in columns"
           :key="column._id"
-          class="bg-red h-auto rounded-xl shadow-sm border border-gray-100 p-4  flex-shrink-0 transition-all duration-200 hover:shadow-md"
+          class="bg-red h-auto rounded-xl shadow-sm border border-gray-100 p-4  md:w-80 flex-shrink-0 transition-all duration-200 hover:shadow-md"
           @dragover.prevent
           @drop="onDrop(column._id)"
           @dragenter.prevent="onDragEnter(column._id)"
