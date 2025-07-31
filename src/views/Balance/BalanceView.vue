@@ -22,13 +22,13 @@
               class="flex-1 md:flex-none"
               severity="info"
             />
-            <Button 
+            <!-- <Button 
               @click="exportData" 
               icon="pi pi-download" 
               label="Eksport"
               class="flex-1 md:flex-none"
               outlined
-            />
+            /> -->
           </div>
         </div>
       </template>
