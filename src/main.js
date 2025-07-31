@@ -12,6 +12,12 @@ import Card from 'primevue/card'
 import ConfirmationService from 'primevue/confirmationservice'
 import ConfirmDialog from 'primevue/confirmdialog'
 import 'primeicons/primeicons.css'
+import Dialog from 'primevue/dialog'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+import Textarea from 'primevue/textarea'
+import Dropdown from 'primevue/dropdown'
+import Menu from 'primevue/menu'
 
 
 const app = createApp(App)
@@ -29,6 +35,12 @@ app.directive('tooltip', Tooltip)
 app.use(ToastService)
 app.component('Chart', Chart) 
 app.component('Card', Card)
+app.component('Dialog', Dialog)
+app.component('Button', Button)
+app.component('InputText', InputText)
+app.component('Textarea', Textarea)
+app.component('Dropdown', Dropdown)
+app.component('Menu', Menu)
 app.use(ConfirmationService) // 👈 BU MUHIM!
 
 app.component('ConfirmDialog', ConfirmDialog) 

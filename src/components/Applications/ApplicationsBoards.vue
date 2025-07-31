@@ -32,7 +32,7 @@
         <div
           v-for="(column, columnIndex) in columns"
           :key="column._id"
-          class="bg-red h-auto rounded-xl shadow-sm border border-gray-100 p-4 w-80 flex-shrink-0 transition-all duration-200 hover:shadow-md"
+          class="bg-red h-auto rounded-xl shadow-sm border border-gray-100 p-4  flex-shrink-0 transition-all duration-200 hover:shadow-md"
           @dragover.prevent
           @drop="onDrop(column._id)"
           @dragenter.prevent="onDragEnter(column._id)"
@@ -45,7 +45,7 @@
               <div class="w-3 h-3 rounded-full" :class="getColumnColor(columnIndex)"></div>
               <h2 class="text-lg font-semibold text-gray-800">{{ column.name }}</h2>
               <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">
-                {{ column.tasks.length }}
+                {{ column.applications.length }}
               </span>
             </div>
             <i
@@ -54,45 +54,45 @@
             ></i>
           </div>
 
-          <!-- Tasks -->
+          <!-- applications -->
           <div class="space-y-3 mb-4 min-h-[100px]">
             <div
-              v-for="task in column.tasks"
-              :key="task.id"
+              v-for="application in column.applications"
+              :key="application.id"
               class="bg-gradient-to-r from-white to-gray-300 rounded-lg p-3 cursor-move border border-gray-100 hover:shadow-md transition-all duration-200 group flex flex-col gap-2"
               draggable="true"
-              @dragstart="onDragStart(task, column._id)"
-              :class="{ 'opacity-50 scale-95': draggedTask?.id === task.id }"
+              @dragstart="onDragStart(application, column._id)"
+              :class="{ 'opacity-50 scale-95': draggedapplication?.id === application.id }"
             >
               <div class="flex items-start justify-between">
                 <div class="flex flex-col gap-2">
-                  <p class="text-sm font-medium flex-1">{{ task.name }} {{ task.lastname }}</p>
+                  <p class="text-sm font-medium flex-1">{{ application.name }} {{ application.lastname }}</p>
                   <div class="text-gray-700 flex gap-2">
                     <span class="flex items-center text-sm">
-                      <i class="pi pi-phone text-sm"></i> {{ task.phone }}
+                      <i class="pi pi-phone text-sm"></i> {{ application.phone }}
                     </span>
                     <span class="flex items-center text-sm">
-                      <i class="pi pi-map-marker text-sm"></i> {{ task.location }}
+                      <i class="pi pi-map-marker text-sm"></i> {{ application.location }}
                     </span>
                   </div>
                 </div>
                 <i
                   class="pi pi-trash opacity-0 cursor-pointer group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all duration-200 ml-2"
-                  @click="deleteTask(column._id, task.id)"
+                  @click="openDelapplicationModal(column._id, application)"
                 ></i>
                 <i
                   class="pi pi-info opacity-0 cursor-pointer group-hover:opacity-100 text-gray-400 hover:text-red-500 transition-all duration-200 ml-2"
-                  @click="openeditApplicationModal(task)"
+                  @click="openeditApplicationModal(application)"
                 ></i>
               </div>
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <div class="w-2 h-2 rounded-full" :class="getColumnColor(columnIndex)"></div>
-                  <span class="text-xs text-gray-500">{{ formatDate(task.createdAt) }}</span>
+                  <span class="text-xs text-gray-500">{{ formatDate(application.createdAt) }}</span>
                 </div>
                 <button
                   :class="getColumnColor(columnIndex)"
-                  @click="openAppActiveFunctionModal(task)"
+                  @click="openAppActiveFunctionModal(application)"
                   class="py-1/2 px-2 rounded cursor-pointer text-white"
                 >
                   Qabul
@@ -289,7 +289,7 @@
           <Button
             label="Saqlash"
             icon="pi pi-check"
-            @click="addTask()"
+            @click="addapplication()"
             :loading="isLoading"
             class="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 border-blue-500 hover:from-blue-600 hover:to-blue-700"
           />
@@ -428,7 +428,43 @@
     </template>
   </Dialog>
   <!-- End delete Column Modal -->
-  <!-- Begin ActiveTask Modal -->
+  <!-- Begin delete Column Modal -->
+  <Dialog
+    v-model:visible="columnDelapplicationModal"
+    :modal="true"
+    :closable="false"
+    :draggable="false"
+    class="custom-dialog"
+    :style="{ width: '500px' }"
+    :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
+  >
+    <template #header>
+      <div class="text-lg font-semibold text-red-600">Diqqat!</div>
+    </template>
+
+    <div class="text-gray-700 text-base py-4">
+      Ushbu arizani o‘chirmoqchimisiz? Bu amal qaytarib bo‘lmaydi.
+    </div>
+
+    <template #footer>
+      <div class="flex justify-end gap-3">
+        <Button
+          label="Bekor qilish"
+          icon="pi pi-times"
+          class="p-button-outlined p-button-secondary"
+          @click="columnDelapplicationModal = false"
+        />
+        <Button
+          :label="isLoading ? 'Loading...' : 'Ha o\'chirish'"
+          icon="pi pi-trash"
+          class="p-button-danger"
+          @click="deleteapplication(columnID)"
+        />
+      </div>
+    </template>
+  </Dialog>
+  <!-- End delete Column Modal -->
+  <!-- Begin Activeapplication Modal -->
   <Dialog
     v-model:visible="openappDoneModall"
     :modal="true"
@@ -462,7 +498,7 @@
       </div>
     </template>
   </Dialog>
-  <!-- End ActiveTask Modal -->
+  <!-- End Activeapplication Modal -->
   <!-- Begin editColumn Modal -->
   <Dialog
     v-model:visible="editColumnModalVisible"
@@ -535,7 +571,7 @@ let nextColumnId = 4
 const admin = JSON.parse(sessionStorage.getItem('admin')) // o'zgaruvchini haqiqiy admin id bilan almashtiring
 
 const newColumnName = ref('')
-const draggedTask = ref(null)
+const draggedapplication = ref(null)
 const draggedFromColumnId = ref(null)
 const dragOverColumn = ref(null)
 const columnID = ref(null)
@@ -543,6 +579,7 @@ const addmodalvisible = ref(false)
 const showValidation = ref(false)
 const isLoading = ref(false)
 const columnDelModal = ref(false)
+const columnDelapplicationModal = ref(false)
 const editAppModalVisible = ref(false)
 const openappDoneModall = ref(false)
 const chosenApplication = ref()
@@ -581,13 +618,13 @@ const editedApplication = ref({
 const columns = ref([])
 
 const newApplicant = ref({
-  name: 'Alisher',
-  lastname: 'Sobirov',
-  phone: '+998974589652',
-  location: 'Namangan',
+  name: '',
+  lastname: '',
+  phone: '',
+  location: '',
   groupId: null,
   status: 'new',
-  description: 'Sertefikat olmoqchi',
+  description: '',
   admin: admin.id,
 })
 
@@ -610,13 +647,19 @@ onMounted(async () => {
   await fetchColumns()
 })
 
+const openDelapplicationModal=(columnId,application)=>{
+  columnDelapplicationModal.value=true
+columnID.value=columnId
+chosenApplication.value=application
+}
+
 async function fetchColumns() {
   const colRes = await axios.get(`/columns/${admin.id}`)
   console.log(colRes)
   const appRes = await axios.get(`/applications/${admin.id}`)
   columns.value = colRes.data.map((col) => ({
     ...col,
-    tasks: appRes.data.filter((app) => app.columnId === col._id),
+    applications: appRes.data.filter((app) => app.columnId === col._id),
   }))
 }
 
@@ -626,8 +669,8 @@ const addModalToogle = (columnId) => {
   console.log(columnID.value)
 }
 
-function onDragStart(task, columnId) {
-  draggedTask.value = task
+function onDragStart(application, columnId) {
+  draggedapplication.value = application
   draggedFromColumnId.value = columnId
 }
 
@@ -640,17 +683,17 @@ function onDragLeave() {
 }
 
 async function onDrop(targetColumnId) {
-  if (!draggedTask.value) return
+  if (!draggedapplication.value) return
 
   const fromColumn = columns.value.find((col) => col._id === draggedFromColumnId.value)
   const toColumn = columns.value.find((col) => col._id === targetColumnId)
 
   if (fromColumn && toColumn) {
-    fromColumn.tasks = fromColumn.tasks.filter((t) => t._id !== draggedTask.value._id)
-    toColumn.tasks.push(draggedTask.value)
+    fromColumn.applications = fromColumn.applications.filter((t) => t._id !== draggedapplication.value._id)
+    toColumn.applications.push(draggedapplication.value)
 
     try {
-      await axios.put(`/applications/${draggedTask.value._id}/move`, {
+      await axios.put(`/applications/${draggedapplication.value._id}/move`, {
         columnId: targetColumnId,
       })
     } catch (err) {
@@ -658,7 +701,7 @@ async function onDrop(targetColumnId) {
     }
   }
 
-  draggedTask.value = null
+  draggedapplication.value = null
   draggedFromColumnId.value = null
   dragOverColumn.value = null
 }
@@ -671,7 +714,7 @@ async function addColumn() {
       name: newColumnName.value.trim(),
       userId: admin.id,
     })
-    columns.value.push({ ...res.data, tasks: [] })
+    columns.value.push({ ...res.data, applications: [] })
     newColumnName.value = ''
   } catch (err) {
     console.error('Error adding column:', err)
@@ -683,17 +726,28 @@ async function deleteColumn(columnId) {
   try {
     await axios.delete(`/columns/${columnId}`)
     columns.value = columns.value.filter((col) => col._id !== columnId)
-    isLoading.value = false
+    toast.add({
+      severity: 'success',
+      summary: 'Muvaffaqiyatli',
+      detail: 'Ustun muvaffaqiyatli o‘chirildi',
+      life: 3000
+    })
     columnDelModal.value = false
   } catch (err) {
     console.error('Error deleting column:', err)
+    toast.add({
+      severity: 'error',
+      summary: 'Xatolik',
+      detail: 'Ustunni o‘chirishda xatolik yuz berdi',
+      life: 3000
+    })
+  } finally {
+    isLoading.value = false
   }
 }
 
-async function addTask() {
+async function addapplication() {
   const applicant = newApplicant.value
-  console.log(applicant)
-
   console.log(applicant)
   if (!applicant.name || !applicant.lastname || !applicant.phone) {
     showValidation.value = true
@@ -709,10 +763,10 @@ async function addTask() {
         ...applicant,
         columnId: column._id,
       })
-      column.tasks.push(response.data)
+      column.applications.push(response.data)
       fetchColumns()
     } catch (err) {
-      console.error('Error adding task:', err)
+      console.error('Error adding application:', err)
     } finally {
       isLoading.value = false
     }
@@ -732,9 +786,34 @@ async function addTask() {
   }
 }
 
-function deleteTask(columnId, taskId) {
-  const column = columns.value.find((c) => c._id === columnId)
-  if (column) column.tasks = column.tasks.filter((t) => t._id !== taskId)
+async function deleteapplication(columnId) {
+  try {
+    // Backend'ga DELETE so‘rov yuborish
+    await axios.delete(`/applications/${chosenApplication.value._id}`)
+
+    // Lokal holatda column ichidan application (application) ni olib tashlash
+    const column = columns.value.find((c) => c._id === columnId)
+    if (column) {
+      column.applications = column.applications.filter((t) => t._id !== chosenApplication.value._id)
+    }
+
+    columnDelapplicationModal.value = false
+
+    toast.add({
+      severity: 'success',
+      summary: 'Muvaffaqiyatli',
+      detail: 'Ariza muvaffaqiyatli o‘chirildi',
+      life: 3000
+    })
+  } catch (error) {
+    console.error("O‘chirishda xatolik:", error)
+    toast.add({
+      severity: 'error',
+      summary: 'Xatolik',
+      detail: 'Arizani o‘chirishda xatolik yuz berdi',
+      life: 3000
+    })
+  }
 }
 
 function getColumnColor(index) {
