@@ -22,7 +22,10 @@
       </div>
 
       <!-- Statistics Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
+      <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
+        <div v-for="i in 5" :key="'skeleton-card-' + i" class="bg-gray-100 animate-pulse rounded-xl h-28"></div>
+      </div>
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
         <div 
           v-for="(item, index) in summary" 
           :key="item.label"
@@ -55,7 +58,8 @@
             </div>
           </div>
           <div class="h-80">
-            <Chart type="bar" :data="applicationChart" :options="chartOptions" class="h-full" />
+            <div v-if="isLoading" class="w-full h-full bg-gray-100 animate-pulse rounded-lg"></div>
+            <Chart v-else type="bar" :data="applicationChart" :options="chartOptions" class="h-full" />
           </div>
         </div>
 
@@ -68,26 +72,10 @@
             </h3>
           </div>
           <div class="h-80">
-            <Chart type="bar" :data="paymentExpenseChart" :options="enhancedChartOptions" class="h-full" />
+            <div v-if="isLoading" class="w-full h-full bg-gray-100 animate-pulse rounded-lg"></div>
+            <Chart v-else type="bar" :data="paymentExpenseChart" :options="enhancedChartOptions" class="h-full" />
           </div>
         </div>
-
-        <!-- Balance Chart -->
-        <!-- <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-              <i class="pi pi-chart-line text-orange-500"></i>
-               Balans (oylik)
-            </h3>
-            <div class="flex items-center gap-2 text-sm text-gray-500">
-              <div class="w-3 h-3 bg-orange-500 rounded-full"></div>
-              <span>Balans o'zgarishi</span>
-            </div>
-          </div>
-          <div class="h-80">
-            <Chart type="line" :data="balanceChart" :options="lineChartOptions" class="h-full" />
-          </div>
-        </div> -->
       </div>
 
       <!-- Recent Activity -->
@@ -99,23 +87,28 @@
           </h3>
         </div>
         <div class="space-y-4">
-          <div 
-            v-for="(item, index) in activity" 
-            :key="item.date"
-            class="flex items-center justify-between p-4 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors duration-200"
-          >
-            <div class="flex items-center gap-4">
-              <div class="p-2 rounded-lg" :class="getActivityIcon(item.type).bg">
-                <i :class="getActivityIcon(item.type).icon" class="text-white text-sm"></i>
+          <div v-if="isLoading">
+            <div v-for="i in 4" :key="'activity-skeleton-' + i" class="p-4 bg-gray-100 animate-pulse rounded-lg h-20"></div>
+          </div>
+          <div v-else>
+            <div 
+              v-for="(item, index) in activity" 
+              :key="item.date"
+              class="flex items-center justify-between p-4 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors duration-200"
+            >
+              <div class="flex items-center gap-4">
+                <div class="p-2 rounded-lg" :class="getActivityIcon(item.type).bg">
+                  <i :class="getActivityIcon(item.type).icon" class="text-white text-sm"></i>
+                </div>
+                <div>
+                  <p class="font-medium text-gray-900">{{ item.type }}</p>
+                  <p class="text-sm text-gray-600">{{ item.description }}</p>
+                </div>
               </div>
-              <div>
-                <p class="font-medium text-gray-900">{{ item.type }}</p>
-                <p class="text-sm text-gray-600">{{ item.description }}</p>
+              <div class="text-right">
+                <p class="text-sm text-gray-500">{{ formatDate(item.date) }}</p>
+                <p class="text-xs text-gray-400">{{ formatTime(item.date) }}</p>
               </div>
-            </div>
-            <div class="text-right">
-              <p class="text-sm text-gray-500">{{ formatDate(item.date) }}</p>
-              <p class="text-xs text-gray-400">{{ formatTime(item.date) }}</p>
             </div>
           </div>
         </div>
@@ -132,6 +125,7 @@ import Calendar from 'primevue/calendar'
 
 const adminId = JSON.parse(sessionStorage.getItem('admin'))
 const selectedYear = ref(new Date())
+const isLoading = ref(true)
 
 const summary = ref([])
 const applicationChart = ref({})
@@ -140,11 +134,9 @@ const balanceChart = ref({})
 const activity = ref([])
 
 const formatNumber = (value) => new Intl.NumberFormat('uz-UZ').format(value)
-
 const formatDate = (date) => new Date(date).toLocaleDateString('uz-UZ', {
   day: 'numeric', month: 'short'
 })
-
 const formatTime = (date) => new Date(date).toLocaleTimeString('uz-UZ', {
   hour: '2-digit', minute: '2-digit'
 })
@@ -233,6 +225,7 @@ const lineChartOptions = {
 }
 
 const loadDashboard = async () => {
+  isLoading.value = true
   try {
     const year = selectedYear.value.getFullYear()
     const yearQuery = `?year=${year}`
@@ -305,6 +298,8 @@ const loadDashboard = async () => {
     activity.value = actRes.data
   } catch (err) {
     console.error("Dashboard ma'lumotlarini yuklashda xatolik:", err)
+  } finally {
+    isLoading.value = false
   }
 }
 
