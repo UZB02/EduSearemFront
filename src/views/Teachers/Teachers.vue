@@ -159,11 +159,11 @@
           />
         </div>
         <div>
-          <label>Oylik</label>
+          <label>Belgilangan ulush %</label>
           <InputNumber
-            v-model="teacherForm.monthlySalary"
+            v-model="teacherForm.percentage"
             class="w-full"
-            placeholder="Belgilangan oylikni kiritng"
+            placeholder="Belgilangan ulushni kiriting %"
           />
         </div>
         <div>
@@ -335,7 +335,7 @@ const toast = useToast()
 const confirm = useConfirm()
 
 const teachers = ref([])
-const teacherForm = ref({ name: '', lastname: '', science: '', phone:null, monthlySalary:null })
+const teacherForm = ref({ name: '', lastname: '', science: '', phone:null, percentage:null })
 const searchQuery = ref('')
 const showAddDialog = ref(false)
 const showAddPointsDialogVisible = ref(false)
@@ -415,7 +415,7 @@ const exportToExcelHandler = () => {
     Ism: teacher.name,
     Familiya: teacher.lastname,
     Telefon: teacher.phone || '—',
-    "Belgilangan maosh":teacher.monthlySalary,
+    "Belgilangan ulush %":teacher.percentage,
     "Qo'shilgan sanasi": formatDate(teacher.createdAt),
     'Maoshlar tarixi':
       teacher.salaries?.map((s) => `${formatDate(s.paidAt)} - ${s.amount} so'm`).join(', ') ||

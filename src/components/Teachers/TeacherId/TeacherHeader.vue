@@ -54,8 +54,8 @@
           <InputText v-model="form.phone" class="w-full" />
         </div>
         <div>
-          <label>Oylik</label>
-          <InputNumber v-model="form.monthlySalary" class="w-full" />
+          <label>Belgilangan ulush %</label>
+          <InputNumber v-model="form.percentage" class="w-full" />
         </div>
         <div>
           <label>Fan</label>
@@ -98,7 +98,7 @@ const form = ref({
   name: '',
   lastname: '',
   phone: '',
-  monthlySalary: null,
+  percentage: null,
   science: ''
 })
 

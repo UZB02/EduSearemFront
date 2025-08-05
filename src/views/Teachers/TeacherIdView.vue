@@ -16,7 +16,7 @@
         </div>
 
         <div class="space-y-6">
-          <TeacherStatistics :teacher="teacher" />
+          <TeacherStatistics :teacherSalaryStats="teacherSalaryStats" />
           <TeacherTimeline :teacher="teacher" />
          <TeacherActions :teacher-id="teacher._id" :user-id="admin.id" @salary-added="fetchTeacher" />
 
@@ -96,6 +96,7 @@ const teacherId = route.params.id
 
 // States
 const teacher = ref({})
+const teacherSalaryStats=ref({})
 const showEditDialog = ref(false)
 const showDeleteDialog = ref(false)
 const selectedSalary = ref(null)
@@ -106,12 +107,23 @@ const salaryIdToDelete = ref(null)
 const fetchTeacher = async () => {
   try {
     const res = await axios.get(`/teachers/${teacherId}?userId=${admin.id}`)
-    teacher.value = res.data
-    console.log(teacher.value);
+    teacher.value = res.data.teacher
+    teacherSalaryStats.value=res.data.salaryStats
+    console.log(teacherSalaryStats.value);
   } catch (error) {
     console.error('O‘qituvchini yuklashda xatolik:', error)
   }
 }
+// // Fetch teacher
+// const fetchsalaryStats = async () => {
+//   try {
+//     const res = await axios.get(`/teachers/${teacherId}/salary-stats`)
+//     console.log(res.data);
+//   } catch (error) {
+//     console.error('O‘qituvchini yuklashda xatolik:', error)
+//   }
+// }
+// fetchsalaryStats()
 
 // Open edit dialog
 const openEditSalaryDialog = ({ salary, index }) => {

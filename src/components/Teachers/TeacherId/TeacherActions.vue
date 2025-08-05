@@ -22,10 +22,10 @@
         <label class="text-sm">Miqdor (UZS)</label>
         <InputNumber v-model="salaryForm.amount" inputClass="w-full" mode="currency" currency="UZS" locale="uz-UZ" />
       </div>
-      <div>
+      <!-- <div>
         <label class="text-sm">Oy (masalan: 2025-07)</label>
         <InputText v-model="salaryForm.month" class="w-full" placeholder="YYYY-MM" />
-      </div>
+      </div> -->
       <div>
         <label class="text-sm">Izoh (ixtiyoriy)</label>
         <InputText v-model="salaryForm.description" class="w-full" />
@@ -91,20 +91,19 @@ const showSubtractPointsDialog = ref(false)
 // Forms
 const salaryForm = ref({
   amount: null,
-  month: '',
   description: ''
 })
 const points = ref(null)
 
 // Submit salary
 const submitSalary = async () => {
-  if (!salaryForm.value.amount || !salaryForm.value.month) {
+  if (!salaryForm.value.amount) {
     toast.add({ severity: 'warn', summary: 'Ogohlantirish', detail: 'Miqdor va oy kiritilishi kerak', life: 3000 })
     return
   }
 
   try {
-    await axios.post('/salaries', {
+    await axios.post('/salaries/pay-part', {
       teacherId: props.teacherId,
       userId: props.userId,
       ...salaryForm.value
