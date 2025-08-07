@@ -29,22 +29,37 @@
     <!-- Card Body -->
     <div class="p-6">
       <!-- Stats Section -->
-      <div class="grid grid-cols-2 gap-4 mb-4">
-        <div class="bg-gray-50 rounded-lg p-3 text-center">
-          <div class="flex items-center justify-center mb-1">
-            <i class="pi pi-users text-blue-500 text-lg"></i>
-          </div>
-          <div class="text-2xl font-bold text-gray-800">{{ group.students.length }}</div>
-          <div class="text-xs text-gray-500">O'quvchilar</div>
-        </div>
-        <div class="bg-gray-50 rounded-lg p-3 text-center">
-          <div class="flex items-center justify-center mb-1">
-            <i class="pi pi-calendar text-green-500 text-lg"></i>
-          </div>
-          <div class="text-sm font-semibold text-gray-800">{{ formatDate(group.createdAt) }}</div>
-          <div class="text-xs text-gray-500">Yaratilgan</div>
-        </div>
-      </div>
+<div class="grid grid-cols-12 gap-4 mb-4">
+  <!-- O'quvchilar -->
+  <div class="bg-gray-50 col-span-6 rounded-lg p-3 text-center">
+    <div class="flex items-center justify-center mb-1">
+      <i class="pi pi-users text-blue-500 text-lg"></i>
+    </div>
+    <div class="text-2xl font-bold text-gray-800">{{ group.students.length }}</div>
+    <div class="text-xs text-gray-500">O'quvchilar</div>
+  </div>
+
+  <!-- Yaratilgan sana -->
+  <div class="bg-gray-50 col-span-6 rounded-lg  p-3 text-center">
+    <div class="flex items-center justify-center mb-1">
+      <i class="pi pi-calendar text-green-500 text-lg"></i>
+    </div>
+    <div class="text-sm font-semibold text-gray-800">{{ formatDate(group.createdAt) }}</div>
+    <div class="text-xs text-gray-500">Yaratilgan</div>
+  </div>
+
+  <!-- Oylik to'lov -->
+  <div class="bg-gray-50 col-span-12 rounded-lg p-3 text-center">
+    <div class="flex items-center justify-center mb-1">
+      <i class="pi pi-wallet text-yellow-500 text-lg"></i>
+    </div>
+    <div class="text-xl font-bold text-gray-800">
+      {{ group.monthlyFee.toLocaleString() }} so'm
+    </div>
+    <div class="text-xs text-gray-500">Oylik to'lov</div>
+  </div>
+</div>
+
 
       <!-- Action Buttons -->
       <div class="flex gap-2">

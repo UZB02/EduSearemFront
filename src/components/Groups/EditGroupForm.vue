@@ -37,6 +37,22 @@
           {{ errors.teacher }}
         </small>
       </div>
+      <!-- Belgilangan oylik to'lovi -->
+        <div class="space-y-2">
+        <label for="groupName" class="block text-sm font-medium text-gray-700">
+          Oylik to'lov *
+        </label>
+        <InputNumber
+          id="monthlyFee"
+          v-model="form.monthlyFee"
+          placeholder="Oylik to'lovni kiriting"
+          class="w-full"
+          :class="{ 'p-invalid': errors.monthlyFee }"
+        />
+        <small v-if="errors.monthlyFee" class="text-red-500">
+          {{ errors.monthlyFee }}
+        </small>
+      </div>
 
       <!-- Qo'shimcha ma'lumot -->
       <div class="space-y-2">
@@ -79,6 +95,7 @@ import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
+import InputNumber from 'primevue/inputnumber'
 import axios from "axios"
 import { onMounted } from 'vue'
 
@@ -95,6 +112,7 @@ const admin = JSON.parse(sessionStorage.getItem('admin'))
 const form = reactive({
   groupName: '',
   teacher: null,
+  monthlyFee:0,
   description: '',
   admin: admin.id
 })
@@ -102,7 +120,8 @@ const form = reactive({
 // Xatoliklar
 const errors = reactive({
   groupName: '',
-  teacher: ''
+  teacher: '',
+  monthlyFee:0
 })
 
 const loading = ref(false)
@@ -124,6 +143,7 @@ const validateForm = () => {
   let isValid = true
   errors.groupName = ''
   errors.teacher = ''
+  errors.monthlyFee = ''
 
   if (!form.groupName.trim()) {
     errors.groupName = 'Guruh nomi kiritilishi shart'
@@ -135,6 +155,10 @@ const validateForm = () => {
 
   if (!form.teacher) {
     errors.teacher = 'O\'qituvchi tanlanishi shart'
+    isValid = false
+  }
+  if (!form.monthlyFee) {
+    errors.monthlyFee = 'Kurs to\'lovi kiritilishi shart'
     isValid = false
   }
 
@@ -152,6 +176,7 @@ const submitForm = async () => {
       await axios.put(`/groups/${props.changegroup._id}`, {
         name: form.groupName,
         description: form.description,
+        monthlyFee:form.monthlyFee,
         teacher: form.teacher,
         adminId: form.admin
       })
@@ -160,6 +185,7 @@ const submitForm = async () => {
       await axios.post('/groups', {
         name: form.groupName,
         description: form.description,
+        monthlyFee:form.monthlyFee,
         teacher: form.teacher,
         adminId: form.admin
       })
@@ -181,11 +207,13 @@ watch(
     if (newVal && newVal._id) {
       isEditMode.value = true
       form.groupName = newVal.name || ''
+      form.monthlyFee=newVal.monthlyFee || 0
       form.teacher = newVal.teacher?._id || null
       form.description = newVal.description || ''
     } else {
       isEditMode.value = false
       form.groupName = ''
+      form.monthlyFee=0
       form.teacher = null
       form.description = ''
     }

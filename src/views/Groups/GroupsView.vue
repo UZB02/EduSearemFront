@@ -60,6 +60,7 @@ const getAllGroups = async () => {
       params: { adminId: admin.id }
     })
     groups.value = res.data
+    console.log(groups.value);
   } catch (err) {
     console.error('Guruhlarni olishda xatolik:', err)
   } finally {

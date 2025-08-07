@@ -38,7 +38,22 @@
               {{ errors.teacher }}
             </small>
           </div>
-
+     <!-- Belgilangan oylik to'lovi -->
+        <div class="space-y-2">
+        <label for="groupName" class="block text-sm font-medium text-gray-700">
+          Oylik to'lov *
+        </label>
+        <InputNumber
+          id="monthlyFee"
+          v-model="form.monthlyFee"
+          placeholder="Oylik to'lovni kiriting"
+          class="w-full"
+          :class="{ 'p-invalid': errors.monthlyFee }"
+        />
+        <small v-if="errors.monthlyFee" class="text-red-500">
+          {{ errors.monthlyFee }}
+        </small>
+      </div>
           <!-- Guruh haqida qo'shimcha ma'lumot -->
           <div class="space-y-2">
             <label for="description" class="block text-sm font-medium text-gray-700">
@@ -91,6 +106,7 @@ import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
+import InputNumber from 'primevue/inputnumber'
 import axios from "axios"
 
 const admin = JSON.parse(sessionStorage.getItem('admin'))
@@ -98,6 +114,7 @@ const admin = JSON.parse(sessionStorage.getItem('admin'))
 const form = reactive({
   groupName: '',
   teacher: null,
+  monthlyFee:0,
   description: '',
   admin:admin.id
 })
@@ -107,7 +124,8 @@ console.log(emit);
 // Xatoliklar
 const errors = reactive({
   groupName: '',
-  teacher: ''
+  teacher: '',
+  monthlyFee:0
 })
 
 // Holat o'zgaruvchilari
@@ -125,6 +143,7 @@ const validateForm = () => {
   // Xatoliklarni tozalash
   errors.groupName = ''
   errors.teacher = ''
+  errors.monthlyFee = ''
   
   // Guruh nomi tekshiruvi
   if (!form.groupName.trim()) {
@@ -138,6 +157,10 @@ const validateForm = () => {
   // O'qituvchi tekshiruvi
   if (!form.teacher) {
     errors.teacher = 'O\'qituvchi tanlanishi shart'
+    isValid = false
+  }
+  if (!form.monthlyFee) {
+    errors.monthlyFee = 'Oylik to\'lov kiritilishi shart'
     isValid = false
   }
   
@@ -155,6 +178,7 @@ const submitForm = async () => {
     const res =await axios.post('/groups',{
       name:form.groupName,
       description:form.description,
+      monthlyFee:form.monthlyFee,
       adminId:form.admin,
       teacher:form.teacher
     })
@@ -171,9 +195,11 @@ const submitForm = async () => {
 const resetForm = () => {
   form.groupName = ''
   form.teacher = null
+  form.monthlyFee=0
   form.description = ''
   errors.groupName = ''
   errors.teacher = ''
+  errors.monthlyFee = ''
 }
 
 const getAllTeachers = async () => {
