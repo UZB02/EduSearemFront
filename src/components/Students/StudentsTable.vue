@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-2xl  overflow-hidden">
+  <div class="bg-white rounded-2xl overflow-hidden">
     <!-- Header Section -->
     <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -8,22 +8,22 @@
             <i class="pi pi-users mr-2"></i>
             O'quvchilar ro'yxati
           </h2>
-          <p class="text-indigo-100 text-sm mt-1">
-            Jami: {{ sortedStudents.length }} ta o'quvchi
-          </p>
+          <p class="text-indigo-100 text-sm mt-1">Jami: {{ sortedStudents.length }} ta o'quvchi</p>
         </div>
         <div class="flex gap-3">
           <div class="relative">
-            <i class="pi pi-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-            <InputText 
-              v-model="filters.global.value" 
-              placeholder="O'quvchi qidirish..." 
+            <i
+              class="pi pi-search absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            ></i>
+            <InputText
+              v-model="filters.global.value"
+              placeholder="O'quvchi qidirish..."
               class="pl-10 bg-white/90 border-0 rounded-lg shadow-sm"
             />
           </div>
-          <Button 
-            icon="pi pi-download" 
-            label="Excel" 
+          <Button
+            icon="pi pi-download"
+            label="Excel"
             @click="exportToExcelHandler()"
             class="bg-white/20 hover:bg-white/30 border-white/30 text-white"
           />
@@ -38,7 +38,7 @@
         ref="dt"
         :filters="filters"
         filterDisplay="menu"
-         :loading="loading"
+        :loading="loading"
         :paginator="true"
         :rows="10"
         :rowsPerPageOptions="[5, 10, 20, 50]"
@@ -73,7 +73,9 @@
         <Column header="O'quvchi ma'lumotlari" :style="{ minWidth: '250px' }">
           <template #body="slotProps">
             <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+              <div
+                class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center"
+              >
                 <span class="text-white font-semibold text-sm">
                   {{ slotProps.data.name.charAt(0) }}{{ slotProps.data.lastname.charAt(0) }}
                 </span>
@@ -95,8 +97,8 @@
         <Column header="Aloqa" :style="{ minWidth: '180px' }">
           <template #body="slotProps">
             <div class="space-y-1">
-              <a 
-                :href="`tel:${slotProps.data.phone}`" 
+              <a
+                :href="`tel:${slotProps.data.phone}`"
                 class="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
                 v-tooltip.top="'Qo\'ng\'iroq qilish'"
               >
@@ -118,11 +120,24 @@
         </Column>
 
         <!-- Status Column -->
-        <Column header="Holat" :style="{ width: '100px' }">
+        <Column header="Holat" :style="{ width: '120px' }">
           <template #body="slotProps">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-              <i class="pi pi-check-circle mr-1"></i>
-              Faol
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+              :class="
+                slotProps.data.paymentStatus?.isPaid
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-red-100 text-red-800'
+              "
+            >
+              <i
+                :class="
+                  slotProps.data.paymentStatus?.isPaid
+                    ? 'pi pi-check-circle mr-1'
+                    : 'pi pi-times-circle mr-1'
+                "
+              ></i>
+              {{ slotProps.data.paymentStatus.message }}
             </span>
           </template>
         </Column>
@@ -177,7 +192,7 @@
           </div>
         </div>
       </template>
-      
+
       <div class="py-4">
         <div class="bg-red-50 border border-red-200 rounded-lg p-4">
           <div class="flex items-start">
@@ -193,7 +208,7 @@
           </div>
         </div>
       </div>
-      
+
       <template #footer>
         <div class="flex justify-end gap-3">
           <Button
@@ -224,7 +239,9 @@
     >
       <template #header>
         <div class="flex items-center w-full">
-          <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center mr-4">
+          <div
+            class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center mr-4"
+          >
             <i class="pi pi-pencil text-white text-lg"></i>
           </div>
           <div>
@@ -233,7 +250,7 @@
           </div>
         </div>
       </template>
-      
+
       <div class="space-y-6 py-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
@@ -241,33 +258,29 @@
               <i class="pi pi-user mr-1"></i>
               Ism
             </label>
-            <InputText 
-              v-model="editedStudent.name" 
-              class="w-full"
-              placeholder="Ismni kiriting"
-            />
+            <InputText v-model="editedStudent.name" class="w-full" placeholder="Ismni kiriting" />
           </div>
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-700">
               <i class="pi pi-user mr-1"></i>
               Familiya
             </label>
-            <InputText 
-              v-model="editedStudent.lastname" 
+            <InputText
+              v-model="editedStudent.lastname"
               class="w-full"
               placeholder="Familiyani kiriting"
             />
           </div>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-2">
             <label class="block text-sm font-medium text-gray-700">
               <i class="pi pi-phone mr-1"></i>
               Telefon raqami
             </label>
-            <InputText 
-              v-model="editedStudent.phone" 
+            <InputText
+              v-model="editedStudent.phone"
               class="w-full"
               placeholder="+998 90 123 45 67"
             />
@@ -277,29 +290,29 @@
               <i class="pi pi-map-marker mr-1"></i>
               Manzil
             </label>
-            <InputText 
-              v-model="editedStudent.location" 
+            <InputText
+              v-model="editedStudent.location"
               class="w-full"
               placeholder="Yashash manzilini kiriting"
             />
           </div>
         </div>
-        
+
         <div class="space-y-2">
           <label class="block text-sm font-medium text-gray-700">
             <i class="pi pi-file-edit mr-1"></i>
             Izoh
           </label>
-          <Textarea 
-            v-model="editedStudent.description" 
-            rows="3" 
-            class="w-full" 
+          <Textarea
+            v-model="editedStudent.description"
+            rows="3"
+            class="w-full"
             autoResize
             placeholder="Qo'shimcha ma'lumotlar..."
           />
         </div>
       </div>
-      
+
       <template #footer>
         <div class="flex justify-end gap-3">
           <Button
@@ -308,115 +321,112 @@
             severity="secondary"
             @click="editStudentModalVisible = false"
           />
-          <Button
-            label="Yangilash"
-            icon="pi pi-check"
-            :loading="isLoading"
-            @click="editStudent"
-          />
+          <Button label="Yangilash" icon="pi pi-check" :loading="isLoading" @click="editStudent" />
         </div>
       </template>
     </Dialog>
 
     <!-- Begin Payment Modal -->
-  <Dialog
-  v-model:visible="addPaymentModalVisible"
-  :modal="true"
-  :closable="true"
-  :draggable="false"
-  class="custom-dialog"
-  :style="{ width: '500px' }"
-  :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
->
-  <!-- Custom Header -->
-  <template #header>
-    <div class="flex items-center gap-3 w-full">
-      <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-        <i class="pi pi-wallet w-5 h-5 text-white"></i>
-      </div>
-      <div>
-        <h2 class="text-xl font-semibold text-gray-800 m-0">To‘lov qilish</h2>
-        <p class="text-sm text-gray-500 m-0">To‘lov ma'lumotlarini kiriting</p>
-      </div>
-    </div>
-  </template>
+    <Dialog
+      v-model:visible="addPaymentModalVisible"
+      :modal="true"
+      :closable="true"
+      :draggable="false"
+      class="custom-dialog"
+      :style="{ width: '500px' }"
+      :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
+    >
+      <!-- Custom Header -->
+      <template #header>
+        <div class="flex items-center gap-3 w-full">
+          <div
+            class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center"
+          >
+            <i class="pi pi-wallet w-5 h-5 text-white"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800 m-0">To‘lov qilish</h2>
+            <p class="text-sm text-gray-500 m-0">To‘lov ma'lumotlarini kiriting</p>
+          </div>
+        </div>
+      </template>
 
-  <!-- Form Content -->
-  <div class="space-y-6 p-1">
-    <div class="bg-gray-50 rounded-lg p-4 space-y-4">
-      <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-gray-700 flex items-center gap-1">
-          To‘lov summasi <span class="text-red-500">*</span>
-        </label>
-        <InputNumber
-          v-model="newPayment.amount"
-          placeholder="Masalan: 200000"
-          inputClass="w-full"
-          class="w-full"
-          :class="{ 'p-invalid': !newPayment.amount && showValidation }"
-        />
-        <small v-if="!newPayment.amount && showValidation" class="text-red-500">
-          To‘lov summasi majburiy
-        </small>
+      <!-- Form Content -->
+      <div class="space-y-6 p-1">
+        <div class="bg-gray-50 rounded-lg p-4 space-y-4">
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-gray-700 flex items-center gap-1">
+              To‘lov summasi <span class="text-red-500">*</span>
+            </label>
+            <InputNumber
+              v-model="newPayment.amount"
+              placeholder="Masalan: 200000"
+              inputClass="w-full"
+              class="w-full"
+              :class="{ 'p-invalid': !newPayment.amount && showValidation }"
+            />
+            <small v-if="!newPayment.amount && showValidation" class="text-red-500">
+              To‘lov summasi majburiy
+            </small>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-gray-700 flex items-center gap-1">
+              To‘lov turi <span class="text-red-500">*</span>
+            </label>
+            <Dropdown
+              v-model="newPayment.method"
+              :options="paymentMethods"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Tanlang"
+              class="w-full"
+              :class="{ 'p-invalid': !newPayment.method && showValidation }"
+            />
+            <small v-if="!newPayment.method && showValidation" class="text-red-500">
+              To‘lov turini tanlash majburiy
+            </small>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-gray-700">Izoh</label>
+            <Textarea
+              v-model="newPayment.description"
+              placeholder="Ixtiyoriy izoh..."
+              class="w-full"
+              rows="3"
+              autoResize
+            />
+          </div>
+        </div>
       </div>
 
-      <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-gray-700 flex items-center gap-1">
-          To‘lov turi <span class="text-red-500">*</span>
-        </label>
-        <Dropdown
-          v-model="newPayment.method"
-          :options="paymentMethods"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Tanlang"
-          class="w-full"
-          :class="{ 'p-invalid': !newPayment.method && showValidation }"
-        />
-        <small v-if="!newPayment.method && showValidation" class="text-red-500">
-          To‘lov turini tanlash majburiy
-        </small>
-      </div>
-
-      <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-gray-700">Izoh</label>
-        <Textarea
-          v-model="newPayment.description"
-          placeholder="Ixtiyoriy izoh..."
-          class="w-full"
-          rows="3"
-          autoResize
-        />
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <template #footer>
-    <div class="flex justify-between items-center w-full pt-4 border-t border-gray-200">
-      <div class="text-sm text-gray-500">
-        <span class="text-red-500">*</span> Majburiy maydonlar
-      </div>
-      <div class="flex gap-3">
-        <Button
-          label="Bekor qilish"
-          icon="pi pi-times"
-          severity="secondary"
-          @click="addPaymentModalVisible = false"
-          class="px-4 py-2"
-        />
-        <Button
-          label="To‘lovni saqlash"
-          icon="pi pi-check"
-          @click="addPayment"
-          :loading="isLoading"
-          class="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 border-green-500 hover:from-green-600 hover:to-green-700"
-        />
-      </div>
-    </div>
-  </template>
-</Dialog>
-<!-- End Payment Modal -->
+      <!-- Footer -->
+      <template #footer>
+        <div class="flex justify-between items-center w-full pt-4 border-t border-gray-200">
+          <div class="text-sm text-gray-500">
+            <span class="text-red-500">*</span> Majburiy maydonlar
+          </div>
+          <div class="flex gap-3">
+            <Button
+              label="Bekor qilish"
+              icon="pi pi-times"
+              severity="secondary"
+              @click="addPaymentModalVisible = false"
+              class="px-4 py-2"
+            />
+            <Button
+              label="To‘lovni saqlash"
+              icon="pi pi-check"
+              @click="addPayment"
+              :loading="isLoading"
+              class="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 border-green-500 hover:from-green-600 hover:to-green-700"
+            />
+          </div>
+        </div>
+      </template>
+    </Dialog>
+    <!-- End Payment Modal -->
     <Toast />
   </div>
 </template>
@@ -454,7 +464,7 @@ const editStudentModalVisible = ref(false)
 const addPaymentModalVisible = ref(false)
 const selectedStudentId = ref(null)
 const showValidation = ref(false)
-const changeStudent=ref({})
+const changeStudent = ref({})
 const isLoading = ref(false)
 const loading = ref(false)
 const editedStudent = ref({
@@ -471,26 +481,25 @@ const editedStudent = ref({
 const newPayment = ref({
   amount: null,
   method: null,
-  description: ''
+  description: '',
 })
 
 const paymentMethods = [
   { label: 'Naqd', value: 'cash' },
   { label: 'Karta orqali', value: 'card' },
-  { label: 'Bank o‘tkazmasi', value: 'bank' }
+  { label: 'Bank o‘tkazmasi', value: 'bank' },
 ]
 
-const opentPaymentModal=(item)=>{
-  addPaymentModalVisible.value=true
-  changeStudent.value=item
-  console.log(changeStudent.value);
+const opentPaymentModal = (item) => {
+  addPaymentModalVisible.value = true
+  changeStudent.value = item
+  console.log(changeStudent.value)
 }
 
 // Computed: students sorted by createdAt (desc)
 const sortedStudents = computed(() =>
-  [...(props.group.students || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  [...(props.group.students || [])].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
 )
-
 
 // Export Excel
 const exportToExcelHandler = () => {
@@ -500,7 +509,7 @@ const exportToExcelHandler = () => {
     Familiya: student.lastname,
     Telefon: student.phone,
     'Yashash joyi': student.location,
-    "Qo'shilgan sanasi": formatDate(student.createdAt)
+    "Qo'shilgan sanasi": formatDate(student.createdAt),
   }))
   const fileName = `${props.group.name.replace(/\s+/g, '_')}_${getTodayDate()}.xlsx`
   exportToExcel(exportData, fileName)
@@ -520,7 +529,12 @@ const deleteStudent = async () => {
   isLoading.value = true
   try {
     await axios.delete(`/students/${selectedStudentId.value}`)
-    toast.add({ severity: 'success', summary: 'Bajarildi', detail: "O'quvchi o'chirildi", life: 3000 })
+    toast.add({
+      severity: 'success',
+      summary: 'Bajarildi',
+      detail: "O'quvchi o'chirildi",
+      life: 3000,
+    })
     emit('getGroupById')
     deleteModalVisible.value = false
   } catch (error) {
@@ -548,12 +562,17 @@ const editStudent = async () => {
   try {
     const res = await axios.put(`/students/${selectedStudentId.value}`, {
       ...editedStudent.value,
-      admin: admin.id
+      admin: admin.id,
     })
     if (res.status === 200) {
       editStudentModalVisible.value = false
       emit('getGroupById')
-      toast.add({ severity: 'success', summary: 'Yangilandi', detail: "O'quvchi yangilandi", life: 3000 })
+      toast.add({
+        severity: 'success',
+        summary: 'Yangilandi',
+        detail: "O'quvchi yangilandi",
+        life: 3000,
+      })
     }
   } catch (error) {
     toast.add({ severity: 'error', summary: 'Xatolik', detail: error.message, life: 3000 })
@@ -563,50 +582,50 @@ const editStudent = async () => {
 }
 
 const addPayment = async () => {
-  showValidation.value = true;
+  showValidation.value = true
 
   // Minimal tekshiruv
   if (!newPayment.value.amount || !newPayment.value.method) {
-    return;
+    return
   }
 
-  isLoading.value = true;
+  isLoading.value = true
 
   try {
-    await axios.post("/payments", {
+    await axios.post('/payments', {
       ...newPayment.value,
       studentId: changeStudent.value._id,
       userId: admin.id, // ⚠️ "admin" obyektingiz login bo'lgan foydalanuvchimi? Unda `id` to‘g‘ri.
-    });
+    })
     // Muvaffaqiyatli xabar
     toast.add({
-      severity: "success",
-      summary: "Bajarildi",
-      detail: "To‘lov qabul qilindi",
+      severity: 'success',
+      summary: 'Bajarildi',
+      detail: 'To‘lov qabul qilindi',
       life: 3000,
-    });
+    })
 
     // Modalni yopish
-    addPaymentModalVisible.value = false;
+    addPaymentModalVisible.value = false
 
     // Formani tozalash (xohlasangiz)
     newPayment.value = {
       amount: null,
-      method: "",
-      description: "",
-    };
+      method: '',
+      description: '',
+    }
   } catch (error) {
-    console.error("To‘lovni saqlashda xatolik:", error);
+    console.error('To‘lovni saqlashda xatolik:', error)
     toast.add({
-      severity: "error",
-      summary: "Xatolik",
-      detail: "To‘lovni saqlab bo‘lmadi",
+      severity: 'error',
+      summary: 'Xatolik',
+      detail: 'To‘lovni saqlab bo‘lmadi',
       life: 3000,
-    });
+    })
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
-};
+}
 </script>
 
 <style scoped>

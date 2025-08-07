@@ -211,20 +211,20 @@ const getGroupById = async () => {
 }
 getGroupById()
 
-const gurupOptions = ref()
+// const gurupOptions = ref()
 
-const getAllGroups = async () => {
-  try {
-    const res = await axios.get(`/groups`, {
-      params: { adminId: admin.id },
-    })
-    gurupOptions.value = res.data
-    console.log(res, 55)
-  } catch (err) {
-    console.log(err)
-  }
-}
-getAllGroups()
+// const getAllGroups = async () => {
+//   try {
+//     const res = await axios.get(`/groups`, {
+//       params: { adminId: admin.id },
+//     })
+//     gurupOptions.value = res.data
+//     console.log(res, 55)
+//   } catch (err) {
+//     console.log(err)
+//   }
+// }
+// getAllGroups()
 
 const addStudent = async () => {
   console.log(newStudent.value)

@@ -31,7 +31,8 @@
 
         <!-- Content Section -->
         <div class="md:p-8 p-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col gap-4">
+               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Contact Information -->
             <div class="space-y-4">
               <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
@@ -104,7 +105,31 @@
             </div>
           </div>
 
-       
+              <!-- To'lov holati -->
+  <div
+    class="bg-white rounded-lg shadow-sm p-4"
+    :class="{
+      'border-l-4 border-green-500': student.paymentStatus?.isPaid,
+      'border-l-4 border-red-500': !student.paymentStatus?.isPaid
+    }"
+  >
+    <div class="flex justify-between items-start">
+      <div>
+        <p class="text-gray-500 text-sm">To'lov holati</p>
+        <h3
+          class="text-xl font-bold mt-1"
+          :class="student.paymentStatus?.isPaid ? 'text-green-600' : 'text-red-600'"
+        >
+          {{ student.paymentStatus?.message || 'Nomaʼlum' }}
+        </h3>
+        <p class="text-sm text-gray-600 mt-1">To'langan: {{ formatCurrency(student.paymentStatus?.totalPaid || 0) }}</p>
+        <p class="text-sm text-gray-600">Qolgan: {{ formatCurrency(student.paymentStatus?.remainingAmount || 0) }}</p>
+        <p class="text-sm text-gray-600">Ortiqcha: {{ formatCurrency(student.paymentStatus?.overpaidAmount || 0) }}</p>
+      </div>
+      <i class="pi pi-info-circle text-2xl" :class="student.paymentStatus?.isPaid ? 'text-green-500' : 'text-red-500'"></i>
+    </div>
+  </div>
+          </div>
           <!-- Action Buttons -->
           <div class="mt-8 pt-6 border-t border-gray-200">
             <div class="flex flex-wrap gap-3">
@@ -430,6 +455,13 @@ import Button from 'primevue/button'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
 import StudentPaymentTable from "../../components/Students/StudentPaymentTable.vue"
+function formatCurrency(value) {
+  return new Intl.NumberFormat('uz-UZ', {
+    style: 'currency',
+    currency: 'UZS',
+    minimumFractionDigits: 0,
+  }).format(value);
+}
 
 
 const admin = JSON.parse(sessionStorage.getItem('admin'))
