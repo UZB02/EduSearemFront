@@ -432,10 +432,10 @@
   <template #header>
     <div class="flex items-center">
       <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-        <i class="pi pi-send text-blue-600 text-xl"></i>
+        <i class="pi pi-envelope text-blue-600 text-xl"></i>
       </div>
       <div>
-        <h3 class="text-lg font-semibold text-gray-800 m-0">{{ changeStudent.name }} ga xabar yuborish</h3>
+        <h3 class="text-lg font-semibold text-gray-800 m-0">{{ changeStudent.name }} {{ changeStudent.lastname }} ga xabar yuborish</h3>
         <p class="text-sm text-gray-500 m-0 mt-1">
           Xabar matnini kiriting va yuboring
         </p>
@@ -445,12 +445,14 @@
 
   <div class="py-4">
     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-      <div class="flex items-start">
-        <i class="pi pi-info-circle text-blue-500 mt-1 mr-3"></i>
-        <div class="flex-1">
-          <label class="text-sm font-medium text-gray-700 mb-2 block">
+      <div class="flex items-start flex-col gap-2">
+        <div class="flex items-center justify-center gap-1">
+          <i class="pi pi-info-circle text-blue-500 "></i>
+           <label class="text-sm font-medium text-gray-700  block">
             Xabar matni <span class="text-red-500">*</span>
           </label>
+        </div>
+        <div class="flex-1 w-full">
           <Textarea
             v-model="messageText"
             placeholder="Yuboriladigan xabar..."
@@ -477,7 +479,7 @@
       />
       <Button
         :label="isLoading ? 'Yuborilmoqda...' : 'Xabar yuborish'"
-        icon="pi pi-check"
+        icon="pi pi-send"
         class="bg-blue-500 border-blue-500 hover:bg-blue-600"
         :loading="isLoading"
         @click="sendMessageFunction()"
