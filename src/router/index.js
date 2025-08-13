@@ -48,9 +48,19 @@ const router = createRouter({
       component: () => import('../views/Expense/ExpenseView.vue'),
     },
     {
+      path: '/about',
+      name: 'About',
+      component: () => import('../views/AboutView.vue'),
+    },
+    {
       path: '/group/:slug',
       name: 'Group Id View',
       component: () => import('../views/Groups/GroupIdView.vue'),
+    },
+    {
+      path: '/group/:slug/attendance',
+      name: 'Group Id View Attendance',
+      component: () => import('../views/Groups/GroupIdAttendanceView.vue'),
     },
     {
       path: '/group/:slug/student/:id',

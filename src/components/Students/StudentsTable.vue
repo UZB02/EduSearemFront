@@ -562,24 +562,24 @@ const toggleMenu = (event, student) => {
 
   menuItems.value = [
     {
-      label: "Xabar yuborish",
-      icon: "pi pi-send",
-      command: () => openMessageModal(changeStudent.value)
-    },
-    {
       label: "Batafsil",
       icon: "pi pi-eye",
       command: () => router.push(`/group/${student.groupId}/student/${student._id}`)
     },
     {
-      label: "Tahrirlash",
-      icon: "pi pi-pencil",
-      command: () => openEditModal(student)
-    },
-    {
       label: "To‘lov",
       icon: "pi pi-money-bill",
       command: () => opentPaymentModal(student)
+    },
+      {
+      label: "Xabar yuborish",
+      icon: "pi pi-send",
+      command: () => openMessageModal(changeStudent.value)
+    },
+         {
+      label: "Tahrirlash",
+      icon: "pi pi-pencil",
+      command: () => openEditModal(student)
     },
     {
       label: "O'chirish",

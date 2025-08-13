@@ -3,10 +3,9 @@
     <!-- Toast va Confirm -->
     <Toast />
     <ConfirmDialog />
-
     <!-- Header -->
     <div class="border-b border-slate-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="max-w-7xl mx-auto p-2">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 class="text-2xl font-bold text-slate-900 flex items-center">

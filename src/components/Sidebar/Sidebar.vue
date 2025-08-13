@@ -2,8 +2,7 @@
   <aside class="w-full h-full  md:sticky md:h-auto md:top-21 ">
     <div class="">
       <!-- Header -->
-      <div class="flex items-center justify-between mb-2">
-        <!-- Mobilda yopish tugmasi -->
+      <!-- <div class="flex items-center justify-between mb-2">
         <button 
           class="md:hidden flex items-center gap-2 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-white font-medium transition-colors duration-200 shadow-sm" 
           @click="$emit('close')"
@@ -11,7 +10,7 @@
           <i class="pi pi-times text-sm"></i>
           Yopish
         </button>
-      </div>
+      </div> -->
 
       <!-- Navigation -->
       <nav class="space-y-2">

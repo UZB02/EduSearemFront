@@ -11,10 +11,10 @@
             <i class="pi pi-bars text-xl text-slate-700"></i>
           </button>
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-              <span class="text-white font-bold text-sm">MD</span>
+            <div>
+              <img src="../../assets/Logo.png" alt="" class="w-12 rounded">
             </div>
-            <h1 class="text-xl font-bold text-slate-800">EDU MD</h1>
+            <h1 class="text-xl font-bold text-slate-800">MDEDU</h1>
           </div>
         </div>
 

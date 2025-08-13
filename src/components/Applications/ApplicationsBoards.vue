@@ -555,7 +555,7 @@
 
 <script setup>
 import { ref, reactive, toRaw, onMounted } from 'vue'
-import axios from 'axios'
+
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
@@ -564,6 +564,7 @@ import Dropdown from 'primevue/dropdown'
 import Menu from 'primevue/menu'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
+import api from "../../utils/api.js"
 
 const toast = useToast()
 
@@ -632,7 +633,7 @@ const gurupOptions = ref()
 
 const getAllGroups = async () => {
   try {
-    const res = await axios.get(`/groups`, {
+    const res = await api.get(`/groups`, {
       params: { adminId: admin.id },
     })
     gurupOptions.value = res.data
@@ -654,9 +655,9 @@ chosenApplication.value=application
 }
 
 async function fetchColumns() {
-  const colRes = await axios.get(`/columns/${admin.id}`)
+  const colRes = await api.get(`/columns/${admin.id}`)
   console.log(colRes)
-  const appRes = await axios.get(`/applications/${admin.id}`)
+  const appRes = await api.get(`/applications/${admin.id}`)
   columns.value = colRes.data.map((col) => ({
     ...col,
     applications: appRes.data.filter((app) => app.columnId === col._id),
@@ -693,7 +694,7 @@ async function onDrop(targetColumnId) {
     toColumn.applications.push(draggedapplication.value)
 
     try {
-      await axios.put(`/applications/${draggedapplication.value._id}/move`, {
+      await api.put(`/applications/${draggedapplication.value._id}/move`, {
         columnId: targetColumnId,
       })
     } catch (err) {
@@ -710,7 +711,7 @@ async function addColumn() {
   if (newColumnName.value.trim() === '') return
 
   try {
-    const res = await axios.post('/columns', {
+    const res = await api.post('/columns', {
       name: newColumnName.value.trim(),
       userId: admin.id,
     })
@@ -724,7 +725,7 @@ async function addColumn() {
 async function deleteColumn(columnId) {
   isLoading.value = true
   try {
-    await axios.delete(`/columns/${columnId}`)
+    await api.delete(`/columns/${columnId}`)
     columns.value = columns.value.filter((col) => col._id !== columnId)
     toast.add({
       severity: 'success',
@@ -759,7 +760,7 @@ async function addapplication() {
   if (column) {
     isLoading.value = true
     try {
-      const response = await axios.post('/applications', {
+      const response = await api.post('/applications', {
         ...applicant,
         columnId: column._id,
       })
@@ -789,7 +790,7 @@ async function addapplication() {
 async function deleteapplication(columnId) {
   try {
     // Backend'ga DELETE so‘rov yuborish
-    await axios.delete(`/applications/${chosenApplication.value._id}`)
+    await api.delete(`/applications/${chosenApplication.value._id}`)
 
     // Lokal holatda column ichidan application (application) ni olib tashlash
     const column = columns.value.find((c) => c._id === columnId)
@@ -864,7 +865,7 @@ const openAppActiveFunctionModal = (item) => {
 
 const addAPlicationToGroup = async (id) => {
   try {
-    const res = await axios.put(`/applications/${id}/status`, {
+    const res = await api.put(`/applications/${id}/status`, {
       status: 'active',
     })
     fetchColumns()
@@ -890,7 +891,7 @@ const uppdqateApplication = async (id) => {
       admin: editedApplication.value.admin,
     }
 
-    const res = await axios.put(`/applications/${id}`, payload)
+    const res = await api.put(`/applications/${id}`, payload)
     if (res.status === 200) {
       toast.add({ severity: 'success', summary: 'Bajarildi', detail: 'Tahrirlandi', life: 3000 })
       fetchColumns()
@@ -907,7 +908,7 @@ const uppdqateApplication = async (id) => {
 const updateColumn = async () => {
   isLoading.value = true
   try {
-    const res=await axios.put(`/columns/${columnID.value}`, {
+    const res=await api.put(`/columns/${columnID.value}`, {
       name: editColumnName.value,
     })
     if(res.status===200){

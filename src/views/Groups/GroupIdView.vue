@@ -14,6 +14,13 @@
     <!-- Yangi guruh qo‘shish -->
     <div class="flex items-center gap-2 bg-white rounded-lg shadow-sm p-3">
       <button
+        class="bg-gradient-to-r cursor-pointer from-blue-500 to-blue-600 text-white rounded-md px-4 py-2 hover:from-blue-600 hover:to-blue-700 transition-all duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+        @click="router.push(`/group/${group._id}/attendance`)"
+      >
+        <i class="pi pi-address-book"></i>
+        Davomat
+      </button>
+      <button
         class="bg-gradient-to-r cursor-pointer from-green-500 to-green-600 text-white rounded-md px-4 py-2 hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         @click="addStudentmodalvisible = true"
       >
@@ -166,7 +173,7 @@
 <script setup>
 import { ref } from 'vue'
 import axios from 'axios'
-import { useRoute } from 'vue-router'
+import { useRoute,useRouter } from 'vue-router'
 import StudentsTable from '../../components/Students/StudentsTable.vue'
 import Dialog from 'primevue/dialog'
 import { useToast } from 'primevue/usetoast'
@@ -178,6 +185,7 @@ import Textarea from 'primevue/textarea'
 const toast = useToast()
 
 const route = useRoute()
+const router = useRouter()
 const groupId = ref(route.params.slug)
 const admin = JSON.parse(sessionStorage.getItem('admin'))
 
