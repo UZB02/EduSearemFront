@@ -134,7 +134,7 @@ const getStatusSeverity = (status) => {
   switch (status) {
     case 'present': return 'success';
     case 'absent': return 'danger';
-    case 'late': return 'warning';
+    case 'late': return 'warn';
     default: return 'info';
   }
 };
