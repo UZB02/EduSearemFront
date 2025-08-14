@@ -142,23 +142,19 @@
           </template>
         </Column>
 
-      <!-- Actions Column -->
-<Column header="Amallar" :style="{ width: '80px' }">
-  <template #body="slotProps">
-    <div>
-      <Button
-        icon="pi pi-ellipsis-v"
-        class=" p-button-text"
-        @click="toggleMenu($event, slotProps.data)"
-      />
-      <Menu
-        :model="menuItems"
-        popup
-        ref="menu"
-      />
-    </div>
-  </template>
-</Column>
+        <!-- Actions Column -->
+        <Column header="Amallar" :style="{ width: '80px' }">
+          <template #body="slotProps">
+            <div>
+              <Button
+                icon="pi pi-ellipsis-v"
+                class="p-button-text"
+                @click="toggleMenu($event, slotProps.data)"
+              />
+              <Menu :model="menuItems" popup ref="menu" />
+            </div>
+          </template>
+        </Column>
       </DataTable>
     </div>
 
@@ -421,72 +417,72 @@
     <!-- End Payment Modal -->
 
     <!-- Send Message Modal -->
-<Dialog
-  v-model:visible="sendMessageModalVisible"
-  :modal="true"
-  :closable="false"
-  :draggable="false"
-  :style="{ width: '450px' }"
-  :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
->
-  <template #header>
-    <div class="flex items-center">
-      <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-        <i class="pi pi-envelope text-blue-600 text-xl"></i>
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold text-gray-800 m-0">{{ changeStudent.name }} {{ changeStudent.lastname }} ga xabar yuborish</h3>
-        <p class="text-sm text-gray-500 m-0 mt-1">
-          Xabar matnini kiriting va yuboring
-        </p>
-      </div>
-    </div>
-  </template>
-
-  <div class="py-4">
-    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-      <div class="flex items-start flex-col gap-2">
-        <div class="flex items-center justify-center gap-1">
-          <i class="pi pi-info-circle text-blue-500 "></i>
-           <label class="text-sm font-medium text-gray-700  block">
-            Xabar matni <span class="text-red-500">*</span>
-          </label>
+    <Dialog
+      v-model:visible="sendMessageModalVisible"
+      :modal="true"
+      :closable="false"
+      :draggable="false"
+      :style="{ width: '450px' }"
+      :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
+    >
+      <template #header>
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+            <i class="pi pi-envelope text-blue-600 text-xl"></i>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800 m-0">
+              {{ changeStudent.name }} {{ changeStudent.lastname }} ga xabar yuborish
+            </h3>
+            <p class="text-sm text-gray-500 m-0 mt-1">Xabar matnini kiriting va yuboring</p>
+          </div>
         </div>
-        <div class="flex-1 w-full">
-          <Textarea
-            v-model="messageText"
-            placeholder="Yuboriladigan xabar..."
-            class="w-full"
-            rows="4"
-            autoResize
-            :class="{ 'p-invalid': !messageText && showValidation }"
+      </template>
+
+      <div class="py-4">
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div class="flex items-start flex-col gap-2">
+            <div class="flex items-center justify-center gap-1">
+              <i class="pi pi-info-circle text-blue-500"></i>
+              <label class="text-sm font-medium text-gray-700 block">
+                Xabar matni <span class="text-red-500">*</span>
+              </label>
+            </div>
+            <div class="flex-1 w-full">
+              <Textarea
+                v-model="messageText"
+                placeholder="Yuboriladigan xabar..."
+                class="w-full"
+                rows="4"
+                autoResize
+                :class="{ 'p-invalid': !messageText && showValidation }"
+              />
+              <small v-if="!messageText && showValidation" class="text-red-500">
+                Xabar matni majburiy
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <div class="flex justify-end gap-3">
+          <Button
+            label="Bekor qilish"
+            icon="pi pi-times"
+            severity="secondary"
+            @click="sendMessageModalVisible = false"
           />
-          <small v-if="!messageText && showValidation" class="text-red-500">
-            Xabar matni majburiy
-          </small>
+          <Button
+            :label="isLoading ? 'Yuborilmoqda...' : 'Xabar yuborish'"
+            icon="pi pi-send"
+            class="bg-blue-500 border-blue-500 hover:bg-blue-600"
+            :loading="isLoading"
+            @click="sendMessageFunction()"
+          />
         </div>
-      </div>
-    </div>
-  </div>
-
-  <template #footer>
-    <div class="flex justify-end gap-3">
-      <Button
-        label="Bekor qilish"
-        icon="pi pi-times"
-        severity="secondary"
-        @click="sendMessageModalVisible = false"
-      />
-      <Button
-        :label="isLoading ? 'Yuborilmoqda...' : 'Xabar yuborish'"
-        icon="pi pi-send"
-        class="bg-blue-500 border-blue-500 hover:bg-blue-600"
-        :loading="isLoading"
-        @click="sendMessageFunction()"
-      />
-    </div>
-  </template>
-</Dialog>
+      </template>
+    </Dialog>
 
     <Toast />
   </div>
@@ -506,7 +502,7 @@ import Textarea from 'primevue/textarea'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
 import axios from 'axios'
-import Menu from 'primevue/menu';
+import Menu from 'primevue/menu'
 import { exportToExcel } from '@/utils/formatToExcel'
 import { formatDate } from '../../utils/FormatDate'
 
@@ -519,8 +515,8 @@ const props = defineProps({ group: Object })
 const emit = defineEmits(['getGroupById'])
 
 // Refs
-const menu = ref(null);
-const menuItems = ref([]);
+const menu = ref(null)
+const menuItems = ref([])
 const dt = ref()
 const filters = ref({ global: { value: null, matchMode: 'contains' } })
 const deleteModalVisible = ref(false)
@@ -529,8 +525,8 @@ const addPaymentModalVisible = ref(false)
 const selectedStudentId = ref(null)
 const showValidation = ref(false)
 const changeStudent = ref({})
-const sendMessageModalVisible=ref(false)
-const messageText=ref('')
+const sendMessageModalVisible = ref(false)
+const messageText = ref('')
 const isLoading = ref(false)
 const loading = ref(false)
 const editedStudent = ref({
@@ -556,40 +552,39 @@ const paymentMethods = [
   { label: 'Bank o‘tkazmasi', value: 'bank' },
 ]
 
-
 const toggleMenu = (event, student) => {
-  changeStudent.value = student;
+  changeStudent.value = student
 
   menuItems.value = [
     {
-      label: "Batafsil",
-      icon: "pi pi-eye",
-      command: () => router.push(`/group/${student.groupId}/student/${student._id}`)
+      label: 'Batafsil',
+      icon: 'pi pi-eye',
+      command: () => router.push(`/group/${student.groupId}/student/${student._id}`),
     },
     {
-      label: "To‘lov",
-      icon: "pi pi-money-bill",
-      command: () => opentPaymentModal(student)
+      label: 'To‘lov',
+      icon: 'pi pi-money-bill',
+      command: () => opentPaymentModal(student),
     },
-      {
-      label: "Xabar yuborish",
-      icon: "pi pi-send",
-      command: () => openMessageModal(changeStudent.value)
+    {
+      label: 'Xabar yuborish',
+      icon: 'pi pi-send',
+      command: () => openMessageModal(changeStudent.value),
     },
-         {
-      label: "Tahrirlash",
-      icon: "pi pi-pencil",
-      command: () => openEditModal(student)
+    {
+      label: 'Tahrirlash',
+      icon: 'pi pi-pencil',
+      command: () => openEditModal(student),
     },
     {
       label: "O'chirish",
-      icon: "pi pi-trash",
-      command: () => openDeleteModal()
-    }
-  ];
+      icon: 'pi pi-trash',
+      command: () => openDeleteModal(),
+    },
+  ]
 
-  menu.value.toggle(event);
-};
+  menu.value.toggle(event)
+}
 const opentPaymentModal = (item) => {
   addPaymentModalVisible.value = true
   changeStudent.value = item
@@ -733,37 +728,36 @@ const addPayment = async () => {
 }
 
 const sendMessageFunction = async () => {
-  isLoading.value=true
+  isLoading.value = true
   try {
-    const res = await axios.post("/students/send-message", {
+    const res = await axios.post('/students/send-message', {
       studentId: changeStudent.value._id,
-      message: messageText.value
-    });
+      message: messageText.value,
+    })
 
     if (res.status >= 200 && res.status < 300) {
-      sendMessageModalVisible.value = false;
+      sendMessageModalVisible.value = false
       toast.add({
         severity: 'success',
         summary: 'Muvaffaqiyatli',
-        detail: "Xabar yuborildi ✅",
+        detail: 'Xabar yuborildi ✅',
         life: 3000,
-      });
-      messageText.value = '';
-      isLoading.value=false
-      changeStudent.value = null;
+      })
+      messageText.value = ''
+      isLoading.value = false
+      changeStudent.value = null
     }
   } catch (err) {
-    isLoading.value=false
-    console.error("Xabar yuborishda xatolik:", err);
+    isLoading.value = false
+    console.error('Xabar yuborishda xatolik:', err)
     toast.add({
       severity: 'error',
       summary: 'Xatolik',
-      detail: "Xabar yuborib bo‘lmadi ❌",
+      detail: 'Xabar yuborib bo‘lmadi ❌',
       life: 3000,
-    });
+    })
   }
-};
-
+}
 </script>
 
 <style scoped>

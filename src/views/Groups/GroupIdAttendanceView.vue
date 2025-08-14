@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
-    <div class="container mx-auto px-4 py-6 max-w-7xl">
+    <div class="container">
 
       <GroupHeader 
         :groupInfo="groupInfo" 
@@ -110,10 +110,7 @@ const getGroupById = async () => {
     error.value = "Guruh ma'lumotlarini olishda xatolik yuz berdi";
   }
 };
-
 const goBack = () => router.back();
-const retryFetch = () => Promise.all([getGroupById(), fetchAttendanceHistory()]);
-const addAttendance = () => router.push(`/groups/${groupId}/attendance/add`);
 
 onMounted(() => {
   getGroupById();

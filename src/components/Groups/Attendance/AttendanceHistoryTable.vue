@@ -2,18 +2,45 @@
   <Card class="shadow-lg">
     <!-- Header -->
     <template #header>
-      <div class="flex items-center justify-between p-4 pb-0">
-        <div class="flex items-center gap-2">
-          <i class="pi pi-history text-xl text-purple-600"></i>
-          <h3 class="text-xl font-semibold text-gray-800">Davomat Tarixi</h3>
+      <div class="flex flex-col gap-3 p-4 pb-0">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <!-- Chap taraf -->
+          <div class="flex items-center gap-2">
+            <i class="pi pi-history text-xl text-purple-600"></i>
+            <h3 class="text-lg sm:text-xl font-semibold text-gray-800">Davomat Tarixi</h3>
+          </div>
+          <!-- Qidiruv va filterlar -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
+            <!-- Qidiruv -->
+            <span class="p-input-icon-right w-full sm:w-48">
+             <InputText
+  v-model="filters.global.value"
+  placeholder="Qidirish..."
+  class="p-inputtext-sm w-full h-9"
+/>
+            </span>
+
+            <!-- Holat filter -->
+          <Dropdown
+  v-model="filters.status.value"
+  :options="statusOptions"
+  optionLabel="label"
+  optionValue="value"
+  placeholder="Holat"
+  class="w-full sm:w-40 h-9"
+  showClear
+/>
+
+            <!-- Excel eksport -->
+            <Button
+              icon="pi pi-download"
+              label="Excel"
+              severity="success"
+              class="w-full sm:w-auto"
+              @click="exportToExcelHandler"
+            />
+          </div>
         </div>
-        <!-- Excel eksport tugmasi -->
-        <Button
-          icon="pi pi-download"
-          label="Excel"
-          severity="success"
-          @click="exportToExcelHandler"
-        />
       </div>
     </template>
 
@@ -32,6 +59,8 @@
         :rows="10"
         stripedRows
         responsiveLayout="scroll"
+        :filters="filters"
+        :globalFilterFields="['studentId.name','studentId.lastname','status','date']"
       >
         <Column field="date" header="Sana" sortable>
           <template #body="slotProps">
@@ -76,6 +105,8 @@ import Column from 'primevue/column';
 import Avatar from 'primevue/avatar';
 import Tag from 'primevue/tag';
 import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
+import Dropdown from 'primevue/dropdown';
 import { ref } from 'vue';
 import { exportToExcel } from '@/utils/formatToExcel';
 
@@ -84,6 +115,19 @@ const props = defineProps({
 });
 
 const dt = ref(null);
+
+// Filters
+const filters = ref({
+  global: { value: null, matchMode: 'contains' },
+  status: { value: null, matchMode: 'equals' }
+});
+
+// Holat variantlari
+const statusOptions = [
+  { label: 'Bor', value: 'present' },
+  { label: "Yo‘q", value: 'absent' },
+  { label: 'Kechikdi', value: 'late' }
+];
 
 const exportToExcelHandler = () => {
   const exportData = props.history.map((item, index) => ({
@@ -98,7 +142,6 @@ const exportToExcelHandler = () => {
   exportToExcel(exportData, fileName);
 };
 
-
 const formatDate = (d) => {
   return new Date(d).toLocaleDateString("uz-UZ", {
     year: "numeric",
@@ -109,7 +152,7 @@ const formatDate = (d) => {
 
 const getTodayDate = () => {
   const today = new Date();
-  return today.toISOString().split('T')[0]; // 2025-08-13 format
+  return today.toISOString().split('T')[0];
 };
 
 const getStatusIcon = (status) => {
@@ -124,7 +167,7 @@ const getStatusIcon = (status) => {
 const getStatusText = (status) => {
   switch (status) {
     case 'present': return 'Bor';
-    case 'absent': return "Yo'q";
+    case 'absent': return "Yo‘q";
     case 'late': return 'Kechikdi';
     default: return status;
   }
@@ -139,4 +182,3 @@ const getStatusSeverity = (status) => {
   }
 };
 </script>
-
