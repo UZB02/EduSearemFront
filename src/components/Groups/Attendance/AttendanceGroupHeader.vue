@@ -16,10 +16,7 @@
       
       <!-- Guruh va o'qituvchi ma'lumotlari -->
       <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-4">
-        <!-- Group Icon -->
-        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
-          <i class="pi pi-users text-white text-xl"></i>
-        </div>
+      
 
         <!-- Text Info -->
         <div class="flex-1">

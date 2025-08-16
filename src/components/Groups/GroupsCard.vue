@@ -14,52 +14,53 @@
             </span>
           </div>
         </div>
-        <div class="ml-4">
-          <!-- <button 
-            @click="toggle($event, group._id, group)"
-            class="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors duration-200"
-          >
-            <i class="pi pi-ellipsis-v text-white text-sm"></i>
-          </button>
-          <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" /> -->
-        </div>
       </div>
     </div>
 
     <!-- Card Body -->
     <div class="p-6">
       <!-- Stats Section -->
-<div class="grid grid-cols-12 gap-4 mb-4">
-  <!-- O'quvchilar -->
-  <div class="bg-gray-50 col-span-6 rounded-lg p-3 text-center">
-    <div class="flex items-center justify-center mb-1">
-      <i class="pi pi-users text-blue-500 text-lg"></i>
-    </div>
-    <div class="text-2xl font-bold text-gray-800">{{ group.students.length }}</div>
-    <div class="text-xs text-gray-500">O'quvchilar</div>
-  </div>
+      <div class="grid grid-cols-12 gap-4 mb-4">
+        <!-- O'quvchilar -->
+        <div class="bg-gray-50 col-span-6 rounded-lg p-3 text-center">
+          <div class="flex items-center justify-center mb-1">
+            <i class="pi pi-users text-blue-500 text-lg"></i>
+          </div>
+          <div class="text-2xl font-bold text-gray-800">{{ group.students.length }}</div>
+          <div class="text-xs text-gray-500">O'quvchilar</div>
+        </div>
 
-  <!-- Yaratilgan sana -->
-  <div class="bg-gray-50 col-span-6 rounded-lg  p-3 text-center">
-    <div class="flex items-center justify-center mb-1">
-      <i class="pi pi-calendar text-green-500 text-lg"></i>
-    </div>
-    <div class="text-sm font-semibold text-gray-800">{{ formatDate(group.createdAt) }}</div>
-    <div class="text-xs text-gray-500">Yaratilgan</div>
-  </div>
+        <!-- Yaratilgan sana -->
+        <div class="bg-gray-50 col-span-6 rounded-lg  p-3 text-center">
+          <div class="flex items-center justify-center mb-1">
+            <i class="pi pi-calendar text-green-500 text-lg"></i>
+          </div>
+          <div class="text-sm font-semibold text-gray-800">{{ formatDate(group.createdAt) }}</div>
+          <div class="text-xs text-gray-500">Yaratilgan</div>
+        </div>
 
-  <!-- Oylik to'lov -->
-  <div class="bg-gray-50 col-span-12 rounded-lg p-3 text-center">
-    <div class="flex items-center justify-center mb-1">
-      <i class="pi pi-wallet text-yellow-500 text-lg"></i>
-    </div>
-    <div class="text-xl font-bold text-gray-800">
-      {{ group.monthlyFee.toLocaleString() }} so'm
-    </div>
-    <div class="text-xs text-gray-500">Oylik to'lov</div>
-  </div>
-</div>
+        <!-- Oylik to'lov -->
+        <div class="bg-gray-50 col-span-12 rounded-lg p-3 text-center">
+          <div class="flex items-center justify-center mb-1">
+            <i class="pi pi-wallet text-yellow-500 text-lg"></i>
+          </div>
+          <div class="text-xl font-bold text-gray-800">
+            {{ group.monthlyFee.toLocaleString() }} so'm
+          </div>
+          <div class="text-xs text-gray-500">Oylik to'lov</div>
+        </div>
 
+        <!-- Kurs kunlari -->
+        <div class="bg-gray-50 col-span-12 rounded-lg p-3 text-center">
+          <div class="flex items-center justify-center mb-1">
+            <i class="pi pi-calendar-plus text-purple-500 text-lg"></i>
+          </div>
+          <div class="text-sm font-semibold text-gray-800">
+            {{ group.days && group.days.length ? group.days.join(', ') : "Kunlar belgilanmagan" }}
+          </div>
+          <div class="text-xs text-gray-500">O‘tiladigan kunlar</div>
+        </div>
+      </div>
 
       <!-- Action Buttons -->
       <div class="flex gap-2">
@@ -174,7 +175,7 @@
 import { formatDate } from '../../utils/FormatDate.js'
 import { ref } from 'vue'
 import Menu from 'primevue/menu'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import axios from "axios"
 import Dialog from 'primevue/dialog'
 import Drawer from 'primevue/drawer'
@@ -192,37 +193,6 @@ const deleteModalVisible = ref(false)
 const visibleEditGroup = ref(false)
 const isLoading = ref(false)
 
-const items = ref([
-  {
-    label: 'Batafsil ko\'rish',
-    icon: 'pi pi-eye',
-    command: () => {
-      router.push(`/group/${groupId.value}`)
-    }
-  },
-  {
-    label: 'Tahrirlash',
-    icon: 'pi pi-pencil',
-    command: () => {
-      visibleEditGroup.value = true
-    }
-  },
-  {
-    label: "O'chirish",
-    icon: 'pi pi-trash',
-    command: () => {
-      openDeleteModal()
-    },
-  },
-])
-
-const toggle = (event, Id, item) => {
-  menu.value.toggle(event)
-  groupId.value = Id
-  changegroup.value = item
-  console.log(groupId.value)
-}
-
 defineProps({
   group: {
     type: Object,
@@ -235,7 +205,8 @@ defineProps({
       teacher: {
         name: 'John',
         lastname: 'Doe'
-      }
+      },
+      days: []
     })
   }
 })
@@ -247,7 +218,7 @@ const openDeleteModal = () => {
 const deleteGroup = async () => {
   isLoading.value = true
   try {
-    const res = await axios.delete(`/groups/${groupId.value}`, {
+    await axios.delete(`/groups/${groupId.value}`, {
       params: {
         adminId: admin.id
       }

@@ -20,7 +20,7 @@
     </div>
 
     <!-- Guruh kartalari yoki Skeleton -->
-    <div class="grid md:grid-cols-4 grid-cols-1 gap-2">
+    <div class="grid md:grid-cols-3 grid-cols-1 gap-2">
       <template v-if="isLoading">
         <div v-for="i in 4" :key="i" class="h-40 bg-gray-100 animate-pulse rounded-xl"></div>
       </template>

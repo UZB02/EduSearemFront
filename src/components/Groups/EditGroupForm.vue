@@ -37,9 +37,10 @@
           {{ errors.teacher }}
         </small>
       </div>
+
       <!-- Belgilangan oylik to'lovi -->
-        <div class="space-y-2">
-        <label for="groupName" class="block text-sm font-medium text-gray-700">
+      <div class="space-y-2">
+        <label for="monthlyFee" class="block text-sm font-medium text-gray-700">
           Oylik to'lov *
         </label>
         <InputNumber
@@ -52,6 +53,42 @@
         <small v-if="errors.monthlyFee" class="text-red-500">
           {{ errors.monthlyFee }}
         </small>
+      </div>
+
+      <!-- 📌 Dars jadvali turi (toq, juft yoki custom) -->
+      <div class="space-y-2">
+        <label for="scheduleType" class="block text-sm font-medium text-gray-700">
+          Dars jadvali *
+        </label>
+        <Dropdown
+          id="scheduleType"
+          v-model="form.scheduleType"
+          :options="scheduleTypes"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Dars jadvalini tanlang"
+          class="w-full"
+          :class="{ 'p-invalid': errors.scheduleType }"
+        />
+        <small v-if="errors.scheduleType" class="text-red-500">
+          {{ errors.scheduleType }}
+        </small>
+      </div>
+
+      <!-- 📌 Agar "custom" bo'lsa, kunlarni tanlash -->
+      <div v-if="form.scheduleType === 'custom'" class="space-y-2">
+        <label for="days" class="block text-sm font-medium text-gray-700">
+          Dars kunlari *
+        </label>
+        <MultiSelect
+          id="days"
+          v-model="form.days"
+          :options="daysOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Kunlarni tanlang"
+          class="w-full"
+        />
       </div>
 
       <!-- Qo'shimcha ma'lumot -->
@@ -90,14 +127,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, defineEmits, watch } from 'vue'
+import { ref, reactive, defineEmits, watch, onMounted } from 'vue'
 import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import InputNumber from 'primevue/inputnumber'
+import MultiSelect from 'primevue/multiselect'
 import axios from "axios"
-import { onMounted } from 'vue'
 
 // Props va emitlar
 const props = defineProps({
@@ -112,8 +149,10 @@ const admin = JSON.parse(sessionStorage.getItem('admin'))
 const form = reactive({
   groupName: '',
   teacher: null,
-  monthlyFee:0,
+  monthlyFee: 0,
   description: '',
+  scheduleType: 'custom',
+  days: [],
   admin: admin.id
 })
 
@@ -121,12 +160,31 @@ const form = reactive({
 const errors = reactive({
   groupName: '',
   teacher: '',
-  monthlyFee:0
+  monthlyFee: '',
+  scheduleType: ''
 })
 
 const loading = ref(false)
 const teachers = ref([])
 const isEditMode = ref(false)
+
+// 📌 Jadval turlari
+const scheduleTypes = [
+  { label: 'Toq kunlar', value: 'toq' },
+  { label: 'Juft kunlar', value: 'juft' },
+  { label: 'Mahsus kunlar', value: 'custom' }
+]
+
+// 📌 Kunlar ro‘yxati
+const daysOptions = [
+  { label: "Dushanba", value: "Dushanba" },
+  { label: "Seshanba", value: "Seshanba" },
+  { label: "Chorshanba", value: "Chorshanba" },
+  { label: "Payshanba", value: "Payshanba" },
+  { label: "Juma", value: "Juma" },
+  { label: "Shanba", value: "Shanba" },
+  { label: "Yakshanba", value: "Yakshanba" }
+]
 
 // O'qituvchilarni olish
 const getAllTeachers = async () => {
@@ -144,21 +202,26 @@ const validateForm = () => {
   errors.groupName = ''
   errors.teacher = ''
   errors.monthlyFee = ''
+  errors.scheduleType = ''
 
   if (!form.groupName.trim()) {
     errors.groupName = 'Guruh nomi kiritilishi shart'
     isValid = false
-  } else if (form.groupName.length < 2) {
-    errors.groupName = 'Guruh nomi kamida 2 ta belgidan iborat bo\'lishi kerak'
-    isValid = false
   }
-
   if (!form.teacher) {
     errors.teacher = 'O\'qituvchi tanlanishi shart'
     isValid = false
   }
   if (!form.monthlyFee) {
     errors.monthlyFee = 'Kurs to\'lovi kiritilishi shart'
+    isValid = false
+  }
+  if (!form.scheduleType) {
+    errors.scheduleType = 'Dars jadvali tanlanishi shart'
+    isValid = false
+  }
+  if (form.scheduleType === 'custom' && form.days.length === 0) {
+    errors.scheduleType = 'Custom bo‘lsa, kunlar tanlanishi kerak'
     isValid = false
   }
 
@@ -171,24 +234,22 @@ const submitForm = async () => {
   loading.value = true
 
   try {
+    const payload = {
+      name: form.groupName,
+      description: form.description,
+      monthlyFee: form.monthlyFee,
+      teacher: form.teacher,
+      scheduleType: form.scheduleType,
+      days: form.scheduleType === 'custom' ? form.days : [],
+      adminId: form.admin
+    }
+
     if (isEditMode.value && props.changegroup && props.changegroup._id) {
       // Tahrirlash
-      await axios.put(`/groups/${props.changegroup._id}`, {
-        name: form.groupName,
-        description: form.description,
-        monthlyFee:form.monthlyFee,
-        teacher: form.teacher,
-        adminId: form.admin
-      })
+      await axios.put(`/groups/${props.changegroup._id}`, payload)
     } else {
       // Qo‘shish
-      await axios.post('/groups', {
-        name: form.groupName,
-        description: form.description,
-        monthlyFee:form.monthlyFee,
-        teacher: form.teacher,
-        adminId: form.admin
-      })
+      await axios.post('/groups', payload)
     }
 
     emit('refreshFunctions')
@@ -207,15 +268,19 @@ watch(
     if (newVal && newVal._id) {
       isEditMode.value = true
       form.groupName = newVal.name || ''
-      form.monthlyFee=newVal.monthlyFee || 0
+      form.monthlyFee = newVal.monthlyFee || 0
       form.teacher = newVal.teacher?._id || null
       form.description = newVal.description || ''
+      form.scheduleType = newVal.scheduleType || 'custom'
+      form.days = newVal.days || []
     } else {
       isEditMode.value = false
       form.groupName = ''
-      form.monthlyFee=0
+      form.monthlyFee = 0
       form.teacher = null
       form.description = ''
+      form.scheduleType = 'custom'
+      form.days = []
     }
   },
   { immediate: true }
@@ -225,7 +290,3 @@ onMounted(() => {
   getAllTeachers()
 })
 </script>
-
-<style scoped>
-/* Qo‘shimcha style kerak bo‘lsa shu yerga yozing */
-</style>
