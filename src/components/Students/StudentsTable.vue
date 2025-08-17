@@ -137,24 +137,24 @@
                     : 'pi pi-times-circle mr-1'
                 "
               ></i>
-              {{ slotProps.data.paymentStatus.message }}
+              {{ slotProps.data.paymentStatus.overallMessage }}
             </span>
           </template>
         </Column>
 
-        <!-- Actions Column -->
-        <Column header="Amallar" :style="{ width: '80px' }">
-          <template #body="slotProps">
-            <div>
-              <Button
-                icon="pi pi-ellipsis-v"
-                class="p-button-text"
-                @click="toggleMenu($event, slotProps.data)"
-              />
-              <Menu :model="menuItems" popup ref="menu" />
-            </div>
-          </template>
-        </Column>
+          <!-- Actions Column -->
+      <Column header="Amallar" :style="{ width: '120px' }">
+        <template #body="slotProps">
+          <div class="flex items-center">
+            <Button
+              icon="pi pi-ellipsis-v"
+              class="p-button-text"
+              @click="(event) => toggleMenu(event, slotProps.data)"
+            />
+            <Menu :model="menuItems" popup ref="menu" />
+          </div>
+        </template>
+      </Column>
       </DataTable>
     </div>
 
@@ -552,38 +552,19 @@ const paymentMethods = [
   { label: 'Bank o‘tkazmasi', value: 'bank' },
 ]
 
+// Toggle menu
 const toggleMenu = (event, student) => {
   changeStudent.value = student
 
   menuItems.value = [
-    {
-      label: 'Batafsil',
-      icon: 'pi pi-eye',
-      command: () => router.push(`/group/${student.groupId}/student/${student._id}`),
-    },
-    {
-      label: 'To‘lov',
-      icon: 'pi pi-money-bill',
-      command: () => opentPaymentModal(student),
-    },
-    {
-      label: 'Xabar yuborish',
-      icon: 'pi pi-send',
-      command: () => openMessageModal(changeStudent.value),
-    },
-    {
-      label: 'Tahrirlash',
-      icon: 'pi pi-pencil',
-      command: () => openEditModal(student),
-    },
-    {
-      label: "O'chirish",
-      icon: 'pi pi-trash',
-      command: () => openDeleteModal(),
-    },
+    { label: 'Batafsil', icon: 'pi pi-eye', command: () => router.push(`/group/${student.groupId}/student/${student._id}`) },
+    { label: 'To‘lov', icon: 'pi pi-money-bill', command: () => openPaymentModal(student) },
+    { label: 'Xabar yuborish', icon: 'pi pi-send', command: () => openMessageModal(changeStudent.value) },
+    { label: 'Tahrirlash', icon: 'pi pi-pencil', command: () => openEditModal(student) },
+    { label: "O'chirish", icon: 'pi pi-trash', command: () => openDeleteModal(student) }
   ]
 
-  menu.value.toggle(event)
+  if (menu.value) menu.value.toggle(event)
 }
 const opentPaymentModal = (item) => {
   addPaymentModalVisible.value = true

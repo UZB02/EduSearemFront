@@ -76,6 +76,11 @@ const views = ref([
     name: 'Xarajatlar',
     to: '/expense',
     icon: 'pi pi-credit-card'
+  },
+  {
+    name: 'Qarzdorlar',
+    to: '/debtors',
+    icon: 'pi pi-exclamation-triangle'
   }
 ])
 </script>

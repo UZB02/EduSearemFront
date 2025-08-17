@@ -228,6 +228,7 @@
       <thead class="bg-gray-100">
         <tr>
           <th class="px-3 py-2 text-left">Oy</th>
+          <th class="px-3 py-2 text-left">Kurs to'lovi</th>
           <th class="px-3 py-2 text-left">Holat</th>
           <th class="px-3 py-2 text-left">To'langan</th>
           <th class="px-3 py-2 text-left">Qolgan</th>
@@ -245,6 +246,7 @@
           class="border-t border-gray-200"
         >
           <td class="px-3 py-2">{{ month.month }}</td>
+          <td class="px-3 py-2">{{ formatCurrency(month.kursFee) }}</td>
           <td class="px-3 py-2">{{ month.message }}</td>
           <td class="px-3 py-2">{{ formatCurrency(month.totalPaid) }}</td>
           <td class="px-3 py-2">{{ formatCurrency(month.remainingAmount) }}</td>
