@@ -192,6 +192,7 @@ const admin = JSON.parse(sessionStorage.getItem('admin'))
 const isLoading = ref(false)
 const group = ref({})
 const addStudentmodalvisible = ref(false)
+const showValidation=ref(false)
 
 const newStudent = ref({
   name: 'Alisher',

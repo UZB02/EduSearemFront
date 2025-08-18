@@ -63,7 +63,7 @@ const views = ref([
     icon: 'pi pi-graduation-cap'
   },
   {
-    name: 'O\'qtuvchilar',
+    name: 'O\'qituvchilar',
     to: '/teachers',
     icon: 'pi pi-address-book'
   },

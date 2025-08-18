@@ -4,7 +4,7 @@
       <!-- Header with Year Selector -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Bosh sahifa</h1>
           <p class="text-gray-600">Boshqaruv paneli va statistikalar</p>
         </div>
         <div class="flex items-center gap-2 bg-white rounded-lg shadow-sm p-2">

@@ -357,6 +357,7 @@ const scienceOptions = ref([
   'Ingliz tili',
   'Tarix',
   'Informatika',
+  'Ona Tili',
 ])
 
 const salaryForm = ref({

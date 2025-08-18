@@ -1,6 +1,6 @@
 <!-- components/Expense/StatisticsCards.vue -->
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
     <!-- Last Expense -->
     <Card class="shadow-lg border-0 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
       <template #content>
@@ -69,7 +69,7 @@
       </template>
     </Card>
     <!-- Average Expense -->
-    <Card class="shadow-lg border-0 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+    <!-- <Card class="shadow-lg border-0 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
       <template #content>
         <div class="relative overflow-hidden">
           <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-full -translate-y-4 translate-x-4"></div>
@@ -87,7 +87,7 @@
           </div>
         </div>
       </template>
-    </Card>
+    </Card> -->
   </div>
 </template>
 
