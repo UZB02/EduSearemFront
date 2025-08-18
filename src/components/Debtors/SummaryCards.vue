@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     <Card class="shadow-lg border-0 hover:shadow-xl transition-shadow duration-300">
       <template #content>
         <div class="p-4">
@@ -70,22 +70,10 @@
 import Card from 'primevue/card';
 
 defineProps({
-  totalDebtors: {
-    type: Number,
-    required: true
-  },
-  totalDebtAmount: {
-    type: Number,
-    required: true
-  },
-  totalHaqdors: {
-    type: Number,
-    required: true
-  },
-  totalHaqdorAmount: {
-    type: Number,
-    required: true
-  }
+  totalDebtors: Number,
+  totalDebtAmount: Number,
+  totalHaqdors: Number,
+  totalHaqdorAmount: Number
 });
 
 const formatCurrency = (amount) => {
