@@ -13,6 +13,14 @@
       <BalanceCard :balance="balanceData.balance" :changePercent="balanceChangePercent" />
     </div>
 
+    <!-- Payments Table -->
+    <PaymentsTable
+      :payments="payments"
+      :isLoading="isLoading"
+      :formatDate="formatDate"
+      @refresh="fetchPayments"
+    />
+
     <!-- Loading -->
     <LoadingOverlay :visible="isLoading" />
   </div>
@@ -29,8 +37,10 @@ import IncomeCard from "@/components/Balance/IncomeCard.vue";
 import OutcomeCard from "@/components/Balance/OutcomeCard.vue";
 import BalanceCard from "@/components/Balance/BalanceCard.vue";
 import LoadingOverlay from "@/components/Balance/LoadingOverlay.vue";
+import PaymentsTable from "@/components/Balance/PaymentsTable.vue";
 
 const balanceData = ref({ income: 0, outcome: 0, balance: 0 });
+const payments = ref([]);
 const admin = JSON.parse(sessionStorage.getItem("admin"));
 const isLoading = ref(false);
 const incomeGrowth = ref(12.5);
@@ -41,14 +51,12 @@ const balanceChangePercent = computed(() => {
   return Math.abs(((balanceData.value.balance / (balanceData.value.income || 1)) * 100).toFixed(1));
 });
 
+// 🔹 API funksiyalar
 const fetchBalance = async () => {
   isLoading.value = true;
   try {
     const res = await axios.get("balance/real", { 
-      params: { 
-        userId: admin.id,
-        ...activeFilter.value // filter parametrlari qo'shiladi
-      }
+      params: { userId: admin.id, ...activeFilter.value }
     });
     balanceData.value = res.data;
   } catch (err) {
@@ -58,10 +66,26 @@ const fetchBalance = async () => {
   }
 };
 
+const fetchPayments = async () => {
+  isLoading.value = true;
+  try {
+    const res = await axios.get("/payments", { 
+      params: { userId: admin.id, ...activeFilter.value }
+    });
+    payments.value = res.data;
+    console.log(payments.value);
+  } catch (err) {
+    console.error("To'lovlarni olishda xatolik:", err);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 const refreshData = async () => {
   try {
     await axios.post("/balance/sync", { userId: admin.id });
     await fetchBalance();
+    await fetchPayments();
   } catch (err) {
     console.error("Balansni sinxronlashtirishda xatolik:", err);
   }
@@ -70,7 +94,20 @@ const refreshData = async () => {
 const onFilterChange = (filter) => {
   activeFilter.value = filter;
   fetchBalance();
+  fetchPayments();
 };
 
-onMounted(fetchBalance);
+// 🔹 Date format
+const formatDate = (dateStr) => {
+  return new Date(dateStr).toLocaleDateString("uz-UZ", {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  });
+};
+
+onMounted(() => {
+  fetchBalance();
+  fetchPayments();
+});
 </script>
