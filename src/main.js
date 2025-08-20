@@ -18,6 +18,8 @@ import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Dropdown from 'primevue/dropdown'
 import Menu from 'primevue/menu'
+import Toast from 'primevue/toast'   // ❗ qo‘shing
+
 
 
 const app = createApp(App)
@@ -41,6 +43,8 @@ app.component('InputText', InputText)
 app.component('Textarea', Textarea)
 app.component('Dropdown', Dropdown)
 app.component('Menu', Menu)
+app.component('Toast', Toast)  // ❗ Toastni global registratsiya qildik
+
 app.use(ConfirmationService) // 👈 BU MUHIM!
 
 app.component('ConfirmDialog', ConfirmDialog) 

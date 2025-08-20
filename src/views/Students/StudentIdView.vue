@@ -13,180 +13,13 @@
       </div>
 
       <!-- Student Profile Card -->
-      <div v-if="student" class="bg-white rounded-2xl overflow-hidden mb-8">
-        <!-- Header Section -->
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6">
-          <div class="flex items-center space-x-4">
-            <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">
-              <i class="pi pi-user text-4xl text-white"></i>
-            </div>
-            <div>
-              <h1 class="text-3xl font-bold text-white">
-                {{ student.name }} {{ student.lastname }}
-              </h1>
-              <p class="text-indigo-100 mt-1">O'quvchi profili</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Content Section -->
-        <div class="md:p-8 p-4">
-          <div class="flex flex-col gap-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Contact Information -->
-              <div class="space-y-4">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                  <i class="pi pi-phone text-indigo-600 mr-2"></i>
-                  Aloqa ma'lumotlari
-                </h3>
-
-                <div class="bg-gray-50 rounded-lg p-4">
-                  <div class="flex items-center space-x-3">
-                    <div
-                      class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center"
-                    >
-                      <i class="pi pi-phone text-green-600"></i>
-                    </div>
-                  <div class="flex flex-col">
-                      <div>
-                      <p class="text-sm text-gray-500">Telefon raqami</p>
-                      <a
-                        :href="`tel:${student.phone}`"
-                        class="text-lg font-medium text-green-600 hover:text-green-700 transition-colors"
-                      >
-                        {{ student.phone }}
-                      </a>
-                    </div>
-                    <div>
-                      <p class="text-sm text-gray-500">Ota-Ona telefon raqami</p>
-                      <a
-                        :href="`tel:${student.parentPhone}`"
-                        class="text-lg font-medium text-green-600 hover:text-green-700 transition-colors"
-                      >
-                        {{ student.phone }}
-                      </a>
-                    </div>
-                  </div>
-                  </div>
-                </div>
-
-                <div class="bg-gray-50 rounded-lg p-4">
-                  <div class="flex items-center space-x-3">
-                    <div
-                      class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"
-                    >
-                      <i class="pi pi-map-marker text-blue-600"></i>
-                    </div>
-                    <div>
-                      <p class="text-sm text-gray-500">Manzil</p>
-                      <p class="text-lg font-medium text-gray-800">{{ student.location }}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Additional Information -->
-              <div class="space-y-4">
-                <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                  <i class="pi pi-info-circle text-indigo-600 mr-2"></i>
-                  Qo'shimcha ma'lumotlar
-                </h3>
-
-                <div class="bg-gray-50 rounded-lg p-4">
-                  <div class="flex items-center space-x-3">
-                    <div
-                      class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center"
-                    >
-                      <i class="pi pi-calendar text-purple-600"></i>
-                    </div>
-                    <div>
-                      <p class="text-sm text-gray-500">Qo'shilgan sana</p>
-                      <p class="text-lg font-medium text-gray-800">
-                        {{ formatDate(student.createdAt) }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="bg-gray-50 rounded-lg p-4">
-                  <div class="flex items-start space-x-3">
-                    <div
-                      class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mt-1"
-                    >
-                      <i class="pi pi-file-edit text-orange-600"></i>
-                    </div>
-                    <div class="flex-1">
-                      <p class="text-sm text-gray-500">Izoh</p>
-                      <p class="text-lg font-medium text-gray-800 mt-1">
-                        {{ student.description || 'Hech qanday izoh qoldirilmagan' }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- To'lov holati -->
-            <div class="bg-white rounded-lg shadow-sm p-4">
-              <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
-                <div class="flex-1">
-                  <!-- Umumiy holat -->
-                  <p class="text-gray-500 text-sm">Umumiy to'lov holati</p>
-                  <h3
-                    class="text-xl font-bold mt-1"
-                    :class="student.paymentStatus?.isPaid ? 'text-green-600' : 'text-red-600'"
-                  >
-                    {{ student.paymentStatus?.overallMessage || 'Nomaʼlum' }}
-                  </h3>
-                  <p class="text-sm text-gray-600 mt-1">
-                    To'langan: {{ formatCurrency(student.paymentStatus?.totalPaid || 0) }}
-                  </p>
-                  <p class="text-sm text-gray-600">
-                    Qolgan: {{ formatCurrency(student.paymentStatus?.remainingAmount || 0) }}
-                  </p>
-                  <p class="text-sm text-gray-600">
-                    Ortiqcha: {{ formatCurrency(student.paymentStatus?.overpaidAmount || 0) }}
-                  </p>
-
-                  <!-- Tugma Dialogni ochish uchun -->
-                  <button
-                    class="inline-flex items-center gap-2 px-4 py-2.5 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mt-5"
-                    @click="showMonthly = true"
-                  >
-                    <i class="pi pi-chart-line text-sm"></i>
-                    Oylik holatni ko'rsatish
-                  </button>
-                </div>
-                <!-- Icon -->
-                <i
-                  class="pi pi-info-circle text-3xl mt-3 md:mt-0"
-                  :class="student.paymentStatus?.isPaid ? 'text-green-500' : 'text-red-500'"
-                ></i>
-              </div>
-            </div>
-          </div>
-          <!-- Action Buttons -->
-          <div class="mt-8 pt-6 border-t border-gray-200">
-            <div class="flex flex-wrap gap-3">
-              <button
-                @click="openEditModal(student)"
-                class="inline-flex items-center cursor-pointer px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-              >
-                <i class="pi pi-pencil mr-2"></i>
-                Tahrirlash
-              </button>
-
-              <button
-                @click="deleteModalVisible = true"
-                class="inline-flex items-center cursor-pointer px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-              >
-                <i class="pi pi-trash mr-2"></i>
-                O'chirish
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <StudentInfoCard
+        v-if="student"
+        :student="student"
+        @edit="openEditModal"
+        @delete="openDeleteModal"
+        @show-monthly="showMonthly = true"
+      />
 
       <!-- Loading Skeleton -->
       <div v-else class="bg-white rounded-2xl shadow-xl overflow-hidden">
@@ -205,352 +38,57 @@
       </div>
 
       <!-- Payment Table -->
-      <div class="rounded-2xl overflow-hidden">
-        <div class="flex justify-between py-6 border-gray-200">
-          <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-            <i class="pi pi-credit-card text-indigo-600 mr-2"></i>
-            To'lov tarixi
-          </h2>
-          <button
-            @click="addPaymentModalVisible = true"
-            class="inline-flex items-center cursor-pointer px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            <i class="pi pi-plus mr-2"></i>
-            To'lov qo'shish
-          </button>
-        </div>
-        <div class="">
-          <StudentPaymentTable ref="childRef" :studentId="studentId" />
-        </div>
-      </div>
+      <PaymentHistorySection :studentId="studentId" @add-payment="addPaymentModalVisible = true" />
+
+      <!-- Monthly Payment Dialog -->
+      <MonthlyPaymentDialog v-model:visible="showMonthly" :student="student || {}" />
+
+      <!-- Payment Modal -->
+      <PaymentModal
+        v-model:visible="addPaymentModalVisible"
+        :student="student"
+        :loading="isLoading"
+        @save="addPayment"
+        @cancel="addPaymentModalVisible = false"
+      />
+
+      <!-- Delete Confirmation Modal -->
+      <DeleteConfirmationModal
+        v-model:visible="deleteModalVisible"
+        :student="student"
+        :loading="isLoading"
+        @confirm="deleteStudent"
+        @cancel="deleteModalVisible = false"
+      />
+
+      <!-- Edit Student Modal -->
+      <EditStudentModal
+        v-model:visible="editStudentModalVisible"
+        :student="editedStudent"
+        :loading="isLoading"
+        @save="editStudent"
+        @cancel="editStudentModalVisible = false"
+      />
+
+      <Toast />
     </div>
   </div>
-           <!-- Dialog ichida oylik holatlar -->
-<Dialog
-  v-model:visible="showMonthly"
-  header="Oylik to'lov holatlari"
-  modal
-  :closable="true"
-      :style="{ width: '550px' }"
-    :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
->
-  <div class="overflow-x-auto">
-    <table class="min-w-full border border-gray-200 text-sm">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="px-3 py-2 text-left">Oy</th>
-          <th class="px-3 py-2 text-left">Kurs to'lovi</th>
-          <th class="px-3 py-2 text-left">Holat</th>
-          <th class="px-3 py-2 text-left">To'langan</th>
-          <th class="px-3 py-2 text-left">Qolgan</th>
-          <th class="px-3 py-2 text-left">Ortiqcha</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(month, index) in student.paymentStatus?.months || []"
-          :key="index"
-          :class="{
-            'bg-green-100': month.message === 'To\'langan' || month.message === 'Haqdor',
-            'bg-red-100': month.message === 'Qarzdor',
-          }"
-          class="border-t border-gray-200"
-        >
-          <td class="px-3 py-2">{{ month.month }}</td>
-          <td class="px-3 py-2">{{ formatCurrency(month.kursFee) }}</td>
-          <td class="px-3 py-2">{{ month.message }}</td>
-          <td class="px-3 py-2">{{ formatCurrency(month.totalPaid) }}</td>
-          <td class="px-3 py-2">{{ formatCurrency(month.remainingAmount) }}</td>
-          <td class="px-3 py-2">{{ formatCurrency(month.overpaidAmount) }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</Dialog>
-  <!-- Begin Payment Modal -->
-  <Dialog
-    v-model:visible="addPaymentModalVisible"
-    :modal="true"
-    :closable="true"
-    :draggable="false"
-    class="custom-dialog"
-    :style="{ width: '500px' }"
-    :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
-  >
-    <!-- Custom Header -->
-    <template #header>
-      <div class="flex items-center gap-3 w-full">
-        <div
-          class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center"
-        >
-          <i class="pi pi-wallet w-5 h-5 text-white"></i>
-        </div>
-        <div>
-          <h2 class="text-xl font-semibold text-gray-800 m-0">To‘lov qilish</h2>
-          <p class="text-sm text-gray-500 m-0">To‘lov ma'lumotlarini kiriting</p>
-        </div>
-      </div>
-    </template>
-
-    <!-- Form Content -->
-    <div class="space-y-6 p-1">
-      <div class="bg-gray-50 rounded-lg p-4 space-y-4">
-        <div class="flex flex-col gap-2">
-          <label class="text-sm font-medium text-gray-700 flex items-center gap-1">
-            To‘lov summasi <span class="text-red-500">*</span>
-          </label>
-          <InputNumber
-            v-model="newPayment.amount"
-            placeholder="Masalan: 200000"
-            inputClass="w-full"
-            class="w-full"
-            :class="{ 'p-invalid': !newPayment.amount && showValidation }"
-          />
-          <small v-if="!newPayment.amount && showValidation" class="text-red-500">
-            To‘lov summasi majburiy
-          </small>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label class="text-sm font-medium text-gray-700 flex items-center gap-1">
-            To‘lov turi <span class="text-red-500">*</span>
-          </label>
-          <Dropdown
-            v-model="newPayment.method"
-            :options="paymentMethods"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Tanlang"
-            class="w-full"
-            :class="{ 'p-invalid': !newPayment.method && showValidation }"
-          />
-          <small v-if="!newPayment.method && showValidation" class="text-red-500">
-            To‘lov turini tanlash majburiy
-          </small>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <label class="text-sm font-medium text-gray-700">Izoh</label>
-          <Textarea
-            v-model="newPayment.description"
-            placeholder="Ixtiyoriy izoh..."
-            class="w-full"
-            rows="3"
-            autoResize
-          />
-        </div>
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <template #footer>
-      <div class="flex justify-between items-center w-full pt-4 border-t border-gray-200">
-        <div class="text-sm text-gray-500">
-          <span class="text-red-500">*</span> Majburiy maydonlar
-        </div>
-        <div class="flex gap-3">
-          <Button
-            label="Bekor qilish"
-            icon="pi pi-times"
-            severity="secondary"
-            @click="addPaymentModalVisible = false"
-            class="px-4 py-2"
-          />
-          <Button
-            label="To‘lovni saqlash"
-            icon="pi pi-check"
-            @click="addPayment"
-            :loading="isLoading"
-            class="px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 border-green-500 hover:from-green-600 hover:to-green-700"
-          />
-        </div>
-      </div>
-    </template>
-  </Dialog>
-  <!-- End Payment Modal -->
-  <!-- Delete Confirmation Modal -->
-  <Dialog
-    v-model:visible="deleteModalVisible"
-    :modal="true"
-    :closable="false"
-    :draggable="false"
-    :style="{ width: '450px' }"
-    :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
-  >
-    <template #header>
-      <div class="flex items-center">
-        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
-          <i class="pi pi-exclamation-triangle text-red-600 text-xl"></i>
-        </div>
-        <div>
-          <h3 class="text-lg font-semibold text-gray-800 m-0">O'quvchini o'chirish</h3>
-          <p class="text-sm text-gray-500 m-0 mt-1">Bu amalni qaytarib bo'lmaydi</p>
-        </div>
-      </div>
-    </template>
-
-    <div class="py-4">
-      <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-        <div class="flex items-start">
-          <i class="pi pi-info-circle text-red-500 mt-1 mr-3"></i>
-          <div>
-            <p class="text-red-800 font-medium mb-1">
-              Haqiqatan ham bu o'quvchini o'chirmoqchimisiz?
-            </p>
-            <p class="text-red-600 text-sm">
-              O'quvchiga tegishli barcha ma'lumotlar ham o'chiriladi.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <template #footer>
-      <div class="flex justify-end gap-3">
-        <Button
-          label="Bekor qilish"
-          icon="pi pi-times"
-          severity="secondary"
-          @click="deleteModalVisible = false"
-        />
-        <Button
-          :label="isLoading ? 'O\'chirilmoqda...' : 'Ha, o\'chirish'"
-          icon="pi pi-trash"
-          severity="danger"
-          :loading="isLoading"
-          @click="deleteStudent"
-        />
-      </div>
-    </template>
-  </Dialog>
-  <!-- Edit Student Modal -->
-  <Dialog
-    v-model:visible="editStudentModalVisible"
-    :modal="true"
-    :closable="true"
-    :draggable="false"
-    :style="{ width: '600px' }"
-    :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
-  >
-    <template #header>
-      <div class="flex items-center w-full">
-        <div
-          class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center mr-4"
-        >
-          <i class="pi pi-pencil text-white text-lg"></i>
-        </div>
-        <div>
-          <h2 class="text-xl font-semibold text-gray-800 m-0">O'quvchini tahrirlash</h2>
-          <p class="text-sm text-gray-500 m-0 mt-1">Ma'lumotlarni yangilang</p>
-        </div>
-      </div>
-    </template>
-
-    <div class="space-y-6 py-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">
-            <i class="pi pi-user mr-1"></i>
-            Ism
-          </label>
-          <InputText v-model="editedStudent.name" class="w-full" placeholder="Ismni kiriting" />
-        </div>
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">
-            <i class="pi pi-user mr-1"></i>
-            Familiya
-          </label>
-          <InputText
-            v-model="editedStudent.lastname"
-            class="w-full"
-            placeholder="Familiyani kiriting"
-          />
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">
-            <i class="pi pi-phone mr-1"></i>
-            Telefon raqami
-          </label>
-          <InputText v-model="editedStudent.phone" class="w-full" placeholder="+998 90 123 45 67" />
-        </div>
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">
-            <i class="pi pi-phone mr-1"></i>
-            Ota-Ona telefon raqami
-          </label>
-          <InputText v-model="editedStudent.parentPhone" class="w-full" placeholder="+998 90 123 45 67" />
-        </div>
-        <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">
-            <i class="pi pi-map-marker mr-1"></i>
-            Manzil
-          </label>
-          <InputText
-            v-model="editedStudent.location"
-            class="w-full"
-            placeholder="Yashash manzilini kiriting"
-          />
-        </div>
-      </div>
-
-      <div class="space-y-2">
-        <label class="block text-sm font-medium text-gray-700">
-          <i class="pi pi-file-edit mr-1"></i>
-          Izoh
-        </label>
-        <Textarea
-          v-model="editedStudent.description"
-          rows="3"
-          class="w-full"
-          autoResize
-          placeholder="Qo'shimcha ma'lumotlar..."
-        />
-      </div>
-    </div>
-
-    <template #footer>
-      <div class="flex justify-end gap-3">
-        <Button
-          label="Bekor qilish"
-          icon="pi pi-times"
-          severity="secondary"
-          @click="editStudentModalVisible = false"
-        />
-        <Button label="Yangilash" icon="pi pi-check" :loading="isLoading" @click="editStudent" />
-      </div>
-    </template>
-  </Dialog>
-  <Toast />
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
-import Dialog from 'primevue/dialog'
-import Dropdown from 'primevue/dropdown'
-import InputNumber from 'primevue/inputnumber'
-import InputText from 'primevue/inputtext'
-import Textarea from 'primevue/textarea'
-import Button from 'primevue/button'
 import { useToast } from 'primevue/usetoast'
-import Toast from 'primevue/toast'
-import StudentPaymentTable from '../../components/Students/StudentPaymentTable.vue'
-function formatCurrency(value) {
-  return new Intl.NumberFormat('uz-UZ', {
-    style: 'currency',
-    currency: 'UZS',
-    minimumFractionDigits: 0,
-  }).format(value)
-}
 
-const admin = JSON.parse(sessionStorage.getItem('admin'))
+// Komponentlarni import qilish
+import StudentInfoCard from '../../components/Students/StudentInfoCard.vue'
+import PaymentHistorySection from '../../components/Students/PaymentHistorySection.vue'
+import MonthlyPaymentDialog from '../../components/Students/MonthlyPaymentDialog.vue'
+import PaymentModal from '../../components/Students/PaymentModal.vue'
+import DeleteConfirmationModal from '../../components/Students/DeleteConfirmationModal.vue'
+import EditStudentModal from '../../components/Students/EditStudentModal.vue'
 
-const showMonthly = ref(false)
-const childRef = ref()
 const toast = useToast()
 const route = useRoute()
 const router = useRouter()
@@ -559,28 +97,19 @@ const isLoading = ref(false)
 const studentId = ref(route.params.id)
 const groupId = ref(route.params.slug)
 
+const showMonthly = ref(false)
 const deleteModalVisible = ref(false)
 const editStudentModalVisible = ref(false)
-const selectedStudentId = ref()
 const addPaymentModalVisible = ref(false)
-const showValidation = ref(false)
-const newPayment = ref({
-  amount: null,
-  method: null,
-  description: '',
-})
+const selectedStudentId = ref()
 
-const paymentMethods = [
-  { label: 'Naqd', value: 'cash' },
-  { label: 'Karta orqali', value: 'card' },
-  { label: 'Bank o‘tkazmasi', value: 'bank' },
-]
+const admin = JSON.parse(sessionStorage.getItem('admin'))
 
 const editedStudent = ref({
   name: '',
   lastname: '',
   phone: '',
-    parentPhone:'',
+  parentPhone: '',
   location: '',
   description: '',
   groupId: groupId.value,
@@ -594,11 +123,16 @@ const openEditModal = (student) => {
     name: student.name,
     lastname: student.lastname,
     phone: student.phone,
-      parentPhone:student.parentPhone,
+    parentPhone: student.parentPhone,
     location: student.location,
     description: student.description,
   })
   editStudentModalVisible.value = true
+}
+
+const openDeleteModal = (student) => {
+  selectedStudentId.value = student._id
+  deleteModalVisible.value = true
 }
 
 const editStudent = async () => {
@@ -610,7 +144,7 @@ const editStudent = async () => {
     })
     if (res.status === 200) {
       editStudentModalVisible.value = false
-      getStudentById(d)
+      getStudentById()
       toast.add({
         severity: 'success',
         summary: 'Yangilandi',
@@ -635,8 +169,8 @@ const deleteStudent = async () => {
       detail: "O'quvchi o'chirildi",
       life: 3000,
     })
-    emit('getGroupById')
     deleteModalVisible.value = false
+    goBack()
   } catch (error) {
     toast.add({ severity: 'error', summary: 'Xatolik', detail: error.message, life: 3000 })
   } finally {
@@ -644,29 +178,16 @@ const deleteStudent = async () => {
   }
 }
 
-const addPayment = async () => {
-  showValidation.value = true
-
-  // Minimal tekshiruv
-  if (!newPayment.value.amount || !newPayment.value.method) {
-    return
-  }
-
+const addPayment = async (paymentData) => {
   isLoading.value = true
 
   try {
     await axios.post('/payments', {
-      ...newPayment.value,
+      ...paymentData,
       studentId: student.value._id,
-      userId: admin.id, // ⚠️ "admin" obyektingiz login bo'lgan foydalanuvchimi? Unda `id` to‘g‘ri.
+      userId: admin.id,
     })
 
-    // Bolalar komponentidagi usulni chaqirish
-    if (childRef.value?.getPaymentsByStudentId) {
-      childRef.value.getPaymentsByStudentId()
-    }
-
-    // Muvaffaqiyatli xabar
     toast.add({
       severity: 'success',
       summary: 'Bajarildi',
@@ -674,15 +195,8 @@ const addPayment = async () => {
       life: 3000,
     })
 
-    // Modalni yopish
     addPaymentModalVisible.value = false
     getStudentById()
-    // Formani tozalash (xohlasangiz)
-    newPayment.value = {
-      amount: null,
-      method: '',
-      description: '',
-    }
   } catch (error) {
     console.error('To‘lovni saqlashda xatolik:', error)
     toast.add({
@@ -696,22 +210,10 @@ const addPayment = async () => {
   }
 }
 
-// Format date function
-const formatDate = (dateString) => {
-  if (!dateString) return "Noma'lum"
-  const date = new Date(dateString)
-  return date.toLocaleDateString('uz-UZ', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
 const getStudentById = async () => {
   try {
     const res = await axios.get(`/students/byId/${studentId.value}`)
     student.value = res.data.student
-    console.log(res.data)
   } catch (error) {
     console.error("O'quvchini yuklashda xatolik:", error)
   }

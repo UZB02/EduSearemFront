@@ -178,7 +178,7 @@
 import { ref, watch } from 'vue'
 import axios from 'axios'
 import { useRoute, useRouter } from 'vue-router'
-import StudentsTable from '../../components/Students/StudentsTable.vue'
+import StudentsTable from '../../components/Students/MainStudentsList.vue'
 import Dialog from 'primevue/dialog'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
