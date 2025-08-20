@@ -112,6 +112,10 @@
             <label class="text-sm font-medium text-gray-700">Telefon raqami</label>
             <InputText v-model="newStudent.phone" placeholder="+998 90 123 45 67" class="w-full" />
           </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-gray-700">Ota-Ona telefon raqami</label>
+            <InputText v-model="newStudent.parentPhone" placeholder="+998 90 123 45 67" class="w-full" />
+          </div>
 
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-gray-700">Manzil</label>
@@ -171,9 +175,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import axios from 'axios'
-import { useRoute,useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import StudentsTable from '../../components/Students/StudentsTable.vue'
 import Dialog from 'primevue/dialog'
 import { useToast } from 'primevue/usetoast'
@@ -183,90 +187,79 @@ import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 
 const toast = useToast()
-
 const route = useRoute()
 const router = useRouter()
+
 const groupId = ref(route.params.slug)
 const admin = JSON.parse(sessionStorage.getItem('admin'))
 
 const isLoading = ref(false)
 const group = ref({})
 const addStudentmodalvisible = ref(false)
-const showValidation=ref(false)
+const showValidation = ref(false)
 
+// Initial newStudent object without groupId
 const newStudent = ref({
   name: 'Alisher',
   lastname: 'Sobirov',
-  phone: '+998974589652',
+  phone: '+998917622603',
+  parentPhone: '+998917622603',
   location: 'Namangan',
-  groupId: group.value._id,
+  groupId: null, // groupId key nil
   status: 'active',
   description: 'Sertefikat olmoqchi',
-  admin: admin.id,
+  admin: admin?.id || null,
 })
 
+// Fetch group data
 const getGroupById = async () => {
   try {
     const res = await axios.get(`/groups/${groupId.value}`, {
-      params: {
-        adminId: admin.id,
-      },
+      params: { adminId: admin.id }
     })
     group.value = res.data
-    console.log(group.value)
+
+    // Set groupId in newStudent once group is fetched
+    newStudent.value.groupId = group.value._id
   } catch (err) {
     console.error('Xatolik:', err)
+    toast.add({ severity: 'error', summary: 'Xatolik', detail: 'Guruh maʼlumotlari olinmadi', life: 3000 })
   }
 }
 getGroupById()
 
-// const gurupOptions = ref()
-
-// const getAllGroups = async () => {
-//   try {
-//     const res = await axios.get(`/groups`, {
-//       params: { adminId: admin.id },
-//     })
-//     gurupOptions.value = res.data
-//     console.log(res, 55)
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
-// getAllGroups()
-
+// Add student
 const addStudent = async () => {
-  console.log(newStudent.value)
-  console.log(group.value._id)
+  showValidation.value = true
+
+  if (!newStudent.value.name || !newStudent.value.lastname || !newStudent.value.parentPhone || !newStudent.value.groupId) {
+    toast.add({ severity: 'warn', summary: 'Ogohlantirish', detail: 'Majburiy maydonlarni to‘ldiring', life: 3000 })
+    return
+  }
+
+  isLoading.value = true
   try {
-    const res = await axios.post('/students', {
-      name: newStudent.value.name,
-      lastname: newStudent.value.lastname,
-      phone: newStudent.value.phone,
-      location: newStudent.value.location,
-      groupId: group.value._id,
-      status: 'new',
-      description: newStudent.value.description,
-      admin: admin.id,
-    })
-    if(res.status===201){
-    toast.add({ severity: 'success', summary: 'Success', detail: "O'quvchi qo‘shildi", life: 3000 })
+    const res = await axios.post('/students', { ...newStudent.value })
+    toast.add({ severity: 'success', summary: 'Muvaffaqiyatli', detail: "O'quvchi qo‘shildi", life: 3000 })
     addStudentmodalvisible.value = false
-    refreshFunction()
+    refreshForm()
     getGroupById()
-    }
   } catch (error) {
     console.error(error)
     toast.add({ severity: 'error', summary: 'Xatolik', detail: "O'quvchi qo‘shilmadi", life: 3000 })
+  } finally {
+    isLoading.value = false
   }
 }
 
-
-const refreshFunction=()=>{
-    newStudent.value.name=''
-    newStudent.value.lastname=''
-    newStudent.value.phone=''
-    newStudent.value.location=''
-    newStudent.value.description=''
+// Reset form
+const refreshForm = () => {
+  newStudent.value.name = ''
+  newStudent.value.lastname = ''
+  newStudent.value.phone = ''
+  newStudent.value.parentPhone = ''
+  newStudent.value.location = ''
+  newStudent.value.description = ''
+  showValidation.value = false
 }
 </script>

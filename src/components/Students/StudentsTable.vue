@@ -109,6 +109,21 @@
           </template>
         </Column>
 
+        <Column header="Ota-Ona Telefon raqami" :style="{ minWidth: '180px' }">
+          <template #body="slotProps">
+            <div class="space-y-1">
+              <a
+                :href="`tel:${slotProps.data.phone}`"
+                class="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+                v-tooltip.top="'Qo\'ng\'iroq qilish'"
+              >
+                <i class="pi pi-phone mr-2 text-sm"></i>
+                {{ slotProps.data.parentPhone }}
+              </a>
+            </div>
+          </template>
+        </Column>
+
         <!-- Date Column -->
         <Column header="Qo'shilgan sana" :style="{ minWidth: '150px' }">
           <template #body="slotProps">
@@ -269,6 +284,17 @@
             </label>
             <InputText
               v-model="editedStudent.phone"
+              class="w-full"
+              placeholder="+998 90 123 45 67"
+            />
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-medium text-gray-700">
+              <i class="pi pi-phone mr-1"></i>
+              Ota-Ona Telefon raqami
+            </label>
+            <InputText
+              v-model="editedStudent.parentPhone"
               class="w-full"
               placeholder="+998 90 123 45 67"
             />
@@ -535,6 +561,7 @@ const editedStudent = ref({
   phone: '',
   location: '',
   description: '',
+  parentPhone:'',
   groupId: props.group._id,
   status: 'active',
   admin: admin.id,
@@ -589,6 +616,7 @@ const exportToExcelHandler = () => {
     Ism: student.name,
     Familiya: student.lastname,
     Telefon: student.phone,
+    "Ota-Ona Telefon raqami":student.parentPhone,
     'Yashash joyi': student.location,
     "Qo'shilgan sanasi": formatDate(student.createdAt),
   }))
@@ -632,6 +660,7 @@ const openEditModal = (student) => {
     name: student.name,
     lastname: student.lastname,
     phone: student.phone,
+    parentPhone:student.parentPhone,
     location: student.location,
     description: student.description,
   })

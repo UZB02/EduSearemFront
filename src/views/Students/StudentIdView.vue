@@ -47,7 +47,8 @@
                     >
                       <i class="pi pi-phone text-green-600"></i>
                     </div>
-                    <div>
+                  <div class="flex flex-col">
+                      <div>
                       <p class="text-sm text-gray-500">Telefon raqami</p>
                       <a
                         :href="`tel:${student.phone}`"
@@ -56,6 +57,16 @@
                         {{ student.phone }}
                       </a>
                     </div>
+                    <div>
+                      <p class="text-sm text-gray-500">Ota-Ona telefon raqami</p>
+                      <a
+                        :href="`tel:${student.parentPhone}`"
+                        class="text-lg font-medium text-green-600 hover:text-green-700 transition-colors"
+                      >
+                        {{ student.phone }}
+                      </a>
+                    </div>
+                  </div>
                   </div>
                 </div>
 
@@ -467,6 +478,13 @@
         </div>
         <div class="space-y-2">
           <label class="block text-sm font-medium text-gray-700">
+            <i class="pi pi-phone mr-1"></i>
+            Ota-Ona telefon raqami
+          </label>
+          <InputText v-model="editedStudent.parentPhone" class="w-full" placeholder="+998 90 123 45 67" />
+        </div>
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-gray-700">
             <i class="pi pi-map-marker mr-1"></i>
             Manzil
           </label>
@@ -562,6 +580,7 @@ const editedStudent = ref({
   name: '',
   lastname: '',
   phone: '',
+    parentPhone:'',
   location: '',
   description: '',
   groupId: groupId.value,
@@ -575,6 +594,7 @@ const openEditModal = (student) => {
     name: student.name,
     lastname: student.lastname,
     phone: student.phone,
+      parentPhone:student.parentPhone,
     location: student.location,
     description: student.description,
   })
