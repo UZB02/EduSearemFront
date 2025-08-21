@@ -63,6 +63,11 @@ const router = createRouter({
       component: () => import('../views/Groups/GroupIdView.vue'),
     },
     {
+      path: '/group/:slug/statistics',
+      name: 'Group Id Statistics View',
+      component: () => import('../views/Groups/GroupStatisticsView.vue'),
+    },
+    {
       path: '/group/:slug/attendance',
       name: 'Group Id View Attendance',
       component: () => import('../views/Groups/GroupIdAttendanceView.vue'),

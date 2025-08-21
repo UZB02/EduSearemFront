@@ -21,11 +21,17 @@
         Davomat
       </button>
       <button
+        class="bg-gradient-to-r cursor-pointer from-blue-500 to-blue-600 text-white rounded-md px-4 py-2 hover:from-blue-600 hover:to-blue-700 transition-all duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+        @click="router.push(`/group/${group._id}/statistics`)"
+      >
+        <i class="pi pi-chart-bar"></i>
+        Statistika
+      </button>
+      <button
         class="bg-gradient-to-r cursor-pointer from-green-500 to-green-600 text-white rounded-md px-4 py-2 hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         @click="addStudentmodalvisible = true"
       >
         <i class="pi pi-plus"></i>
-        O'quvchi qo‘shish
       </button>
     </div>
   </div>

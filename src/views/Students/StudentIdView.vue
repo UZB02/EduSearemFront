@@ -39,7 +39,8 @@
 
       <!-- Payment Table -->
       <PaymentHistorySection :studentId="studentId" @add-payment="addPaymentModalVisible = true" />
-
+      <!-- Progeress -->
+<StudentProgress></StudentProgress>
       <!-- Monthly Payment Dialog -->
       <MonthlyPaymentDialog v-model:visible="showMonthly" :student="student || {}" />
 
@@ -88,6 +89,7 @@ import MonthlyPaymentDialog from '../../components/Students/MonthlyPaymentDialog
 import PaymentModal from '../../components/Students/PaymentModal.vue'
 import DeleteConfirmationModal from '../../components/Students/DeleteConfirmationModal.vue'
 import EditStudentModal from '../../components/Students/EditStudentModal.vue'
+import StudentProgress from '@/components/Students/StudentProgress/Progress.vue'
 
 const toast = useToast()
 const route = useRoute()
