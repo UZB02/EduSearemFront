@@ -3,8 +3,8 @@ import axios from 'axios'
 
 // API instansiyasini yaratamiz
 const api = axios.create({
-  // baseURL: 'https://education-backend-jxtk.onrender.com/api',
-  baseURL: 'http://localhost:3000/api',
+  baseURL: 'https://education-backend-jxtk.onrender.com/api',
+  // baseURL: 'http://localhost:3000/api',
   timeout: 10000, // maksimal kutish vaqti (10 soniya)
 })
 
