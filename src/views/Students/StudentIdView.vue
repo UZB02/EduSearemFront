@@ -2,13 +2,20 @@
   <div class="">
     <div class="mx-auto">
       <!-- Header with back button -->
-      <div class="mb-6">
+      <div class="mb-6 flex gap-2">
         <button
           @click="goBack"
-          class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+          class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none cursor-pointer focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
         >
           <i class="pi pi-arrow-left mr-2"></i>
           Ortga
+        </button>
+        <button
+          class="bg-gradient-to-r cursor-pointer from-purple-500 to-purple-600 text-white rounded-md px-4 py-2 hover:from-purple-600 hover:to-purple-700 transition-all duration-200 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          @click="router.push(`/group/${groupId}/student/${studentId}/statistics`)"
+        >
+          <i class="pi pi-chart-bar"></i>
+          Statistika
         </button>
       </div>
 
@@ -39,8 +46,6 @@
 
       <!-- Payment Table -->
       <PaymentHistorySection :studentId="studentId" @add-payment="addPaymentModalVisible = true" />
-      <!-- Progeress -->
-<StudentProgress></StudentProgress>
       <!-- Monthly Payment Dialog -->
       <MonthlyPaymentDialog v-model:visible="showMonthly" :student="student || {}" />
 
@@ -89,7 +94,6 @@ import MonthlyPaymentDialog from '../../components/Students/MonthlyPaymentDialog
 import PaymentModal from '../../components/Students/PaymentModal.vue'
 import DeleteConfirmationModal from '../../components/Students/DeleteConfirmationModal.vue'
 import EditStudentModal from '../../components/Students/EditStudentModal.vue'
-import StudentProgress from '@/components/Students/StudentProgress/Progress.vue'
 
 const toast = useToast()
 const route = useRoute()

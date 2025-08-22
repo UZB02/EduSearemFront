@@ -1,5 +1,12 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30">
+      <button
+          @click="router.back()"
+          class="inline-flex items-center cursor-pointer px-4 py-2 mb-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+        >
+          <i class="pi pi-arrow-left mr-2"></i>
+          Ortga
+        </button>
     <div class=" space-y-6">
       <!-- Filters -->
       <FiltersCard 
@@ -40,7 +47,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
 import axios from 'axios';
-import { useRoute } from 'vue-router';
+import { useRoute,useRouter } from 'vue-router';
 
 // Components
 import FiltersCard from './FiltersCard.vue';
@@ -54,6 +61,7 @@ const type = ref('weekly');
 const year = ref(new Date().getFullYear());
 const month = ref(new Date().getMonth() + 1);
 const route = useRoute();
+const router = useRouter()
 const groupId = ref(route.params.slug);
 const statsList = ref([]);
 const chartData = ref(null);

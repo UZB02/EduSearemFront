@@ -78,6 +78,11 @@ const router = createRouter({
       component: () => import('../views/Students/StudentIdView.vue'),
     },
     {
+      path: '/group/:slug/student/:id/statistics',
+      name: 'Student Id Statistics View',
+      component: () => import('../views/Students/StudentIdStatistics.vue'),
+    },
+    {
       path: '/login',
       name: 'Login',
       // route level code-splitting
