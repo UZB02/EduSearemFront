@@ -63,6 +63,11 @@ const views = ref([
     icon: 'pi pi-graduation-cap'
   },
   {
+    name: 'Xonalar',
+    to: '/rooms',
+    icon: 'pi pi-building-columns'
+  },
+  {
     name: 'O\'qituvchilar',
     to: '/teachers',
     icon: 'pi pi-address-book'

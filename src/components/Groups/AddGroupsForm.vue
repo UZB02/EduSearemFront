@@ -39,7 +39,7 @@
           </small>
         </div>
 
-        <!-- Belgilangan oylik to'lovi -->
+        <!-- Oylik to'lov -->
         <div class="space-y-2">
           <label for="monthlyFee" class="block text-sm font-medium text-gray-700">
             Oylik to'lov *
@@ -54,6 +54,22 @@
           <small v-if="errors.monthlyFee" class="text-red-500">
             {{ errors.monthlyFee }}
           </small>
+        </div>
+
+        <!-- Dars vaqti -->
+        <div class="grid grid-cols-1 gap-4">
+          <div class="space-y-2">
+            <label for="startTime" class="block text-sm font-medium text-gray-700">
+              Dars boshlanish vaqti *
+            </label>
+            <Calendar v-model="form.startTime" timeOnly class="w-full" />
+          </div>
+          <div class="space-y-2">
+            <label for="endTime" class="block text-sm font-medium text-gray-700">
+              Dars tugash vaqti *
+            </label>
+            <Calendar v-model="form.endTime" timeOnly class="w-full" />
+          </div>
         </div>
 
         <!-- Dars kunlari turi -->
@@ -134,6 +150,7 @@ import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import InputNumber from 'primevue/inputnumber'
 import axios from "axios"
+import Calendar from 'primevue/calendar'
 
 const admin = JSON.parse(sessionStorage.getItem('admin'))
 
@@ -145,7 +162,9 @@ const form = reactive({
   description: '',
   admin: admin.id,
   daysType: '',        // "toq" | "juft" | "custom"
-  daysOfWeek: []       // ['monday', 'wednesday']
+  daysOfWeek: [],      // ['Dushanba', 'Chorshanba']
+  startTime: null,     // Date obyekt
+  endTime: null        // Date obyekt
 })
 
 const emit = defineEmits(['getAllGroups', 'closeDrawer'])
@@ -212,7 +231,17 @@ const validateForm = () => {
     isValid = false
   }
 
+  if (!form.startTime || !form.endTime) {
+    alert("Dars boshlanish va tugash vaqtini tanlang")
+    isValid = false
+  }
+
   return isValid
+}
+
+// HH:mm formatlash
+const formatTime = (date) => {
+  return date ? date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : null
 }
 
 // Form yuborish
@@ -238,7 +267,9 @@ const submitForm = async () => {
       adminId: form.admin,
       teacher: form.teacher,
       scheduleType: form.daysType,   // endi toq/juft/custom
-      days: selectedDays
+      days: selectedDays,
+      startTime: formatTime(form.startTime),
+      endTime: formatTime(form.endTime)
     })
     emit('getAllGroups')
     emit('closeDrawer')
@@ -257,6 +288,8 @@ const resetForm = () => {
   form.description = ''
   form.daysType = ''
   form.daysOfWeek = []
+  form.startTime = null
+  form.endTime = null
 }
 
 const getAllTeachers = async () => {

@@ -5,7 +5,7 @@
       <div class="flex justify-between items-start">
         <div class="flex-1">
           <h2 class="text-xl font-bold text-white mb-1 line-clamp-2">
-            {{ group.name }}
+            {{ group.name }} {{ group.startTime }}-{{ group.endTime }}
           </h2>
           <div class="flex items-center text-indigo-100">
             <i class="pi pi-user text-sm mr-2"></i>

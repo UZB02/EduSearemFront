@@ -1,131 +1,3 @@
-<template>
-  <div>
-    <form @submit.prevent="submitForm" class="space-y-6">
-      <!-- Guruh nomi -->
-      <div class="space-y-2">
-        <label for="groupName" class="block text-sm font-medium text-gray-700">
-          Guruh nomi *
-        </label>
-        <InputText
-          id="groupName"
-          v-model="form.groupName"
-          placeholder="Guruh nomini kiriting"
-          class="w-full"
-          :class="{ 'p-invalid': errors.groupName }"
-        />
-        <small v-if="errors.groupName" class="text-red-500">
-          {{ errors.groupName }}
-        </small>
-      </div>
-
-      <!-- O'qituvchi -->
-      <div class="space-y-2">
-        <label for="teacher" class="block text-sm font-medium text-gray-700">
-          O'qituvchi *
-        </label>
-        <Dropdown
-          id="teacher"
-          v-model="form.teacher"
-          :options="teachers"
-          optionLabel="name"
-          optionValue="_id"
-          placeholder="O'qituvchini tanlang"
-          class="w-full"
-          :class="{ 'p-invalid': errors.teacher }"
-        />
-        <small v-if="errors.teacher" class="text-red-500">
-          {{ errors.teacher }}
-        </small>
-      </div>
-
-      <!-- Belgilangan oylik to'lovi -->
-      <div class="space-y-2">
-        <label for="monthlyFee" class="block text-sm font-medium text-gray-700">
-          Oylik to'lov *
-        </label>
-        <InputNumber
-          id="monthlyFee"
-          v-model="form.monthlyFee"
-          placeholder="Oylik to'lovni kiriting"
-          class="w-full"
-          :class="{ 'p-invalid': errors.monthlyFee }"
-        />
-        <small v-if="errors.monthlyFee" class="text-red-500">
-          {{ errors.monthlyFee }}
-        </small>
-      </div>
-
-      <!-- 📌 Dars jadvali turi (toq, juft yoki custom) -->
-      <div class="space-y-2">
-        <label for="scheduleType" class="block text-sm font-medium text-gray-700">
-          Dars jadvali *
-        </label>
-        <Dropdown
-          id="scheduleType"
-          v-model="form.scheduleType"
-          :options="scheduleTypes"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Dars jadvalini tanlang"
-          class="w-full"
-          :class="{ 'p-invalid': errors.scheduleType }"
-        />
-        <small v-if="errors.scheduleType" class="text-red-500">
-          {{ errors.scheduleType }}
-        </small>
-      </div>
-
-      <!-- 📌 Agar "custom" bo'lsa, kunlarni tanlash -->
-      <div v-if="form.scheduleType === 'custom'" class="space-y-2">
-        <label for="days" class="block text-sm font-medium text-gray-700">
-          Dars kunlari *
-        </label>
-        <MultiSelect
-          id="days"
-          v-model="form.days"
-          :options="daysOptions"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Kunlarni tanlang"
-          class="w-full"
-        />
-      </div>
-
-      <!-- Qo'shimcha ma'lumot -->
-      <div class="space-y-2">
-        <label for="description" class="block text-sm font-medium text-gray-700">
-          Guruh haqida ma'lumot
-        </label>
-        <Textarea
-          id="description"
-          v-model="form.description"
-          placeholder="Guruh haqida qo'shimcha ma'lumot kiriting"
-          rows="3"
-          class="w-full"
-        />
-      </div>
-
-      <!-- Tugmalar -->
-      <div class="flex gap-3 pt-4">
-        <Button
-          type="button"
-          label="Bekor qilish"
-          severity="secondary"
-          outlined
-          class="flex-1"
-          @click="emit('closeDrawer')"
-        />
-        <Button
-          type="submit"
-          label="Saqlash"
-          :loading="loading"
-          class="flex-1"
-        />
-      </div>
-    </form>
-  </div>
-</template>
-
 <script setup>
 import { ref, reactive, defineEmits, watch, onMounted } from 'vue'
 import InputText from 'primevue/inputtext'
@@ -134,6 +6,7 @@ import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import InputNumber from 'primevue/inputnumber'
 import MultiSelect from 'primevue/multiselect'
+import Calendar from 'primevue/calendar'
 import axios from "axios"
 
 // Props va emitlar
@@ -151,8 +24,10 @@ const form = reactive({
   teacher: null,
   monthlyFee: 0,
   description: '',
-  scheduleType: 'custom',
+  scheduleType: '',
   days: [],
+  startTime: null,
+  endTime: null,
   admin: admin.id
 })
 
@@ -161,7 +36,9 @@ const errors = reactive({
   groupName: '',
   teacher: '',
   monthlyFee: '',
-  scheduleType: ''
+  scheduleType: '',
+  startTime: '',
+  endTime: ''
 })
 
 const loading = ref(false)
@@ -170,9 +47,9 @@ const isEditMode = ref(false)
 
 // 📌 Jadval turlari
 const scheduleTypes = [
-  { label: 'Toq kunlar', value: 'toq' },
-  { label: 'Juft kunlar', value: 'juft' },
-  { label: 'Mahsus kunlar', value: 'custom' }
+  { label: 'Toq kunlar (Du/Chor/Juma)', value: 'toq' },
+  { label: 'Juft kunlar (Se/Pay/Shan)', value: 'juft' },
+  { label: 'Maxsus kunlar', value: 'custom' }
 ]
 
 // 📌 Kunlar ro‘yxati
@@ -203,6 +80,8 @@ const validateForm = () => {
   errors.teacher = ''
   errors.monthlyFee = ''
   errors.scheduleType = ''
+  errors.startTime = ''
+  errors.endTime = ''
 
   if (!form.groupName.trim()) {
     errors.groupName = 'Guruh nomi kiritilishi shart'
@@ -224,31 +103,49 @@ const validateForm = () => {
     errors.scheduleType = 'Custom bo‘lsa, kunlar tanlanishi kerak'
     isValid = false
   }
+  if (!form.startTime) {
+    errors.startTime = 'Boshlanish vaqti tanlanishi shart'
+    isValid = false
+  }
+  if (!form.endTime) {
+    errors.endTime = 'Tugash vaqti tanlanishi shart'
+    isValid = false
+  }
 
   return isValid
 }
 
-// Form yuborish
+// 📌 Form yuborish
 const submitForm = async () => {
   if (!validateForm()) return
   loading.value = true
 
-  try {
-    const payload = {
-      name: form.groupName,
-      description: form.description,
-      monthlyFee: form.monthlyFee,
-      teacher: form.teacher,
-      scheduleType: form.scheduleType,
-      days: form.scheduleType === 'custom' ? form.days : [],
-      adminId: form.admin
-    }
+  // Jadval turiga qarab kunlarni aniqlash
+  let selectedDays = []
+  if (form.scheduleType === 'toq') {
+    selectedDays = ["Dushanba", "Chorshanba", "Juma"]
+  } else if (form.scheduleType === 'juft') {
+    selectedDays = ["Seshanba", "Payshanba", "Shanba"]
+  } else {
+    selectedDays = form.days
+  }
 
-    if (isEditMode.value && props.changegroup && props.changegroup._id) {
-      // Tahrirlash
+  const payload = {
+    name: form.groupName,
+    description: form.description,
+    monthlyFee: form.monthlyFee,
+    teacher: form.teacher,
+    scheduleType: form.scheduleType,
+    days: selectedDays,
+    startTime: form.startTime ? form.startTime.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}) : null,
+    endTime: form.endTime ? form.endTime.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}) : null,
+    adminId: form.admin
+  }
+
+  try {
+    if (isEditMode.value && props.changegroup?._id) {
       await axios.put(`/groups/${props.changegroup._id}`, payload)
     } else {
-      // Qo‘shish
       await axios.post('/groups', payload)
     }
 
@@ -261,7 +158,7 @@ const submitForm = async () => {
   }
 }
 
-// Guruhni tahrirlash uchun formani to‘ldirish
+// 📌 Guruhni tahrirlash uchun formani to‘ldirish
 watch(
   () => props.changegroup,
   (newVal) => {
@@ -271,16 +168,20 @@ watch(
       form.monthlyFee = newVal.monthlyFee || 0
       form.teacher = newVal.teacher?._id || null
       form.description = newVal.description || ''
-      form.scheduleType = newVal.scheduleType || 'custom'
+      form.scheduleType = newVal.scheduleType || ''
       form.days = newVal.days || []
+      form.startTime = newVal.startTime ? new Date(`1970-01-01T${newVal.startTime}`) : null
+      form.endTime = newVal.endTime ? new Date(`1970-01-01T${newVal.endTime}`) : null
     } else {
       isEditMode.value = false
       form.groupName = ''
       form.monthlyFee = 0
       form.teacher = null
       form.description = ''
-      form.scheduleType = 'custom'
+      form.scheduleType = ''
       form.days = []
+      form.startTime = null
+      form.endTime = null
     }
   },
   { immediate: true }
@@ -290,3 +191,69 @@ onMounted(() => {
   getAllTeachers()
 })
 </script>
+
+<template>
+  <div>
+    <form @submit.prevent="submitForm" class="space-y-6">
+      <!-- Guruh nomi -->
+      <div class="space-y-2">
+        <label>Guruh nomi *</label>
+        <InputText v-model="form.groupName" class="w-full" />
+        <small v-if="errors.groupName" class="text-red-500">{{ errors.groupName }}</small>
+      </div>
+
+      <!-- O'qituvchi -->
+      <div class="space-y-2">
+        <label>O'qituvchi *</label>
+        <Dropdown v-model="form.teacher" :options="teachers" optionLabel="name" optionValue="_id" class="w-full" />
+        <small v-if="errors.teacher" class="text-red-500">{{ errors.teacher }}</small>
+      </div>
+
+      <!-- Oylik to'lov -->
+      <div class="space-y-2">
+        <label>Oylik to'lov *</label>
+        <InputNumber v-model="form.monthlyFee" class="w-full" />
+        <small v-if="errors.monthlyFee" class="text-red-500">{{ errors.monthlyFee }}</small>
+      </div>
+
+      <!-- Jadval turi -->
+      <div class="space-y-2">
+        <label>Dars jadvali *</label>
+        <Dropdown v-model="form.scheduleType" :options="scheduleTypes" optionLabel="label" optionValue="value" class="w-full" />
+        <small v-if="errors.scheduleType" class="text-red-500">{{ errors.scheduleType }}</small>
+      </div>
+
+      <!-- Custom kunlar -->
+      <div v-if="form.scheduleType === 'custom'" class="space-y-2">
+        <label>Dars kunlari *</label>
+        <MultiSelect v-model="form.days" :options="daysOptions" optionLabel="label" optionValue="value" class="w-full" />
+      </div>
+
+      <!-- Dars boshlanish va tugash vaqti -->
+      <div class="grid grid-cols-1">
+        <div class="">
+          <label>Boshlanish vaqti *</label>
+          <Calendar v-model="form.startTime" timeOnly class="w-full" />
+          <small v-if="errors.startTime" class="text-red-500">{{ errors.startTime }}</small>
+        </div>
+        <div class="">
+          <label>Tugash vaqti *</label>
+          <Calendar v-model="form.endTime" timeOnly class="w-full" />
+          <small v-if="errors.endTime" class="text-red-500">{{ errors.endTime }}</small>
+        </div>
+      </div>
+
+      <!-- Izoh -->
+      <div class="space-y-2">
+        <label>Guruh haqida</label>
+        <Textarea v-model="form.description" rows="3" class="w-full" />
+      </div>
+
+      <!-- Tugmalar -->
+      <div class="flex gap-3 pt-4">
+        <Button type="button" label="Bekor qilish" severity="secondary" outlined class="flex-1" @click="emit('closeDrawer')" />
+        <Button type="submit" label="Saqlash" :loading="loading" class="flex-1" />
+      </div>
+    </form>
+  </div>
+</template>
