@@ -2,8 +2,8 @@
   <Dialog
     :visible="visible"
     :modal="true"
-    :closable="true"
-    :draggable="false"
+    :closable="false"
+    :draggable="true"
     class="custom-dialog"
     :style="{ width: '500px' }"
     :breakpoints="{ '1199px': '90vw', '575px': '95vw' }"
@@ -98,7 +98,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import Dialog from 'primevue/dialog'
 import Button from 'primevue/button'
 import InputNumber from 'primevue/inputnumber'
@@ -120,6 +120,10 @@ const payment = ref({
   description: '',
 })
 
+
+watch(() => props.student, (newVal) => {
+  payment.value.amount = newVal?.paymentStatus?.remainingAmount || 0
+}, { immediate: true })
 const paymentMethods = [
   { label: 'Naqd', value: 'cash' },
   { label: 'Karta orqali', value: 'card' },

@@ -14,17 +14,22 @@
       </button>
     </div>
     <div class="">
-      <StudentPaymentTable :studentId="studentId" />
+      <StudentPaymentTable ref="paymentTableRef" :studentId="studentId"  />
     </div>
   </div>
 </template>
 
 <script setup>
-import StudentPaymentTable from './StudentPaymentTable.vue'
+import { ref } from "vue"
+import StudentPaymentTable from "./StudentPaymentTable.vue"
 
-defineProps({
-  studentId: String
+defineProps({ studentId: String })
+defineEmits(["add-payment"])
+
+const paymentTableRef = ref(null)
+
+// ⚡️ asosiy parent chaqira olishi uchun ochib beramiz
+defineExpose({
+  refreshPayments: (id) => paymentTableRef.value.getPaymentsByStudentId(id)
 })
-
-defineEmits(['add-payment'])
 </script>

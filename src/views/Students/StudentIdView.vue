@@ -45,7 +45,12 @@
       </div>
 
       <!-- Payment Table -->
-      <PaymentHistorySection :studentId="studentId" @add-payment="addPaymentModalVisible = true" />
+        <PaymentHistorySection
+      ref="paymentHistoryRef"
+      :studentId="studentId"
+      @add-payment="addPaymentModalVisible = true"
+    />
+      <!-- <PaymentHistorySection :studentId="studentId" @add-payment="addPaymentModalVisible = true" /> -->
       <!-- Monthly Payment Dialog -->
       <MonthlyPaymentDialog v-model:visible="showMonthly" :student="student || {}" />
 
@@ -102,6 +107,7 @@ const student = ref(null)
 const isLoading = ref(false)
 const studentId = ref(route.params.id)
 const groupId = ref(route.params.slug)
+const paymentHistoryRef = ref(null)
 
 const showMonthly = ref(false)
 const deleteModalVisible = ref(false)
@@ -186,7 +192,6 @@ const deleteStudent = async () => {
 
 const addPayment = async (paymentData) => {
   isLoading.value = true
-
   try {
     await axios.post('/payments', {
       ...paymentData,
@@ -203,6 +208,7 @@ const addPayment = async (paymentData) => {
 
     addPaymentModalVisible.value = false
     getStudentById()
+    afterPaymentAdded()
   } catch (error) {
     console.error('To‘lovni saqlashda xatolik:', error)
     toast.add({
@@ -223,6 +229,11 @@ const getStudentById = async () => {
   } catch (error) {
     console.error("O'quvchini yuklashda xatolik:", error)
   }
+}
+
+// yangi to‘lov qo‘shilganda jadvalni yangilash
+const afterPaymentAdded = () => {
+  paymentHistoryRef.value.refreshPayments(studentId.value)
 }
 
 const goBack = () => {

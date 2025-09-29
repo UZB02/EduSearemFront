@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 ">
     <div class="max-w-7xl mx-auto">
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col md:flex-row gap-2 items-center justify-between">
           <div>
             <h1 class="text-3xl font-bold text-slate-800 mb-2">Xonalar boshqaruvi</h1>
             <p class="text-slate-600">Xonalarni boshqaring va jadvallarni ko'ring</p>
@@ -214,10 +214,15 @@ const saveRoom = async () => {
     }
     dialogVisible.value = false
     fetchRooms()
-  } catch (err) {
-    console.error('Xona saqlashda xato:', err)
-    toast.add({ severity: 'error', summary: 'Xatolik', detail: 'Xona saqlashda xato', life: 3000 })
-  }
+} catch (err) {
+  console.error('Xona saqlashda xato:', err)
+  toast.add({ 
+    severity: 'error', 
+    summary: 'Xatolik', 
+    detail: err.response?.data?.message || 'Xona saqlashda nomaʼlum xato yuz berdi', 
+    life: 3000 
+  })
+} 
 }
 
 // Oddiy Dialog orqali o'chirish

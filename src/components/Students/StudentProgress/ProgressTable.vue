@@ -23,6 +23,7 @@ const fetchProgresses = async () => {
     const res = await axios.get(`/progress/${props.studentId}`)
     console.log(res.data);
     progresses.value = res.data
+    console.log(progresses.value);
   } catch (err) {
     console.error('Progresslarni olishda xatolik:', err)
   } finally {

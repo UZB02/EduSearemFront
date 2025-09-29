@@ -64,7 +64,7 @@
       <table class="min-w-full">
         <thead>
           <tr class="bg-gradient-to-r from-slate-50 to-gray-50 border-b border-gray-200">
-            <th class="px-6 py-4 text-left font-semibold text-gray-800 border-r border-gray-200 sticky left-0 z-10 bg-white shadow-sm">
+            <th class="px-4 py-4 text-left font-semibold text-gray-800 border-r border-gray-200 sticky left-0 z-10 bg-white shadow-sm">
               <div class="flex items-center gap-2">
                 <i class="pi pi-home text-indigo-600"></i>
                 Xona
@@ -101,14 +101,6 @@
               class="border-r border-gray-200 last:border-r-0 relative h-96 p-3"
             >
               <div class="relative h-full bg-gray-50/30 rounded-lg border border-gray-100">
-                <!-- Time markers -->
-                <div class="absolute inset-0 pointer-events-none">
-                  <div v-for="hour in 12" :key="hour" 
-                       class="absolute left-0 right-0 border-t border-gray-200/50"
-                       :style="{ top: `${(hour - 1) * 8.33}%` }">
-                    <span class="text-xs text-gray-400 ml-1">{{ 7 + hour }}:00</span>
-                  </div>
-                </div>
 
                 <!-- Schedule blocks -->
                 <div
@@ -321,23 +313,24 @@ const computeBlockStyle = (start, end) => {
   const startInMinutes = sh * 60 + sm;
   const endInMinutes = eh * 60 + em;
 
-  const dayStart = 8 * 60;
-  const dayEnd = 20 * 60;
+  const dayStart = 4 * 60;   // 4:00
+  const dayEnd = 24 * 60;    // 24:00
   const totalMinutes = dayEnd - dayStart;
 
-  const topPercent = ((startInMinutes - dayStart) / totalMinutes) * 90;
-  const heightPercent = ((endInMinutes - startInMinutes) / totalMinutes) * 85;
+  // Top va height foizlarini 100% asosida hisoblash
+  const topPercent = ((startInMinutes - dayStart) / totalMinutes) * 100;
+  const heightPercent = ((endInMinutes - startInMinutes) / totalMinutes) * 100;
 
   return {
+    position: "absolute",
     top: `${topPercent}%`,
-    height: `${Math.max(heightPercent, 8)}%`,
+    height: `${Math.max(heightPercent, 15)}%`, // juda kichik bo'lsa 5% minimal
     left: "8px",
     right: "8px",
-    position: "absolute",
-    minHeight: "32px",
     zIndex: 10
   };
 };
+
 
 const removeFromRoom = async (schedule) => {
   try {

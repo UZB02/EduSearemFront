@@ -161,9 +161,10 @@ const menu = ref(null)
 const menuItems = ref([])
 
 const toggleMenu = (event, student) => {
+  console.log(student);
   menuItems.value = [
     { label: 'Batafsil', icon: 'pi pi-eye', command: () => emit('view', student) },
-    { label: 'To‘lov', icon: 'pi pi-money-bill', command: () => emit('payment', student) },
+    { label: 'To‘lov', icon: 'pi pi-money-bill', command: () => emit('payment', student)},
     { label: 'Xabar yuborish', icon: 'pi pi-send', command: () => emit('message', student) },
     { label: 'Tahrirlash', icon: 'pi pi-pencil', command: () => emit('edit', student) },
     { label: "O'chirish", icon: 'pi pi-trash', command: () => emit('delete', student) }
