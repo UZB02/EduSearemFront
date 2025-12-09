@@ -72,7 +72,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import axios from 'axios'
+import api from "@/utils/api.js";
 import Avatar from 'primevue/avatar'
 import Tag from 'primevue/tag'
 import Button from 'primevue/button'
@@ -129,7 +129,7 @@ const openEditDialog = () => {
 const updateTeacher = async () => {
   saving.value = true
   try {
-    await axios.put(`/teachers/${form.value._id}`, {
+    await api.put(`/teachers/${form.value._id}`, {
       ...form.value,
       userId: admin.id
     })

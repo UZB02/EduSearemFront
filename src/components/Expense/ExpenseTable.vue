@@ -207,7 +207,7 @@ import Calendar from 'primevue/calendar'
 import Dialog from 'primevue/dialog'
 import { useToast } from 'primevue/usetoast'
 import Toast from 'primevue/toast'
-import axios from 'axios'
+import api from "../../utils/api.js";
 import { exportToExcel } from '@/utils/formatToExcel.js'
 import { formatDate } from '@/utils/FormatDate.js'
 
@@ -277,7 +277,7 @@ const openDelExpenseModal = (item) => {
 const deleteExpense = async () => {
   try {
     isLoading.value = true
-    const res = await axios.delete(`/expense/${expense.value._id}`)
+    const res = await api.delete(`/expense/${expense.value._id}`)
     if (res.status === 200) {
       toast.add({
         severity: 'success',

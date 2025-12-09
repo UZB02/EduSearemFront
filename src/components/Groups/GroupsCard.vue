@@ -176,7 +176,7 @@ import { formatDate } from '../../utils/FormatDate.js'
 import { ref } from 'vue'
 import Menu from 'primevue/menu'
 import { useRouter } from 'vue-router'
-import axios from "axios"
+import api from "@/utils/api.js";
 import Dialog from 'primevue/dialog'
 import Drawer from 'primevue/drawer'
 import Button from 'primevue/button'
@@ -218,7 +218,7 @@ const openDeleteModal = () => {
 const deleteGroup = async () => {
   isLoading.value = true
   try {
-    await axios.delete(`/groups/${groupId.value}`, {
+    await api.delete(`/groups/${groupId.value}`, {
       params: {
         adminId: admin.id
       }
@@ -285,3 +285,151 @@ const refreshFunctions = () => {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 </style>
+
+
+<!-- <template>
+  <tr class="hover:bg-gray-50 transition-all duration-200">
+    <td class="px-6 py-3 text-gray-600 text-sm">{{ index + 1 }}</td>
+    <td class="px-6 py-3 font-semibold text-gray-800">{{ group.name }}</td>
+    <td class="px-6 py-3 text-gray-700 text-sm">
+      {{ group.teacher?.name }} {{ group.teacher?.lastname }}
+    </td>
+    <td class="px-6 py-3 text-center text-gray-800 font-semibold">
+      {{ group.students?.length || 0 }}
+    </td>
+    <td class="px-6 py-3 text-center text-gray-800 font-semibold">
+      {{ group.monthlyFee?.toLocaleString() }} so‘m
+    </td>
+    <td class="px-6 py-3 text-center text-gray-600 text-sm">
+      {{ group.days?.length ? group.days.join(', ') : 'Belgilanmagan' }}
+    </td>
+    <td class="px-6 py-3 text-center text-gray-700 text-sm">
+      {{ group.startTime }}–{{ group.endTime }}
+    </td>
+    <td class="px-6 py-3 text-center text-gray-600 text-sm">
+      {{ formatDate(group.createdAt) }}
+    </td>
+
+    <td class="px-6 py-3 text-right flex justify-end gap-2">
+      <button 
+        @click="router.push(`/group/${group._id}`)"
+        class="text-indigo-600 hover:text-indigo-800 transition-all duration-150"
+      >
+        <i class="pi pi-eye"></i>
+      </button>
+
+      <button 
+        @click="visibleEditGroup = true; changegroup = group"
+        class="text-gray-600 hover:text-gray-800 transition-all duration-150"
+      >
+        <i class="pi pi-pencil"></i>
+      </button>
+
+      <button 
+        @click="openDeleteModal(); changegroup = group; groupId = group._id"
+        class="text-red-500 hover:text-red-700 transition-all duration-150"
+      >
+        <i class="pi pi-trash"></i>
+      </button>
+    </td>
+  </tr>
+
+
+  <Dialog
+    v-model:visible="deleteModalVisible"
+    modal
+    :closable="false"
+    header="Guruhni o‘chirish"
+    :style="{ width: '400px' }"
+  >
+    <div class="text-gray-700">
+      <p class="font-medium mb-2">"{{ changegroup.name }}" guruhini o‘chirmoqchimisiz?</p>
+      <p class="text-sm text-gray-500">
+        Bu amalni qaytarib bo‘lmaydi. Barcha ma’lumotlar o‘chiriladi.
+      </p>
+    </div>
+
+    <template #footer>
+      <div class="flex justify-end gap-3">
+        <Button
+          label="Bekor qilish"
+          icon="pi pi-times"
+          class="p-button-text"
+          @click="deleteModalVisible = false"
+        />
+        <Button
+          :label="isLoading ? 'O‘chirilmoqda...' : 'O‘chirish'"
+          icon="pi pi-trash"
+          class="p-button-danger"
+          :loading="isLoading"
+          @click="deleteGroup()"
+        />
+      </div>
+    </template>
+  </Dialog>
+
+  <Drawer v-model:visible="visibleEditGroup" header="Guruhni tahrirlash" position="right" class="w-full md:w-96">
+    <EditGroupForm 
+      :changegroup="changegroup"
+      @refreshFunctions="refreshFunctions"
+      @closeDrawer="visibleEditGroup = false"
+    />
+  </Drawer>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import api from 'api'
+import Dialog from 'primevue/dialog'
+import Drawer from 'primevue/drawer'
+import Button from 'primevue/button'
+import { formatDate } from '../../utils/FormatDate.js'
+import EditGroupForm from './EditGroupForm.vue'
+
+const router = useRouter()
+const emit = defineEmits(['getAllGroups'])
+const admin = JSON.parse(sessionStorage.getItem('admin'))
+
+defineProps({
+  group: {
+    type: Object,
+    required: true
+  },
+  index: {
+    type: Number,
+    required: true
+  }
+})
+
+const changegroup = ref({})
+const groupId = ref(null)
+const deleteModalVisible = ref(false)
+const visibleEditGroup = ref(false)
+const isLoading = ref(false)
+
+const openDeleteModal = () => {
+  deleteModalVisible.value = true
+}
+
+const deleteGroup = async () => {
+  isLoading.value = true
+  try {
+    await api.delete(`/groups/${groupId.value}`, {
+      params: { adminId: admin.id }
+    })
+    emit('getAllGroups')
+    deleteModalVisible.value = false
+  } catch (err) {
+    console.error(err)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const refreshFunctions = () => {
+  emit('getAllGroups')
+  visibleEditGroup.value = false
+}
+</script> -->
+

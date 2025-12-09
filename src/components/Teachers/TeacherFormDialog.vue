@@ -35,7 +35,7 @@
 
 <script setup>
 import { ref, watch, defineProps, defineEmits } from 'vue'
-import axios from 'axios'
+import api from "@/utils/api.js";
 import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
@@ -77,9 +77,9 @@ const saveTeacher = async () => {
   saving.value = true
   try {
     if (props.editingTeacher) {
-      await axios.put(`/api/teachers/${props.editingTeacher._id}`, form.value)
+      await api.put(`/api/teachers/${props.editingTeacher._id}`, form.value)
     } else {
-      await axios.post('/api/teachers', form.value)
+      await api.post('/api/teachers', form.value)
     }
     toast.add({ severity: 'success', summary: 'Muvaffaqiyat', detail: 'Saqlash muvaffaqiyatli', life: 3000 })
     emit('saved')

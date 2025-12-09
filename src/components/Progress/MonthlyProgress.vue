@@ -21,7 +21,7 @@
 
 <script setup>
 import { ref, computed, watch } from "vue";
-import axios from "axios";
+import api from "@/utils/api.js";
 import Chart from "primevue/chart";
 import Calendar from "primevue/calendar";
 
@@ -34,7 +34,7 @@ const monthlyProgress = ref([]);
 // API orqali ma'lumot olish
 const loadProgress = async () => {
   try {
-    const res = await axios.get(`/progress/68a6dec7bacaf2ae7020afe3/yearly`, {
+    const res = await api.get(`/progress/68a6dec7bacaf2ae7020afe3/yearly`, {
       params: { year: selectedYear.value.getFullYear() },
     });
     monthlyProgress.value = res.data;

@@ -22,7 +22,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
+import api from "@/utils/api.js";
 import InputNumber from "primevue/inputnumber";
 import Dropdown from "primevue/dropdown";
 import Button from "primevue/button";
@@ -38,7 +38,7 @@ const admin = JSON.parse(sessionStorage.getItem("admin"));
 // Studentlarni olish
 onMounted(async () => {
   try {
-    const res = await axios.get(`/students/${admin.id}`);
+    const res = await api.get(`/students/${admin.id}`);
     // res.data array ekanligini tekshirish
     if (Array.isArray(res.data)) {
       students.value = res.data.map((s) => ({
@@ -60,7 +60,7 @@ const submitProgress = async () => {
   if (!studentId.value) return alert("O‘quvchi tanlanmagan");
 
   try {
-    const res = await axios.post("/progress", {
+    const res = await api.post("/progress", {
       studentId: studentId.value,
       attendanceRate: attendanceRate.value,
       averageScore: averageScore.value,

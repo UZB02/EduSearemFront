@@ -113,7 +113,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
+import api from "../../utils/api.js";
 
 // PrimeVue komponentlari
 import { useToast } from 'primevue/usetoast'
@@ -175,7 +175,7 @@ const formatDate = (dateStr) => {
 
 const getBalance = async () => {
   try {
-     const res = await axios.get("balance/real",{  
+     const res = await api.get("balance/real",{  
       params: {
         userId:admin.id
       }}); // mos API endpointingiz
@@ -189,7 +189,7 @@ getBalance()
 const getExpenses = async () => {
   loading.value = true
   try {
-    const res = await axios.get('/expense',{ params: { userId: admin.id } })
+    const res = await api.get('/expense',{ params: { userId: admin.id } })
     expenses.value = res.data
     console.log(expenses.value);
   } catch (err) {
@@ -207,7 +207,7 @@ const refreshData = () => {
 const saveExpense = async () => {
   saving.value = true;
   try {
-    const res = await axios.post(`/expense`, {
+    const res = await api.post(`/expense`, {
       amount: expenseForm.value.amount,
       description: expenseForm.value.description,
       userId: admin.id // ✅ asosiy yechim shu

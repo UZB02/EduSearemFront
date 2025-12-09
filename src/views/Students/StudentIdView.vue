@@ -89,7 +89,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
+import api from "../../utils/api.js";
 import { useToast } from 'primevue/usetoast'
 
 // Komponentlarni import qilish
@@ -150,7 +150,7 @@ const openDeleteModal = (student) => {
 const editStudent = async () => {
   isLoading.value = true
   try {
-    const res = await axios.put(`/students/${selectedStudentId.value}`, {
+    const res = await api.put(`/students/${selectedStudentId.value}`, {
       ...editedStudent.value,
       admin: admin.id,
     })
@@ -174,7 +174,7 @@ const editStudent = async () => {
 const deleteStudent = async () => {
   isLoading.value = true
   try {
-    await axios.delete(`/students/${selectedStudentId.value}`)
+    await api.delete(`/students/${selectedStudentId.value}`)
     toast.add({
       severity: 'success',
       summary: 'Bajarildi',
@@ -193,7 +193,7 @@ const deleteStudent = async () => {
 const addPayment = async (paymentData) => {
   isLoading.value = true
   try {
-    await axios.post('/payments', {
+    await api.post('/payments', {
       ...paymentData,
       studentId: student.value._id,
       userId: admin.id,
@@ -224,7 +224,7 @@ const addPayment = async (paymentData) => {
 
 const getStudentById = async () => {
   try {
-    const res = await axios.get(`/students/byId/${studentId.value}`)
+    const res = await api.get(`/students/byId/${studentId.value}`)
     student.value = res.data.student
   } catch (error) {
     console.error("O'quvchini yuklashda xatolik:", error)

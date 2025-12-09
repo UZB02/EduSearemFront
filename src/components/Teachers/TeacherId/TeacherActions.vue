@@ -64,7 +64,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import axios from 'axios'
+import api from "@/utils/api.js";
 import { useToast } from 'primevue/usetoast'
 
 import Card from 'primevue/card'
@@ -103,7 +103,7 @@ const submitSalary = async () => {
   }
 
   try {
-    await axios.post('/salaries/pay-part', {
+    await api.post('/salaries/pay-part', {
       teacherId: props.teacherId,
       userId: props.userId,
       ...salaryForm.value
@@ -126,7 +126,7 @@ const addPoints = async () => {
 
   loading.value = true
   try {
-    await axios.post(`/teachers/${props.teacherId}/add-points`, {
+    await api.post(`/teachers/${props.teacherId}/add-points`, {
       points: points.value,
       userId: props.userId
     })
@@ -150,7 +150,7 @@ const subtractPoints = async () => {
 
   loading.value = true
   try {
-    await axios.post(`/teachers/${props.teacherId}/subtract-points`, {
+    await api.post(`/teachers/${props.teacherId}/subtract-points`, {
       points: points.value,
       userId: props.userId
     })

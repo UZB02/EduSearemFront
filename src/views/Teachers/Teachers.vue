@@ -259,7 +259,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
+import api from "../../utils/api.js";
 import { useToast } from 'primevue/usetoast'
 import { useConfirm } from 'primevue/useconfirm'
 import { useRoute, useRouter } from 'vue-router'
@@ -373,7 +373,7 @@ const submitSalary = async () => {
       return
     }
 
-    await axios.post('/salaries', {
+    await api.post('/salaries', {
       teacherId: selectedTeacher.value._id,
       userId: admin.id,
       amount: salaryForm.value.amount,
@@ -394,7 +394,7 @@ const submitSalary = async () => {
 const fetchTeachers = async () => {
   loading.value = true
   try {
-    const res = await axios.get(`/teachers?userId=${admin.id}`)
+    const res = await api.get(`/teachers?userId=${admin.id}`)
     teachers.value = res.data
     console.log(teachers.value)
   } catch (error) {
@@ -445,12 +445,12 @@ const saveTeacher = async () => {
   console.log(teacherForm.value);
   try {
     if (editingTeacher.value) {
-      await axios.put(`/teachers/${editingTeacher.value._id}`, {
+      await api.put(`/teachers/${editingTeacher.value._id}`, {
         ...teacherForm.value,
         userId: admin.id,
       })
     } else {
-      await axios.post('/teachers', { ...teacherForm.value, userId: admin.id })
+      await api.post('/teachers', { ...teacherForm.value, userId: admin.id })
     }
     toast.add({
       severity: 'success',
@@ -492,7 +492,7 @@ const confirmDelete = (teacher) => {
     icon: 'pi pi-exclamation-triangle',
     accept: async () => {
       try {
-        await axios.delete(`/teachers/${teacher._id}?userId=${admin.id}`)
+        await api.delete(`/teachers/${teacher._id}?userId=${admin.id}`)
         toast.add({
           severity: 'success',
           summary: "O'chirildi",
@@ -536,7 +536,7 @@ const handleAddPoints = async () => {
   }
   addingPoints.value = true
   try {
-    await axios.post(`/teachers/${selectedTeacher.value._id}/add-points`, {
+    await api.post(`/teachers/${selectedTeacher.value._id}/add-points`, {
       points: pointsToAdd.value,
       userId: admin.id,
     })
@@ -567,7 +567,7 @@ const handleSubtractPoints = async () => {
   }
   addingPoints.value = true
   try {
-    await axios.post(`/teachers/${selectedTeacher.value._id}/subtract-points`, {
+    await api.post(`/teachers/${selectedTeacher.value._id}/subtract-points`, {
       points: pointsToAdd.value,
       userId: admin.id,
     })

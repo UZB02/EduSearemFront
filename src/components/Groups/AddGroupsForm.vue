@@ -149,7 +149,7 @@ import Dropdown from 'primevue/dropdown'
 import Textarea from 'primevue/textarea'
 import Button from 'primevue/button'
 import InputNumber from 'primevue/inputnumber'
-import axios from "axios"
+import api from "@/utils/api.js";
 import Calendar from 'primevue/calendar'
 
 const admin = JSON.parse(sessionStorage.getItem('admin'))
@@ -260,7 +260,7 @@ const submitForm = async () => {
   }
 
   try {
-    await axios.post('/groups', {
+    await api.post('/groups', {
       name: form.groupName,
       description: form.description,
       monthlyFee: form.monthlyFee,
@@ -294,7 +294,7 @@ const resetForm = () => {
 
 const getAllTeachers = async () => {
   try {
-    const res = await axios.get(`/teachers?userId=${admin.id}`)
+    const res = await api.get(`/teachers?userId=${admin.id}`)
     teachers.value = res.data
   } catch (err) {
     console.error(err)

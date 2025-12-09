@@ -97,7 +97,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import api from "../../utils/api.js";
 
 import Card from 'primevue/card'
 import InputText from 'primevue/inputtext'
@@ -144,7 +144,7 @@ const handleLogin = async () => {
   isLoading.value = true
 
   try {
-    const res = await axios.post('/auth/login', {
+    const res = await api.post('/auth/login', {
       phone: phone.value,
       password: password.value,
     })

@@ -7,7 +7,7 @@ import Button from 'primevue/button'
 import InputNumber from 'primevue/inputnumber'
 import MultiSelect from 'primevue/multiselect'
 import Calendar from 'primevue/calendar'
-import axios from "axios"
+import api from "@/utils/api.js";
 
 // Props va emitlar
 const props = defineProps({
@@ -66,7 +66,7 @@ const daysOptions = [
 // O'qituvchilarni olish
 const getAllTeachers = async () => {
   try {
-    const res = await axios.get(`/teachers?userId=${admin.id}`)
+    const res = await api.get(`/teachers?userId=${admin.id}`)
     teachers.value = res.data
   } catch (err) {
     console.error(err)
@@ -144,9 +144,9 @@ const submitForm = async () => {
 
   try {
     if (isEditMode.value && props.changegroup?._id) {
-      await axios.put(`/groups/${props.changegroup._id}`, payload)
+      await api.put(`/groups/${props.changegroup._id}`, payload)
     } else {
-      await axios.post('/groups', payload)
+      await api.post('/groups', payload)
     }
 
     emit('refreshFunctions')

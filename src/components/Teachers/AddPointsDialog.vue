@@ -13,7 +13,7 @@
 
 <script setup>
 import { ref, defineProps, defineEmits } from 'vue'
-import axios from 'axios'
+import api from "@/utils/api.js";
 import Dialog from 'primevue/dialog'
 import InputNumber from 'primevue/inputnumber'
 import Button from 'primevue/button'
@@ -38,7 +38,7 @@ const addPoints = async () => {
   }
   loading.value = true
   try {
-    await axios.post(`/teachers/${props.teacher._id}/add-points`, { points: points.value })
+    await api.post(`/teachers/${props.teacher._id}/add-points`, { points: points.value })
     toast.add({ severity: 'success', summary: 'Qo‘shildi', detail: 'Ball qo‘shildi', life: 3000 })
     emit('added')
     close()

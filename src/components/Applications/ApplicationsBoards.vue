@@ -208,6 +208,14 @@
               class="w-full"
             />
           </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-sm font-medium text-gray-700">Ota-Oan telefon raqami</label>
+            <InputText
+              v-model="newApplicant.parentPhone"
+              placeholder="+998 90 123 45 67"
+              class="w-full"
+            />
+          </div>
 
           <div class="flex flex-col gap-2">
             <label class="text-sm font-medium text-gray-700">Manzil</label>
@@ -609,6 +617,7 @@ const editedApplication = ref({
   name: '',
   lastname: '',
   phone: '',
+  parentPhone:'',
   location: '',
   groupId: '',
   status: '',
@@ -622,6 +631,7 @@ const newApplicant = ref({
   name: '',
   lastname: '',
   phone: '',
+  parentPhone:'',
   location: '',
   groupId: null,
   status: 'new',
@@ -781,6 +791,7 @@ async function addapplication() {
       status: column.name,
       description: '',
       admin: '',
+      parentPhone:''
     }
     addmodalvisible.value = false
     showValidation.value = false

@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Tag from 'primevue/tag'
-import axios from 'axios'
+import api from "@/utils/api.js";
 
 // Props
 const props = defineProps({
@@ -20,7 +20,7 @@ const fetchProgresses = async () => {
   loading.value = true
   console.log(props.studentId);
   try {
-    const res = await axios.get(`/progress/${props.studentId}`)
+    const res = await api.get(`/progress/${props.studentId}`)
     console.log(res.data);
     progresses.value = res.data
     console.log(progresses.value);

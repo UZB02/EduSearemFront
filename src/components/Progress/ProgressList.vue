@@ -42,7 +42,7 @@
 
 <script setup>
 import { ref, watch, onMounted } from "vue";
-import axios from "axios";
+import api from "@/utils/api.js";
 import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import Chart from "primevue/chart";
@@ -72,7 +72,7 @@ const loadStats = async () => {
   if (!groupId.value) return;
 
   try {
-    const res = await axios.get("/progress/group/stats", {
+    const res = await api.get("/progress/group/stats", {
       params: { groupId: groupId.value, type: type.value, year: year.value, month: month.value },
     });
     console.log(res.data);

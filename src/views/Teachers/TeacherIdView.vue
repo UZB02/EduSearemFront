@@ -69,7 +69,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import axios from 'axios'
+import api from "../../utils/api.js";
 import TeacherHeader from '../../components/Teachers/TeacherId/TeacherHeader.vue'
 import TeacherMainInfo from '../../components/Teachers/TeacherId/TeacherMainInfo.vue'
 import TeacherSalaryHistory from '../../components/Teachers/TeacherId/TeacherSalaryHistory.vue'
@@ -106,7 +106,7 @@ const salaryIdToDelete = ref(null)
 // Fetch teacher
 const fetchTeacher = async () => {
   try {
-    const res = await axios.get(`/teachers/${teacherId}?userId=${admin.id}`)
+    const res = await api.get(`/teachers/${teacherId}?userId=${admin.id}`)
     teacher.value = res.data.teacher
     teacherSalaryStats.value=res.data.salaryStats
     console.log(teacherSalaryStats.value);
@@ -117,7 +117,7 @@ const fetchTeacher = async () => {
 // // Fetch teacher
 // const fetchsalaryStats = async () => {
 //   try {
-//     const res = await axios.get(`/teachers/${teacherId}/salary-stats`)
+//     const res = await api.get(`/teachers/${teacherId}/salary-stats`)
 //     console.log(res.data);
 //   } catch (error) {
 //     console.error('O‘qituvchini yuklashda xatolik:', error)
@@ -139,7 +139,7 @@ const updateSalary = async () => {
   showEditDialog.value = false
 
   try {
-    await axios.put(`/teachers/${teacherId}/salaries/${selectedSalary.value._id}?userId=${admin.id}`, selectedSalary.value)
+    await api.put(`/teachers/${teacherId}/salaries/${selectedSalary.value._id}?userId=${admin.id}`, selectedSalary.value)
   } catch (error) {
     console.error('Maoshni yangilashda xatolik:', error)
   }
@@ -154,7 +154,7 @@ const confirmDeleteSalary = (salaryId) => {
 // Delete salary
 const deleteSalary = async () => {
   try {
-    const res = await axios.delete(
+    const res = await api.delete(
       `/salaries/${salaryIdToDelete.value}`,
       {
         params: { userId: admin.id }

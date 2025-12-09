@@ -46,7 +46,7 @@
 
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue';
-import axios from 'axios';
+import api from "@/utils/api.js";
 import { useRoute,useRouter } from 'vue-router';
 
 // Components
@@ -116,7 +116,7 @@ const loadStats = async () => {
   if(!groupId.value) return;
   loading.value = true;
   try {
-    const res = await axios.get('/progress/group/stats', { params: { groupId: groupId.value, type:type.value, year:year.value, month:month.value } });
+    const res = await api.get('/progress/group/stats', { params: { groupId: groupId.value, type:type.value, year:year.value, month:month.value } });
     statsList.value = res.data || [];
     chartData.value = statsList.value.length ? {
       labels: statsList.value.map(s=>s.studentName||'N/A'),

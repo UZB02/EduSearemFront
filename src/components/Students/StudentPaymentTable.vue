@@ -124,7 +124,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
+import api from "@/utils/api.js";
 import { formatDate } from '@/utils/FormatDate'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -183,7 +183,7 @@ const lastPaymentDate = computed(() => {
 
 const fetchStudentInfo = async () => {
   try {
-    const res = await axios.get(`/students/${studentId}`)
+    const res = await api.get(`/students/${studentId}`)
     studentInfo.value = res.data
   } catch (error) {
     console.error('Talaba ma\'lumotlarini olishda xatolik:', error)
@@ -192,7 +192,7 @@ const fetchStudentInfo = async () => {
 
 const getPaymentsByStudentId = async () => {
   try {
-    const res = await axios.get(`payments/student/${studentId}`)
+    const res = await api.get(`payments/student/${studentId}`)
     payments.value = res.data
   } catch (error) {
     console.error('To\'lovlarni olishda xatolik:', error)

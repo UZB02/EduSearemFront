@@ -119,7 +119,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import api from "../utils/api.js";
 import Chart from 'primevue/chart'
 import Calendar from 'primevue/calendar'
 
@@ -231,12 +231,12 @@ const loadDashboard = async () => {
     const yearQuery = `?year=${year}`
 
     const [summaryRes, appRes, payRes, expRes, balRes, actRes] = await Promise.all([
-      axios.get(`/dashboard/summary/${adminId.id}${yearQuery}`),
-      axios.get(`/dashboard/applications-by-month/${adminId.id}${yearQuery}`),
-      axios.get(`/dashboard/payments-by-month/${adminId.id}${yearQuery}`),
-      axios.get(`/dashboard/expenses-by-month/${adminId.id}${yearQuery}`),
-      axios.get(`/dashboard/balance-by-month/${adminId.id}${yearQuery}`),
-      axios.get(`/dashboard/recent-activity/${adminId.id}`)
+      api.get(`/dashboard/summary/${adminId.id}${yearQuery}`),
+      api.get(`/dashboard/applications-by-month/${adminId.id}${yearQuery}`),
+      api.get(`/dashboard/payments-by-month/${adminId.id}${yearQuery}`),
+      api.get(`/dashboard/expenses-by-month/${adminId.id}${yearQuery}`),
+      api.get(`/dashboard/balance-by-month/${adminId.id}${yearQuery}`),
+      api.get(`/dashboard/recent-activity/${adminId.id}`)
     ])
 
     summary.value = summaryRes.data

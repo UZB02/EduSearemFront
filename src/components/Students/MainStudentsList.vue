@@ -57,7 +57,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
-import axios from 'axios'
+import api from "@/utils/api.js";
 import { exportToExcel } from '@/utils/formatToExcel'
 import { formatDate } from '../../utils/FormatDate'
 
@@ -174,7 +174,7 @@ const getTodayDate = () => {
 const deleteStudent = async () => {
   isLoading.value = true
   try {
-    await axios.delete(`/students/${changeStudent.value._id}`)
+    await api.delete(`/students/${changeStudent.value._id}`)
     toast.add({
       severity: 'success',
       summary: 'Bajarildi',
@@ -194,7 +194,7 @@ const deleteStudent = async () => {
 const editStudent = async () => {
   isLoading.value = true
   try {
-    const res = await axios.put(`/students/${selectedStudentId.value}`, {
+    const res = await api.put(`/students/${selectedStudentId.value}`, {
       ...editedStudent.value,
       admin: admin.id,
     })
@@ -219,7 +219,7 @@ const addPayment = async (paymentData) => {
   isLoading.value = true
 
   try {
-    await axios.post('/payments', {
+    await api.post('/payments', {
       ...paymentData,
       studentId: changeStudent.value._id,
       userId: admin.id,
@@ -250,7 +250,7 @@ const addPayment = async (paymentData) => {
 const sendMessageFunction = async (message) => {
   isLoading.value = true
   try {
-    const res = await axios.post('/students/send-message', {
+    const res = await api.post('/students/send-message', {
       studentId: changeStudent.value._id,
       message: message,
     })

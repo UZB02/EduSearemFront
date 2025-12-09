@@ -182,7 +182,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import axios from 'axios'
+import api from "../../utils/api.js";
 import { useRoute, useRouter } from 'vue-router'
 import StudentsTable from '../../components/Students/MainStudentsList.vue'
 import Dialog from 'primevue/dialog'
@@ -220,7 +220,7 @@ const newStudent = ref({
 // Fetch group data
 const getGroupById = async () => {
   try {
-    const res = await axios.get(`/groups/${groupId.value}`, {
+    const res = await api.get(`/groups/${groupId.value}`, {
       params: { adminId: admin.id }
     })
     group.value = res.data
@@ -245,7 +245,7 @@ const addStudent = async () => {
 
   isLoading.value = true
   try {
-    const res = await axios.post('/students', { ...newStudent.value })
+    const res = await api.post('/students', { ...newStudent.value })
     toast.add({ severity: 'success', summary: 'Muvaffaqiyatli', detail: "O'quvchi qo‘shildi", life: 3000 })
     addStudentmodalvisible.value = false
     refreshForm()

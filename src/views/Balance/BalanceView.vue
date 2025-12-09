@@ -29,6 +29,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
+import api from "../../utils/api.js";
 
 // Components
 import HeaderCard from "@/components/Balance/HeaderCard.vue";
@@ -55,7 +56,7 @@ const balanceChangePercent = computed(() => {
 const fetchBalance = async () => {
   isLoading.value = true;
   try {
-    const res = await axios.get("balance/real", { 
+    const res = await api.get("balance/real", { 
       params: { userId: admin.id, ...activeFilter.value }
     });
     balanceData.value = res.data;
@@ -69,7 +70,7 @@ const fetchBalance = async () => {
 const fetchPayments = async () => {
   isLoading.value = true;
   try {
-    const res = await axios.get("/payments", { 
+    const res = await api.get("/payments", { 
       params: { userId: admin.id, ...activeFilter.value }
     });
     payments.value = res.data;
@@ -83,7 +84,7 @@ const fetchPayments = async () => {
 
 const refreshData = async () => {
   try {
-    await axios.post("/balance/sync", { userId: admin.id });
+    await api.post("/balance/sync", { userId: admin.id });
     await fetchBalance();
     await fetchPayments();
   } catch (err) {

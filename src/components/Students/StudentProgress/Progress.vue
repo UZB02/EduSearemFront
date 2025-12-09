@@ -117,7 +117,7 @@
 <script setup>
 import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
+import api from "@/utils/api.js";
 import Chart from "primevue/chart";
 import Calendar from "primevue/calendar";
 import ProgressTable from "@/components/Students/StudentProgress/ProgressTable.vue"; // 👈 qo‘shildi
@@ -132,7 +132,7 @@ const isLoading = ref(false);
 const loadProgress = async () => {
   isLoading.value = true;
   try {
-    const res = await axios.get(`/progress/${studentId.value}/yearly`, {
+    const res = await api.get(`/progress/${studentId.value}/yearly`, {
       params: { year: selectedYear.value.getFullYear() },
     });
     console.log(res.data);
