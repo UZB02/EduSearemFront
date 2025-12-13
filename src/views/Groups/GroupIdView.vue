@@ -177,6 +177,50 @@
     </template>
   </Dialog>
   <!-- End AddStudent Modal -->
+   <!-- Guruhga xabar yuborish -->
+  <Dialog
+    v-model:visible="visible"
+    modal
+    header="Guruhga xabar yuborish"
+    class="w-full max-w-lg"
+  >
+  <div class="p-2 bg-orange-500/20 rounded">
+    <span class="text-orange-600">Buyerda yoziladigan xabar guruhdagi barcha o'quvchilarga yuboriladi!</span>
+  </div>
+    <div class="flex flex-col gap-4">
+      <Textarea
+        v-model="form.message"
+        rows="5"
+        placeholder="Xabar matnini kiriting..."
+        class="w-full"
+      />
+
+      <Button
+        label="Xabar yuborish"
+        icon="pi pi-send"
+        :loading="loading"
+        class="w-full"
+        @click="groupSendMessage"
+      />
+    </div>
+  </Dialog>
+<div class="fixed right-4 bottom-4 z-50">
+  <button
+    class="relative p-4 bg-green-500 cursor-pointer text-white rounded-full shadow-lg hover:bg-green-600 
+           focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 
+           animate-bounce-slow"
+    title="Xabar yuborish"
+    @click="visible=!visible"
+  >
+    <i class="pi pi-envelope text-xl"></i>
+
+    <span
+      class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-ping"
+    ></span>
+  </button>
+</div>
+
+
    <Toast />
 </template>
 
@@ -203,6 +247,14 @@ const isLoading = ref(false)
 const group = ref({})
 const addStudentmodalvisible = ref(false)
 const showValidation = ref(false)
+
+// 🔹 State
+const visible = ref(false);
+const loading = ref(false);
+
+const form = ref({
+  message: "",
+});
 
 // Initial newStudent object without groupId
 const newStudent = ref({
@@ -268,4 +320,43 @@ const refreshForm = () => {
   newStudent.value.description = ''
   showValidation.value = false
 }
+
+// 🔹 Guruhga xabar yuborish
+const groupSendMessage = async () => {
+  if (!form.value.message) {
+    return     toast.add({ severity: 'danger', summary: 'Muvaffaqiyatli', detail: "Xabar matnini kiriting", life: 3000 });
+  }
+
+  if (!groupId) {
+    return   toast.add({ severity: 'danger', summary: 'Muvaffaqiyatli', detail: "groupId URL'dan topilmadi", life: 3000 });
+  }
+
+  try {
+    loading.value = true;
+    console.log(groupId);
+    await api.post("students/send-group-message", {
+      groupId:groupId.value,
+      message: form.value.message,
+    });
+toast.add({ severity: 'success', summary: 'Muvaffaqiyatli', detail: "Xabar yuborildi ✅", life: 3000 })
+
+    form.value.message = "";
+    visible.value = false;
+  } catch (error) {
+    alert(error.response?.data?.error || "Xatolik yuz berdi");
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
+
+<style scoped>
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-bounce-slow {
+  animation: bounce-slow 2s infinite;
+}
+
+</style>
