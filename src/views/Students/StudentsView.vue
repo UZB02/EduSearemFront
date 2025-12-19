@@ -1,12 +1,12 @@
 <template>
-  <div class="p-4 min-h-screen">
+  <div class="p-4 min-h-screen bg-gray-100">
     <h1 class="text-2xl font-bold mb-6">Barcha Studentlar</h1>
 
     <!-- Search -->
     <div class="mb-4 flex items-center gap-2">
       <InputText
         v-model="searchQuery"
-        placeholder="Student izlash..."
+        placeholder="Student izlash... (Ism, Familiya, Telefon, To'lov holati)"
         class="w-64"
         @input="onSearch"
       />
@@ -20,41 +20,53 @@
         :paginator="true"
         :rows="limit"
         :totalRecords="total"
-        :lazy="true"
         @page="onPageChange"
         class="w-full"
         :loading="loading"
       >
-       <Column header="Ism" sortable>
-  <template #body="slotProps">
-    <span
-      class="cursor-pointer text-blue-600 hover:underline"
-      @click="$router.push(`/group/${slotProps.data.groupId?._id}/student/${slotProps.data._id}`)"
-    >
-      {{ slotProps.data.name }}
-    </span>
-  </template>
-</Column>
+        <!-- Clickable Name -->
+        <Column header="Ism" sortable>
+          <template #body="slotProps">
+            <span
+              class="cursor-pointer text-blue-600 hover:underline"
+              @click="$router.push(`/group/${slotProps.data.groupId?._id}/student/${slotProps.data._id}`)"
+            >
+              {{ slotProps.data.name }}
+            </span>
+          </template>
+        </Column>
 
         <Column field="lastname" header="Familiya" sortable></Column>
         <Column field="phone" header="Telefon"></Column>
+
+        <!-- Group -->
         <Column header="Guruh">
           <template #body="slotProps">
             {{ slotProps.data.groupId?.name || "—" }}
           </template>
         </Column>
+
+        <!-- Payment Status -->
         <Column header="To'lov holati">
           <template #body="slotProps">
             <span
+              v-if="slotProps.data.paymentStatus"
               :class="{
-                'text-green-600 font-semibold': slotProps.data.paymentStatus?.isPaid,
-                'text-red-600 font-semibold': !slotProps.data.paymentStatus?.isPaid,
+                'text-green-600 font-semibold': slotProps.data.paymentStatus.isPaid,
+                'text-red-600 font-semibold': !slotProps.data.paymentStatus.isPaid
               }"
             >
-              {{ slotProps.data.paymentStatus?.message || "Ma'lumot yo'q" }}
+              {{ slotProps.data.paymentStatus.overallMessage }}
             </span>
+            <div
+              v-if="slotProps.data.paymentStatus && !slotProps.data.paymentStatus.isPaid"
+              class="text-sm text-gray-500"
+            >
+              Qoldiq: {{formatNumber(slotProps.data.paymentStatus.remainingAmount) }} UZS
+            </div>
           </template>
         </Column>
+
         <Column field="createdAt" header="Qo'shilgan sana" sortable>
           <template #body="slotProps">
             {{ formatDate(slotProps.data.createdAt) }}
@@ -68,11 +80,10 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import api from "@/utils/api.js";
-import  DataTable  from "primevue/datatable";
-import  Column  from "primevue/column";
-import  Card  from "primevue/card";
-import  InputText  from "primevue/inputtext";
-import  Button  from "primevue/button";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import InputText from "primevue/inputtext";
+import Button from "primevue/button";
 
 const students = ref([]);
 const total = ref(0);
@@ -92,19 +103,22 @@ const fetchStudents = async () => {
     const res = await api.get(
       `/students/${adminId}?page=${page.value}&limit=${limit.value}`
     );
+
     let data = res.data.students;
 console.log(data);
-    // Search filtr
+    // Search filtr (Name, Lastname, Phone, Payment Status)
     if (searchQuery.value) {
       const q = searchQuery.value.toLowerCase();
       data = data.filter(
         (s) =>
           s.name.toLowerCase().includes(q) ||
           s.lastname.toLowerCase().includes(q) ||
-          s.phone?.includes(q)
+          s.phone?.includes(q) ||
+          s.paymentStatus?.overallMessage.toLowerCase().includes(q)
       );
     }
-    students.value = data;
+
+    students.value = [...data]; // reactive array
     total.value = res.data.total;
   } catch (error) {
     console.error("Studentlarni olishda xatolik:", error);
@@ -122,7 +136,7 @@ const onPageChange = (event) => {
 
 // Search
 const onSearch = () => {
-  page.value = 1; // search qilganda sahifa 1 ga qaytadi
+  page.value = 1;
   fetchStudents();
 };
 
@@ -141,8 +155,10 @@ onMounted(() => {
   fetchStudents();
 });
 
-// Agar searchQuery o'zgarsa avtomatik filter
-watch(searchQuery, (newVal, oldVal) => {
+const formatNumber = (num) => new Intl.NumberFormat("uz-UZ").format(num);
+
+// Search query o'zgarsa
+watch(searchQuery, (newVal) => {
   if (newVal === "") fetchStudents();
 });
 </script>

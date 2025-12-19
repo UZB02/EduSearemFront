@@ -226,6 +226,7 @@ const getStudentById = async () => {
   try {
     const res = await api.get(`/students/byId/${studentId.value}`)
     student.value = res.data.student
+    console.log(student.value);
   } catch (error) {
     console.error("O'quvchini yuklashda xatolik:", error)
   }
