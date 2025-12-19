@@ -21,20 +21,20 @@ const admin = JSON.parse(sessionStorage.getItem('admin'))
 // Form
 const form = reactive({
   groupName: '',
-  teacher: null,
+  teachers: [],          // 🔥 endi bir nechta teacher
   monthlyFee: 0,
   description: '',
   scheduleType: '',
   days: [],
   startTime: null,
   endTime: null,
-  admin: admin.id
+  adminId: admin.id
 })
 
 // Xatoliklar
 const errors = reactive({
   groupName: '',
-  teacher: '',
+  teachers: '',
   monthlyFee: '',
   scheduleType: '',
   startTime: '',
@@ -42,17 +42,17 @@ const errors = reactive({
 })
 
 const loading = ref(false)
-const teachers = ref([])
+const allTeachers = ref([])
 const isEditMode = ref(false)
 
-// 📌 Jadval turlari
+// Jadval turlari
 const scheduleTypes = [
   { label: 'Toq kunlar (Du/Chor/Juma)', value: 'toq' },
   { label: 'Juft kunlar (Se/Pay/Shan)', value: 'juft' },
   { label: 'Maxsus kunlar', value: 'custom' }
 ]
 
-// 📌 Kunlar ro‘yxati
+// Kunlar ro‘yxati
 const daysOptions = [
   { label: "Dushanba", value: "Dushanba" },
   { label: "Seshanba", value: "Seshanba" },
@@ -67,7 +67,7 @@ const daysOptions = [
 const getAllTeachers = async () => {
   try {
     const res = await api.get(`/teachers?userId=${admin.id}`)
-    teachers.value = res.data
+    allTeachers.value = res.data
   } catch (err) {
     console.error(err)
   }
@@ -77,7 +77,7 @@ const getAllTeachers = async () => {
 const validateForm = () => {
   let isValid = true
   errors.groupName = ''
-  errors.teacher = ''
+  errors.teachers = ''
   errors.monthlyFee = ''
   errors.scheduleType = ''
   errors.startTime = ''
@@ -87,12 +87,12 @@ const validateForm = () => {
     errors.groupName = 'Guruh nomi kiritilishi shart'
     isValid = false
   }
-  if (!form.teacher) {
-    errors.teacher = 'O\'qituvchi tanlanishi shart'
+  if (!form.teachers.length) {
+    errors.teachers = 'Kamida bitta o\'qituvchi tanlanishi shart'
     isValid = false
   }
-  if (!form.monthlyFee) {
-    errors.monthlyFee = 'Kurs to\'lovi kiritilishi shart'
+  if (!form.monthlyFee || form.monthlyFee <= 0) {
+    errors.monthlyFee = 'Oylik to‘lov kiritilishi shart va 0 dan katta bo‘lishi kerak'
     isValid = false
   }
   if (!form.scheduleType) {
@@ -115,12 +115,19 @@ const validateForm = () => {
   return isValid
 }
 
-// 📌 Form yuborish
+// HH:mm formatlash
+const formatTime = (date) => {
+  if (!date) return null
+  const h = String(date.getHours()).padStart(2, '0')
+  const m = String(date.getMinutes()).padStart(2, '0')
+  return `${h}:${m}`
+}
+
+// Form yuborish
 const submitForm = async () => {
   if (!validateForm()) return
   loading.value = true
 
-  // Jadval turiga qarab kunlarni aniqlash
   let selectedDays = []
   if (form.scheduleType === 'toq') {
     selectedDays = ["Dushanba", "Chorshanba", "Juma"]
@@ -134,12 +141,12 @@ const submitForm = async () => {
     name: form.groupName,
     description: form.description,
     monthlyFee: form.monthlyFee,
-    teacher: form.teacher,
+    teachers: form.teachers,        // 🔥 endi bitta emas, array
     scheduleType: form.scheduleType,
     days: selectedDays,
-    startTime: form.startTime ? form.startTime.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}) : null,
-    endTime: form.endTime ? form.endTime.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}) : null,
-    adminId: form.admin
+    startTime: formatTime(form.startTime),
+    endTime: formatTime(form.endTime),
+    adminId: form.adminId
   }
 
   try {
@@ -151,6 +158,7 @@ const submitForm = async () => {
 
     emit('refreshFunctions')
     emit('closeDrawer')
+    resetForm()
   } catch (err) {
     console.error(err)
   } finally {
@@ -158,7 +166,19 @@ const submitForm = async () => {
   }
 }
 
-// 📌 Guruhni tahrirlash uchun formani to‘ldirish
+// Formani tozalash
+const resetForm = () => {
+  form.groupName = ''
+  form.teachers = []
+  form.monthlyFee = 0
+  form.description = ''
+  form.scheduleType = ''
+  form.days = []
+  form.startTime = null
+  form.endTime = null
+}
+
+// Guruhni tahrirlash
 watch(
   () => props.changegroup,
   (newVal) => {
@@ -166,22 +186,15 @@ watch(
       isEditMode.value = true
       form.groupName = newVal.name || ''
       form.monthlyFee = newVal.monthlyFee || 0
-      form.teacher = newVal.teacher?._id || null
+      form.teachers = newVal.teachers?.map(t => t._id) || []
       form.description = newVal.description || ''
       form.scheduleType = newVal.scheduleType || ''
       form.days = newVal.days || []
       form.startTime = newVal.startTime ? new Date(`1970-01-01T${newVal.startTime}`) : null
       form.endTime = newVal.endTime ? new Date(`1970-01-01T${newVal.endTime}`) : null
     } else {
+      resetForm()
       isEditMode.value = false
-      form.groupName = ''
-      form.monthlyFee = 0
-      form.teacher = null
-      form.description = ''
-      form.scheduleType = ''
-      form.days = []
-      form.startTime = null
-      form.endTime = null
     }
   },
   { immediate: true }
@@ -202,11 +215,17 @@ onMounted(() => {
         <small v-if="errors.groupName" class="text-red-500">{{ errors.groupName }}</small>
       </div>
 
-      <!-- O'qituvchi -->
+      <!-- O'qituvchilar -->
       <div class="space-y-2">
-        <label>O'qituvchi *</label>
-        <Dropdown v-model="form.teacher" :options="teachers" optionLabel="name" optionValue="_id" class="w-full" />
-        <small v-if="errors.teacher" class="text-red-500">{{ errors.teacher }}</small>
+        <label>O'qituvchilar *</label>
+        <MultiSelect
+          v-model="form.teachers"
+          :options="allTeachers"
+          optionLabel="name"
+          optionValue="_id"
+          class="w-full"
+        />
+        <small v-if="errors.teachers" class="text-red-500">{{ errors.teachers }}</small>
       </div>
 
       <!-- Oylik to'lov -->
@@ -219,7 +238,13 @@ onMounted(() => {
       <!-- Jadval turi -->
       <div class="space-y-2">
         <label>Dars jadvali *</label>
-        <Dropdown v-model="form.scheduleType" :options="scheduleTypes" optionLabel="label" optionValue="value" class="w-full" />
+        <Dropdown
+          v-model="form.scheduleType"
+          :options="scheduleTypes"
+          optionLabel="label"
+          optionValue="value"
+          class="w-full"
+        />
         <small v-if="errors.scheduleType" class="text-red-500">{{ errors.scheduleType }}</small>
       </div>
 
@@ -230,13 +255,13 @@ onMounted(() => {
       </div>
 
       <!-- Dars boshlanish va tugash vaqti -->
-      <div class="grid grid-cols-1">
-        <div class="">
+      <div class="grid grid-cols-1 gap-4">
+        <div>
           <label>Boshlanish vaqti *</label>
           <Calendar v-model="form.startTime" timeOnly class="w-full" />
           <small v-if="errors.startTime" class="text-red-500">{{ errors.startTime }}</small>
         </div>
-        <div class="">
+        <div>
           <label>Tugash vaqti *</label>
           <Calendar v-model="form.endTime" timeOnly class="w-full" />
           <small v-if="errors.endTime" class="text-red-500">{{ errors.endTime }}</small>

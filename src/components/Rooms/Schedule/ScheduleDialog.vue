@@ -31,20 +31,22 @@
             <i class="pi pi-bookmark text-indigo-600"></i>
             <span class="font-medium">Ta'rif:</span>
           </div>
-          <p class="text-gray-600 text-sm">{{ schedule.groupId.description }}</p>
+          <p class="text-gray-600 text-sm">{{ schedule.groupId.description ? schedule.groupId.description : "Ta'rif berilmagan" }}</p>
         </div>
         <div class="bg-gray-50 rounded-xl p-4 space-y-3">
           <div class="flex items-center gap-2 text-gray-700">
             <i class="pi pi-user text-indigo-600"></i>
             <span class="font-medium">O'qituvchi:</span>
           </div>
-          <p class="text-gray-800 font-medium">
-            {{ schedule.groupId.teacher.name }} {{ schedule.groupId.teacher.lastname }}
+         <div v-for="teacher in  schedule.groupId.teachers">
+           <p class="text-gray-800 font-medium">
+            {{ teacher.name }} {{ teacher.lastname }}
           </p>
           <p class="text-gray-600 text-sm flex items-center gap-1">
             <i class="pi pi-phone text-xs"></i>
-            {{ schedule.groupId.teacher.phone }}
+            {{ teacher.phone }}
           </p>
+         </div>
         </div>
       </div>
 

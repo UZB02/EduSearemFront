@@ -105,17 +105,19 @@ const groupNameFilter = ref('');
 const teacherNameFilter = ref('');
 const roomFilter = ref('');
 
+// ✅ Teachers bo‘yicha filter ishlashi
 const filteredSchedulesCount = computed(() => {
   return props.schedules.filter((schedule) => {
     const groupNameMatch = !groupNameFilter.value ||
-      schedule.groupId.name.toLowerCase().includes(groupNameFilter.value.toLowerCase());
+      (schedule.groupId?.name || "").toLowerCase().includes(groupNameFilter.value.toLowerCase());
 
-    const teacherFullName = `${schedule.groupId.teacher.name} ${schedule.groupId.teacher.lastname}`.toLowerCase();
-    const teacherNameMatch = !teacherNameFilter.value ||
-      teacherFullName.includes(teacherNameFilter.value.toLowerCase());
+    const teacherFullName = schedule.groupId?.teachers
+      ? schedule.groupId.teachers.map(t => `${t.name} ${t.lastname}`).join(" ").toLowerCase()
+      : "";
+    const teacherNameMatch = !teacherNameFilter.value || teacherFullName.includes(teacherNameFilter.value.toLowerCase());
 
     const roomNameMatch = !roomFilter.value ||
-      schedule.roomId.name.toLowerCase().includes(roomFilter.value.toLowerCase());
+      (schedule.roomId?.name || "").toLowerCase().includes(roomFilter.value.toLowerCase());
 
     return groupNameMatch && teacherNameMatch && roomNameMatch;
   }).length;

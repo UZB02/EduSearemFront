@@ -1,192 +1,188 @@
 <template>
   <div>
-    <div>
-      <form @submit.prevent="submitForm" class="space-y-6">
-        <!-- Guruh nomi -->
-        <div class="space-y-2">
-          <label for="groupName" class="block text-sm font-medium text-gray-700">
-            Guruh nomi *
-          </label>
-          <InputText
-            id="groupName"
-            v-model="form.groupName"
-            placeholder="Guruh nomini kiriting"
-            class="w-full"
-            :class="{ 'p-invalid': errors.groupName }"
-          />
-          <small v-if="errors.groupName" class="text-red-500">
-            {{ errors.groupName }}
-          </small>
-        </div>
+    <form @submit.prevent="submitForm" class="space-y-6">
 
-        <!-- O'qituvchi tanlash -->
-        <div class="space-y-2">
-          <label for="teacher" class="block text-sm font-medium text-gray-700">
-            O'qituvchi *
-          </label>
-          <Dropdown
-            id="teacher"
-            v-model="form.teacher"
-            :options="teachers"
-            optionLabel="name"
-            optionValue="_id"
-            placeholder="O'qituvchini tanlang"
-            class="w-full"
-            :class="{ 'p-invalid': errors.teacher }"
-          />
-          <small v-if="errors.teacher" class="text-red-500">
-            {{ errors.teacher }}
-          </small>
-        </div>
+      <!-- Guruh nomi -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">
+          Guruh nomi *
+        </label>
+        <InputText
+          v-model="form.groupName"
+          placeholder="Guruh nomini kiriting"
+          class="w-full"
+          :class="{ 'p-invalid': errors.groupName }"
+        />
+        <small v-if="errors.groupName" class="text-red-500">
+          {{ errors.groupName }}
+        </small>
+      </div>
 
-        <!-- Oylik to'lov -->
-        <div class="space-y-2">
-          <label for="monthlyFee" class="block text-sm font-medium text-gray-700">
-            Oylik to'lov *
-          </label>
-          <InputNumber
-            id="monthlyFee"
-            v-model="form.monthlyFee"
-            placeholder="Oylik to'lovni kiriting"
-            class="w-full"
-            :class="{ 'p-invalid': errors.monthlyFee }"
-          />
-          <small v-if="errors.monthlyFee" class="text-red-500">
-            {{ errors.monthlyFee }}
-          </small>
-        </div>
+      <!-- O‘qituvchilar -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">
+          O‘qituvchilar *
+        </label>
+        <MultiSelect
+          v-model="form.teachers"
+          :options="teachers"
+          optionLabel="name"
+          optionValue="_id"
+          placeholder="O‘qituvchilarni tanlang"
+          display="chip"
+          class="w-full"
+          :class="{ 'p-invalid': errors.teachers }"
+        />
+        <small v-if="errors.teachers" class="text-red-500">
+          {{ errors.teachers }}
+        </small>
+      </div>
 
-        <!-- Dars vaqti -->
-        <div class="grid grid-cols-1 gap-4">
-          <div class="space-y-2">
-            <label for="startTime" class="block text-sm font-medium text-gray-700">
-              Dars boshlanish vaqti *
-            </label>
-            <Calendar v-model="form.startTime" timeOnly class="w-full" />
-          </div>
-          <div class="space-y-2">
-            <label for="endTime" class="block text-sm font-medium text-gray-700">
-              Dars tugash vaqti *
-            </label>
-            <Calendar v-model="form.endTime" timeOnly class="w-full" />
-          </div>
-        </div>
+      <!-- Oylik to‘lov -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">
+          Oylik to‘lov *
+        </label>
+        <InputNumber
+          v-model="form.monthlyFee"
+          class="w-full"
+          placeholder="Oylik to‘lov"
+          :class="{ 'p-invalid': errors.monthlyFee }"
+        />
+        <small v-if="errors.monthlyFee" class="text-red-500">
+          {{ errors.monthlyFee }}
+        </small>
+      </div>
 
-        <!-- Dars kunlari turi -->
-        <div class="space-y-2">
-          <label for="daysType" class="block text-sm font-medium text-gray-700">
-            Dars kunlari *
-          </label>
-          <Dropdown
-            id="daysType"
-            v-model="form.daysType"
-            :options="daysTypeOptions"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="Kun turini tanlang"
-            class="w-full"
-          />
-        </div>
-
-        <!-- Aniq kunlarni tanlash -->
-        <div v-if="form.daysType === 'custom'" class="space-y-2">
+      <!-- Dars vaqti -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
           <label class="block text-sm font-medium text-gray-700">
-            Kunlarni tanlang
+            Boshlanish vaqti *
           </label>
-          <div class="grid grid-cols-2 gap-2">
-            <div v-for="day in weekDays" :key="day.value" class="flex items-center">
-              <input
-                type="checkbox"
-                :value="day.value"
-                v-model="form.daysOfWeek"
-                class="mr-2"
-              />
-              <span>{{ day.label }}</span>
-            </div>
-          </div>
+          <Calendar v-model="form.startTime" timeOnly class="w-full" />
         </div>
 
-        <!-- Guruh haqida qo'shimcha ma'lumot -->
-        <div class="space-y-2">
-          <label for="description" class="block text-sm font-medium text-gray-700">
-            Guruh haqida ma'lumot
+        <div>
+          <label class="block text-sm font-medium text-gray-700">
+            Tugash vaqti *
           </label>
-          <Textarea
-            id="description"
-            v-model="form.description"
-            placeholder="Guruh haqida qo'shimcha ma'lumot kiriting"
-            rows="3"
-            class="w-full"
-          />
+          <Calendar v-model="form.endTime" timeOnly class="w-full" />
         </div>
+      </div>
 
-        <!-- Tugmalar -->
-        <div class="flex gap-3 pt-4">
-          <Button
-            type="button"
-            label="Bekor qilish"
-            severity="secondary"
-            outlined
-            class="flex-1"
-            @click="resetForm"
-          />
-          <Button
-            type="submit"
-            label="Guruh qo'shish"
-            :loading="loading"
-            class="flex-1"
-          />
+      <!-- Dars kunlari -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">
+          Dars kunlari *
+        </label>
+        <Dropdown
+          v-model="form.daysType"
+          :options="daysTypeOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Kun turini tanlang"
+          class="w-full"
+        />
+      </div>
+
+      <!-- Maxsus kunlar -->
+      <div v-if="form.daysType === 'custom'" class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">
+          Kunlarni tanlang
+        </label>
+        <div class="grid grid-cols-2 gap-2">
+          <label
+            v-for="day in weekDays"
+            :key="day.value"
+            class="flex items-center gap-2"
+          >
+            <input
+              type="checkbox"
+              :value="day.value"
+              v-model="form.daysOfWeek"
+            />
+            {{ day.label }}
+          </label>
         </div>
-      </form>
-    </div>
+      </div>
+
+      <!-- Tavsif -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">
+          Guruh haqida ma’lumot
+        </label>
+        <Textarea
+          v-model="form.description"
+          rows="3"
+          class="w-full"
+        />
+      </div>
+
+      <!-- Tugmalar -->
+      <div class="flex gap-3 pt-4">
+        <Button
+          type="button"
+          label="Bekor qilish"
+          severity="secondary"
+          outlined
+          class="flex-1"
+          @click="resetForm"
+        />
+        <Button
+          type="submit"
+          label="Guruh qo‘shish"
+          class="flex-1"
+          :loading="loading"
+        />
+      </div>
+
+    </form>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, defineEmits } from 'vue'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import Textarea from 'primevue/textarea'
-import Button from 'primevue/button'
-import InputNumber from 'primevue/inputnumber'
-import api from "@/utils/api.js";
-import Calendar from 'primevue/calendar'
+import { ref, reactive, defineEmits } from "vue"
+import InputText from "primevue/inputtext"
+import InputNumber from "primevue/inputnumber"
+import Dropdown from "primevue/dropdown"
+import MultiSelect from "primevue/multiselect"
+import Textarea from "primevue/textarea"
+import Button from "primevue/button"
+import Calendar from "primevue/calendar"
+import api from "@/utils/api.js"
 
-const admin = JSON.parse(sessionStorage.getItem('admin'))
+const admin = JSON.parse(sessionStorage.getItem("admin"))
 
-// Form ma'lumotlari
-const form = reactive({
-  groupName: '',
-  teacher: null,
-  monthlyFee: 0,
-  description: '',
-  admin: admin.id,
-  daysType: '',        // "toq" | "juft" | "custom"
-  daysOfWeek: [],      // ['Dushanba', 'Chorshanba']
-  startTime: null,     // Date obyekt
-  endTime: null        // Date obyekt
-})
-
-const emit = defineEmits(['getAllGroups', 'closeDrawer'])
-
-// Xatoliklar
-const errors = reactive({
-  groupName: '',
-  teacher: '',
-  monthlyFee: 0
-})
+const emit = defineEmits(["getAllGroups", "closeDrawer"])
 
 const loading = ref(false)
 const teachers = ref([])
 
-// Dars kunlari variantlari
+const form = reactive({
+  groupName: "",
+  teachers: [],
+  monthlyFee: null,
+  description: "",
+  admin: admin.id,
+  daysType: "",
+  daysOfWeek: [],
+  startTime: null,
+  endTime: null
+})
+
+const errors = reactive({
+  groupName: "",
+  teachers: "",
+  monthlyFee: ""
+})
+
 const daysTypeOptions = [
   { label: "Toq kunlar (Du/Chor/Juma)", value: "toq" },
   { label: "Juft kunlar (Sesh/Pay/Shan)", value: "juft" },
   { label: "Maxsus kunlar", value: "custom" }
 ]
 
-// Haftaning kunlari
 const weekDays = [
   { label: "Dushanba", value: "Dushanba" },
   { label: "Seshanba", value: "Seshanba" },
@@ -197,108 +193,102 @@ const weekDays = [
   { label: "Yakshanba", value: "Yakshanba" }
 ]
 
-// Validatsiya
 const validateForm = () => {
-  let isValid = true
-  errors.groupName = ''
-  errors.teacher = ''
-  errors.monthlyFee = ''
+  errors.groupName = ""
+  errors.teachers = ""
+  errors.monthlyFee = ""
+
+  let valid = true
 
   if (!form.groupName.trim()) {
-    errors.groupName = 'Guruh nomi kiritilishi shart'
-    isValid = false
-  } else if (form.groupName.trim().length < 2) {
-    errors.groupName = 'Guruh nomi kamida 2 ta belgidan iborat bo‘lishi kerak'
-    isValid = false
+    errors.groupName = "Guruh nomi majburiy"
+    valid = false
   }
 
-  if (!form.teacher) {
-    errors.teacher = 'O‘qituvchi tanlanishi shart'
-    isValid = false
+  if (!form.teachers.length) {
+    errors.teachers = "Kamida bitta o‘qituvchi tanlang"
+    valid = false
   }
+
   if (!form.monthlyFee) {
-    errors.monthlyFee = 'Oylik to‘lov kiritilishi shart'
-    isValid = false
+    errors.monthlyFee = "Oylik to‘lov majburiy"
+    valid = false
   }
 
   if (!form.daysType) {
-    alert("Dars kunlari turini tanlang")
-    isValid = false
+    alert("Dars kunlarini tanlang")
+    valid = false
   }
 
-  if (form.daysType === 'custom' && form.daysOfWeek.length === 0) {
-    alert("Maxsus rejim uchun hech bo‘lmasa bitta kun tanlang")
-    isValid = false
+  if (form.daysType === "custom" && !form.daysOfWeek.length) {
+    alert("Kamida bitta kun tanlang")
+    valid = false
   }
 
   if (!form.startTime || !form.endTime) {
-    alert("Dars boshlanish va tugash vaqtini tanlang")
-    isValid = false
+    alert("Dars vaqtlarini tanlang")
+    valid = false
   }
 
-  return isValid
+  return valid
 }
 
-// HH:mm formatlash
-const formatTime = (date) => {
-  return date ? date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : null
-}
+const formatTime = (date) =>
+  date?.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
 
-// Form yuborish
 const submitForm = async () => {
   if (!validateForm()) return
   loading.value = true
 
-  // Dars kunlarini aniqlash
-  let selectedDays = []
+  let days = []
   if (form.daysType === "toq") {
-    selectedDays = ["Dushanba", "Chorshanba", "Juma"]
+    days = ["Dushanba", "Chorshanba", "Juma"]
   } else if (form.daysType === "juft") {
-    selectedDays = ["Seshanba", "Payshanba", "Shanba"]
-  } else if (form.daysType === "custom") {
-    selectedDays = form.daysOfWeek
+    days = ["Seshanba", "Payshanba", "Shanba"]
+  } else {
+    days = form.daysOfWeek
   }
 
   try {
-    await api.post('/groups', {
+    await api.post("/groups", {
       name: form.groupName,
       description: form.description,
       monthlyFee: form.monthlyFee,
       adminId: form.admin,
-      teacher: form.teacher,
-      scheduleType: form.daysType,   // endi toq/juft/custom
-      days: selectedDays,
+      teachers: form.teachers,
+      scheduleType: form.daysType,
+      days,
       startTime: formatTime(form.startTime),
       endTime: formatTime(form.endTime)
     })
-    emit('getAllGroups')
-    emit('closeDrawer')
+
+    emit("getAllGroups")
+    emit("closeDrawer")
+    resetForm()
   } catch (err) {
-    console.log(err)
+    console.error(err)
   } finally {
     loading.value = false
   }
 }
 
-// Formani tozalash
 const resetForm = () => {
-  form.groupName = ''
-  form.teacher = null
-  form.monthlyFee = 0
-  form.description = ''
-  form.daysType = ''
-  form.daysOfWeek = []
-  form.startTime = null
-  form.endTime = null
+  Object.assign(form, {
+    groupName: "",
+    teachers: [],
+    monthlyFee: null,
+    description: "",
+    daysType: "",
+    daysOfWeek: [],
+    startTime: null,
+    endTime: null
+  })
 }
 
 const getAllTeachers = async () => {
-  try {
-    const res = await api.get(`/teachers?userId=${admin.id}`)
-    teachers.value = res.data
-  } catch (err) {
-    console.error(err)
-  }
+  const res = await api.get(`/teachers?userId=${admin.id}`)
+  teachers.value = res.data
 }
+
 getAllTeachers()
 </script>

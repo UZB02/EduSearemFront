@@ -12,15 +12,23 @@
         ]"
         @click="$emit('openDialog', s)"
       >
+        <!-- Guruh nomi -->
         <div class="font-semibold truncate text-sm">{{ s.groupId.name }}</div>
+
+        <!-- Dars vaqti -->
         <div class="text-xs opacity-90 truncate flex items-center gap-1">
           <i class="pi pi-clock text-xs"></i>
           {{ s.groupId.startTime }} - {{ s.groupId.endTime }}
         </div>
-        <!-- <div class="text-xs opacity-90 mt-1 truncate">
+
+        <!-- O'qituvchi nomi -->
+        <div class="text-xs opacity-90 mt-1 truncate">
           <i class="pi pi-user text-xs"></i>
-          {{ s.groupId.teacher.name }} {{ s.groupId.teacher.lastname }}
-        </div> -->
+          <span v-if="s.groupId.teachers && s.groupId.teachers.length">
+            {{ s.groupId.teachers.map(t => t.name + ' ' + t.lastname).join(', ') }}
+          </span>
+          <span v-else>-</span>
+        </div>
       </div>
 
       <!-- Agar hech narsa bo'lmasa -->
@@ -47,21 +55,26 @@ const props = defineProps({
   roomFilter: String,
 });
 
-// Filtirlangan jadval
+// ✅ Teachers bo‘yicha filterlangan jadval
 const filtered = computed(() =>
   props.schedules.filter((s) => {
-    const match = s.roomId._id === props.room._id && s.dayOfWeek === props.day.value;
+    // Xonaga va kunga mosligini tekshirish
+    const match = s.roomId?._id === props.room._id && s.dayOfWeek === props.day.value;
     if (!match) return false;
 
-    const teacher = `${s.groupId.teacher.name} ${s.groupId.teacher.lastname}`.toLowerCase();
+    // Guruhdagi barcha o'qituvchilar nomlarini birlashtirish
+    const teacherNames = s.groupId?.teachers
+      ? s.groupId.teachers.map(t => `${t.name} ${t.lastname}`).join(" ").toLowerCase()
+      : "";
 
+    // Filterlarni qo'llash
     return (
       (!props.groupNameFilter ||
-        s.groupId.name.toLowerCase().includes(props.groupNameFilter.toLowerCase())) &&
+        s.groupId?.name?.toLowerCase().includes(props.groupNameFilter.toLowerCase())) &&
       (!props.teacherNameFilter ||
-        teacher.includes(props.teacherNameFilter.toLowerCase())) &&
+        teacherNames.includes(props.teacherNameFilter.toLowerCase())) &&
       (!props.roomFilter ||
-        s.roomId.name.toLowerCase().includes(props.roomFilter.toLowerCase()))
+        s.roomId?.name?.toLowerCase().includes(props.roomFilter.toLowerCase()))
     );
   })
 );

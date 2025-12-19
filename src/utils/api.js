@@ -11,9 +11,10 @@ const api = axios.create({
 // Request interceptor – tokenni har bir so‘rovga qo‘shadi
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
+    const adminStr = sessionStorage.getItem('admin')
+    if (adminStr) {
+      const admin = JSON.parse(adminStr) // stringni obyektga aylantiramiz
+      config.headers.Authorization = `Bearer ${admin.token}`
     }
     return config
   },
