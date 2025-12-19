@@ -2,13 +2,13 @@
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
     <div>
       <h1 class="text-3xl font-bold text-gray-800 mb-2">{{ group.name || 'Loading...' }}</h1>
-      <p class="text-gray-600">
-        {{
-          group.teacher
-            ? group.teacher.name + ' ' + group.teacher.lastname
-            : 'O‘qituvchi maʼlumoti yo‘q'
-        }}
+     <div class="flex flex-wrap gap-2">
+       <span v-for="teacher in group.teachers">
+        <p class="shadow p-2 rounded text-gray-600">
+        {{ teacher.name }} {{ teacher.lastname }}
       </p>
+      </span>
+     </div>
     </div>
 
     <!-- Yangi student qo‘shish -->
