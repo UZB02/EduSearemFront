@@ -9,7 +9,7 @@
 
     <template #content>
       <div class="space-y-4">
-        <div class="stat-card bg-blue-50 text-blue-600">
+        <div v-if="teacherSalaryStats.percentage !==0" class="stat-card bg-blue-50 text-blue-600">
           <i class="pi pi-percentage" /> Belgilangan ulush
           <span>{{ teacherSalaryStats.percentage }} %</span>
         </div>

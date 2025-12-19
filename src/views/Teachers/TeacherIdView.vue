@@ -109,7 +109,7 @@ const fetchTeacher = async () => {
     const res = await api.get(`/teachers/${teacherId}?userId=${admin.id}`)
     teacher.value = res.data.teacher
     teacherSalaryStats.value=res.data.salaryStats
-    console.log(teacherSalaryStats.value);
+    console.log(res.data);
   } catch (error) {
     console.error('O‘qituvchini yuklashda xatolik:', error)
   }

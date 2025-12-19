@@ -122,70 +122,98 @@
     <!-- Table tashqarisida umumiy Menu -->
     <Menu ref="menu" :model="menuItems" popup />
     <!-- Add/Edit Dialog -->
-    <Dialog
-      v-model:visible="showAddDialog"
-      :header="editingTeacher ? 'Tahrirlash' : 'Qo\'shish'"
-      modal
-      class="w-[95vw] sm:w-[500px]"
-    >
-      <form @submit.prevent="saveTeacher" class="space-y-4">
-        <div>
-          <label>Ism</label>
-          <InputText
-            v-model="teacherForm.name"
-            class="w-full"
-            :class="{ 'p-invalid': errors.name }"
-            placeholder="Ism kiriting"
-          />
-          <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
-        </div>
-        <div>
-          <label>Familiya</label>
-          <InputText
-            v-model="teacherForm.lastname"
-            class="w-full"
-            :class="{ 'p-invalid': errors.lastname }"
-            placeholder="Familiya kiriting"
-          />
-          <small v-if="errors.lastname" class="p-error">{{ errors.lastname }}</small>
-        </div>
-        <div>
-          <label>Tell</label>
-          <InputText
-            v-model="teacherForm.phone"
-            class="w-full"
-            placeholder="+998901234567"
-          />
-        </div>
-        <div>
-          <label>Belgilangan ulush %</label>
-          <InputNumber
-            v-model="teacherForm.percentage"
-            class="w-full"
-            placeholder="Belgilangan ulushni kiriting %"
-          />
-        </div>
-        <div>
-          <label>Fan</label>
-          <Dropdown
-            v-model="teacherForm.science"
-            :options="scienceOptions"
-            class="w-full"
-            :class="{ 'p-invalid': errors.science }"
-            editable
-          />
-          <small v-if="errors.science" class="p-error">{{ errors.science }}</small>
-        </div>
-        <div class="flex justify-end gap-3">
-          <Button label="Bekor qilish" severity="secondary" outlined @click="closeDialog" />
-          <Button
-            type="submit"
-            :label="editingTeacher ? 'Saqlash' : 'Qo\'shish'"
-            :loading="saving"
-          />
-        </div>
-      </form>
-    </Dialog>
+<Dialog
+  v-model:visible="showAddDialog"
+  :header="editingTeacher ? 'Tahrirlash' : 'Qo\'shish'"
+  modal
+  class="w-[95vw] sm:w-[500px]"
+>
+  <form @submit.prevent="saveTeacher" class="space-y-4">
+    <div>
+      <label>Ism</label>
+      <InputText
+        v-model="teacherForm.name"
+        class="w-full"
+        :class="{ 'p-invalid': errors.name }"
+        placeholder="Ism kiriting"
+      />
+      <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
+    </div>
+
+    <div>
+      <label>Familiya</label>
+      <InputText
+        v-model="teacherForm.lastname"
+        class="w-full"
+        :class="{ 'p-invalid': errors.lastname }"
+        placeholder="Familiya kiriting"
+      />
+      <small v-if="errors.lastname" class="p-error">{{ errors.lastname }}</small>
+    </div>
+
+    <div>
+      <label>Tell</label>
+      <InputText
+        v-model="teacherForm.phone"
+        class="w-full"
+        placeholder="+998901234567"
+      />
+    </div>
+
+    <!-- 🔹 Belgilangan ulush % -->
+    <div>
+      <label>Foiz (%)</label>
+      <InputNumber
+        v-model="teacherForm.percentage"
+        class="w-full"
+        placeholder="Foiz kiriting"
+        :min="0"
+        :max="100"
+      />
+    </div>
+
+    <!-- 🔹 Belgilangan summani qo'shish -->
+    <div>
+      <label>Belgilangan summa (agar bo'lsa)</label>
+      <InputNumber
+        v-model="teacherForm.fixedSalary"
+        class="w-full"
+        placeholder="Masalan: 500000"
+        :min="0"
+      />
+      <small class="text-sm text-gray-500">
+        Agar fixed salary > 0 bo'lsa, foiz hisoblanmaydi.
+      </small>
+    </div>
+
+    <div>
+      <label>Fan</label>
+      <Dropdown
+        v-model="teacherForm.science"
+        :options="scienceOptions"
+        class="w-full"
+        :class="{ 'p-invalid': errors.science }"
+        editable
+      />
+      <small v-if="errors.science" class="p-error">{{ errors.science }}</small>
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <Button
+        label="Bekor qilish"
+        severity="secondary"
+        outlined
+        @click="closeDialog"
+      />
+      <Button
+        type="submit"
+        :label="editingTeacher ? 'Saqlash' : 'Qo\'shish'"
+        :loading="saving"
+      />
+    </div>
+  </form>
+</Dialog>
+
 
     <!-- Points Dialog -->
     <!-- Ball Qo'shish Dialog -->
@@ -232,8 +260,8 @@
       </form>
     </Dialog>
 
-      <!-- Maosh qo‘shish Dialog -->
-  <Dialog v-model:visible="showAddSalaryDialog" header="Maosh qo‘shish" :modal="true" class="w-full max-w-md">
+      <!-- Maosh to'lash Dialog -->
+  <Dialog v-model:visible="showAddSalaryDialog" header="Maosh to'lash" :modal="true" class="w-full max-w-md">
     <div class="space-y-4">
       <div class="flex flex-col">
         <label class="text-sm text-gray-600">Miqdor (UZS)</label>
@@ -334,7 +362,7 @@ const toast = useToast()
 const confirm = useConfirm()
 
 const teachers = ref([])
-const teacherForm = ref({ name: '', lastname: '', science: '', phone:null, percentage:null })
+const teacherForm = ref({ name: '', lastname: '', science: '', phone:null, percentage:null ,fixedSalary:null})
 const searchQuery = ref('')
 const showAddDialog = ref(false)
 const showAddPointsDialogVisible = ref(false)
@@ -416,6 +444,7 @@ const exportToExcelHandler = () => {
     Familiya: teacher.lastname,
     Telefon: teacher.phone || '—',
     "Belgilangan ulush %":teacher.percentage,
+    "Belgilangan maosh":teacher.fixedSalary,
     "Qo'shilgan sanasi": formatDate(teacher.createdAt),
     'Maoshlar tarixi':
       teacher.salaries?.map((s) => `${formatDate(s.paidAt)} - ${s.amount} so'm`).join(', ') ||
